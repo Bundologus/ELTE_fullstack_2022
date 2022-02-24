@@ -40,7 +40,7 @@ Asztalfoglalást lehetővé tevő alkalmazás éttermek, kocsmák és egyéb ven
 
 ## Entitások
  - user
- - unit (vendéglátúipari egység)
+ - unit (vendéglátóipari egység)
  - alaprajz
    - helyiségek csak továbbfejlesztési lehetőség
    - asztalok
