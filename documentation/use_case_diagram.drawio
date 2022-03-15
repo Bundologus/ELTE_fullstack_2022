@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2022-03-12T19:46:33.671Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36" etag="h7Wxkcr55ODtI_U7YWck" version="17.1.2" type="github">
+<mxfile host="app.diagrams.net" modified="2022-03-15T14:19:32.399Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36" etag="wxr5SiVkPr-1g7-EiFJL" version="17.1.2" type="github">
   <diagram id="9PM5bi2dadC-GxDkru2j" name="Page-1">
-    <mxGraphModel dx="2031" dy="1007" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+    <mxGraphModel dx="2062" dy="1094" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -90,10 +90,10 @@
         <mxCell id="011kS0YljuxISuULXfXJ-80" value="&#xa;&#xa;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: helvetica; font-size: 11px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: center; text-indent: 0px; text-transform: none; word-spacing: 0px; background-color: rgb(255, 255, 255); display: inline; float: none;&quot;&gt;&amp;lt;&amp;lt;Include&amp;gt;&amp;gt;&lt;/span&gt;&#xa;&#xa;" style="edgeStyle=none;rounded=0;jumpStyle=arc;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;startArrow=none;startFill=0;endArrow=open;endFill=0;startSize=6;endSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;labelBackgroundColor=none;" parent="1" source="011kS0YljuxISuULXfXJ-22" target="011kS0YljuxISuULXfXJ-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="011kS0YljuxISuULXfXJ-22" value="Create new unit" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="011kS0YljuxISuULXfXJ-22" value="Create new unit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
           <mxGeometry x="310" y="240" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="011kS0YljuxISuULXfXJ-24" value="Confirm new unit" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="011kS0YljuxISuULXfXJ-24" value="Confirm new unit" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
           <mxGeometry x="592.5" y="280" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="011kS0YljuxISuULXfXJ-81" value="&#xa;&#xa;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: helvetica; font-size: 11px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: center; text-indent: 0px; text-transform: none; word-spacing: 0px; background-color: rgb(255, 255, 255); display: inline; float: none;&quot;&gt;&amp;lt;&amp;lt;Include&amp;gt;&amp;gt;&lt;/span&gt;&#xa;&#xa;" style="edgeStyle=none;rounded=0;jumpStyle=arc;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;startArrow=none;startFill=0;endArrow=open;endFill=0;startSize=6;endSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;labelBackgroundColor=none;" parent="1" source="011kS0YljuxISuULXfXJ-29" target="011kS0YljuxISuULXfXJ-5" edge="1">
@@ -114,7 +114,7 @@
         <mxCell id="011kS0YljuxISuULXfXJ-83" value="&#xa;&#xa;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: helvetica; font-size: 11px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: center; text-indent: 0px; text-transform: none; word-spacing: 0px; background-color: rgb(255, 255, 255); display: inline; float: none;&quot;&gt;&amp;lt;&amp;lt;Include&amp;gt;&amp;gt;&lt;/span&gt;&#xa;&#xa;" style="edgeStyle=none;rounded=0;jumpStyle=arc;orthogonalLoop=1;jettySize=auto;html=1;dashed=1;startArrow=none;startFill=0;endArrow=open;endFill=0;startSize=6;endSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;labelBackgroundColor=none;" parent="1" source="011kS0YljuxISuULXfXJ-42" target="011kS0YljuxISuULXfXJ-5" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="vxaHBNYdfiaBC4VmmFhm-1" value="&amp;lt;&amp;lt;Include&amp;gt;&amp;gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;dashed=1;startArrow=none;startFill=0;endFill=0;startSize=6;endSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" edge="1" parent="1" source="011kS0YljuxISuULXfXJ-42" target="011kS0YljuxISuULXfXJ-51">
+        <mxCell id="vxaHBNYdfiaBC4VmmFhm-1" value="&amp;lt;&amp;lt;Include&amp;gt;&amp;gt;" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;labelBackgroundColor=none;endArrow=open;dashed=1;startArrow=none;startFill=0;endFill=0;startSize=6;endSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;" parent="1" source="011kS0YljuxISuULXfXJ-42" target="011kS0YljuxISuULXfXJ-51" edge="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="011kS0YljuxISuULXfXJ-42" value="Modify own reservation" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
@@ -126,13 +126,13 @@
         <mxCell id="011kS0YljuxISuULXfXJ-47" value="View reservations on unit" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="480" y="840" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="011kS0YljuxISuULXfXJ-55" value="Edit unit map" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="011kS0YljuxISuULXfXJ-55" value="Edit unit map (floor plan)" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="480" y="750" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="011kS0YljuxISuULXfXJ-57" value="Make reservations on unit" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="480" y="980" width="120" height="80" as="geometry" />
         </mxCell>
-        <mxCell id="011kS0YljuxISuULXfXJ-59" value="Delet unit" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+        <mxCell id="011kS0YljuxISuULXfXJ-59" value="Delete unit" style="ellipse;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="480" y="1280" width="120" height="80" as="geometry" />
         </mxCell>
         <mxCell id="011kS0YljuxISuULXfXJ-67" value="&#xa;&#xa;&lt;span style=&quot;color: rgb(0, 0, 0); font-family: helvetica; font-size: 11px; font-style: normal; font-weight: 400; letter-spacing: normal; text-align: center; text-indent: 0px; text-transform: none; word-spacing: 0px; background-color: rgb(255, 255, 255); display: inline; float: none;&quot;&gt;&amp;lt;&amp;lt;Include&amp;gt;&amp;gt;&lt;/span&gt;&#xa;&#xa;" style="edgeStyle=none;rounded=0;jumpStyle=arc;orthogonalLoop=1;jettySize=auto;html=1;startArrow=open;startFill=0;endArrow=none;endFill=0;startSize=8;endSize=8;sourcePerimeterSpacing=0;targetPerimeterSpacing=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;labelBackgroundColor=none;dashed=1;" parent="1" source="011kS0YljuxISuULXfXJ-65" target="011kS0YljuxISuULXfXJ-40" edge="1">
