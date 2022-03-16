@@ -11,13 +11,27 @@ servers:
 tags:
   - name: user
     description: Operations about user
-  - name: pet
-    description: Everything about your Pets
-    externalDocs:
-      description: Find out more
-      url: http://swagger.io
-  - name: store
-    description: Access to Petstore orders
+  - name: unit
+    description: >-
+      Bars, restaurants and other places of catering business that offer
+      reservations to be made.
+  - name: opening hours
+    description: >-
+      Entity describing opening hours for one or more days of the week,
+      or a specific calendar day.
+  - name: country
+  - name: city
+  - name: district
+  - name: floor plan
+    description: >-
+      The floor plan of a unit, showing all the reservables available inside. It
+      is editable by the owner.
+  - name: reservable
+    description: A specific table in a unit that is reservable.
+  - name: reservation
+    description: >-
+      A reservation made by a user to a specific reservable for a specific time
+      frame.
 paths:
   /user:
     post:
@@ -25,25 +39,39 @@ paths:
         - user
       summary: Register user
       description: This is done when a new user registration is submitted.
-      operationId: createUser
       requestBody:
         description: Created user object
         content:
-          '*/*':
+          application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                phone:
+                  type: string
         required: true
       responses:
-        default:
-          description: successful operation
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '409':
+          description: Email already registered
           content: {}
-      x-codegen-request-body-name: body
   /user/login:
-    get:
+    post:
       tags:
         - user
       summary: Logs user into the system
-      operationId: loginUser
       parameters:
         - name: username
           in: query
@@ -60,47 +88,43 @@ paths:
       responses:
         '200':
           description: successful operation
-          headers:
-            X-Rate-Limit:
-              description: calls per hour allowed by the user
-              schema:
-                type: integer
-                format: int32
-            X-Expires-After:
-              description: date in UTC when token expires
-              schema:
-                type: string
-                format: date-time
           content:
-            application/xml:
-              schema:
-                type: string
             application/json:
               schema:
-                type: string
+                type: object
+                properties:
+                  api_token:
+                    type: string
+                  token_expires_on:
+                    type: string
         '400':
           description: Invalid username/password supplied
           content: {}
   /user/logout:
-    get:
+    post:
       tags:
         - user
       summary: Logs out current logged in user session
-      operationId: logoutUser
+      security:
+        - bearer_auth: []
       responses:
-        default:
+        '200':
           description: successful operation
           content: {}
-  /user/{username}:
+        '400':
+          description: Invalid authentication token
+          content: {}
+  /user/{email}:
     get:
       tags:
         - user
-      summary: Get user by user name
-      operationId: getUserByName
+      summary: Get user by email
+      security:
+        - bearer_auth: []
       parameters:
-        - name: username
+        - name: email
           in: path
-          description: 'The name that needs to be fetched. Use user1 for testing. '
+          description: 'The email of the user that needs to be fetched.'
           required: true
           schema:
             type: string
@@ -108,9 +132,6 @@ paths:
         '200':
           description: successful operation
           content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
@@ -123,41 +144,56 @@ paths:
     put:
       tags:
         - user
-      summary: Updated user
+      summary: Update user
       description: This can only be done by the logged in user.
-      operationId: updateUser
+      security:
+        - bearer_auth: []
       parameters:
-        - name: username
+        - name: email
           in: path
-          description: name that need to be updated
+          description: email that needs to be updated
           required: true
           schema:
             type: string
       requestBody:
         description: Updated user object
         content:
-          '*/*':
+          application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: object
+              properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                phone:
+                  type: string
         required: true
       responses:
+        '200':
+          description: Successful operation
+          content: {}
         '400':
           description: Invalid user supplied
           content: {}
         '404':
           description: User not found
           content: {}
-      x-codegen-request-body-name: body
     delete:
       tags:
         - user
       summary: Delete user
       description: This can only be done by the logged in user.
-      operationId: deleteUser
+      security:
+        - bearer_auth: []
       parameters:
-        - name: username
+        - name: email
           in: path
-          description: The name that needs to be deleted
+          description: The email that needs to be deleted
           required: true
           schema:
             type: string
@@ -168,381 +204,233 @@ paths:
         '404':
           description: User not found
           content: {}
-  /pet:
-    put:
+  /unit:
+    post:
       tags:
-        - pet
-      summary: Update an existing pet
-      operationId: updatePet
+        - unit
+      summary: Create unit
+      description: Submit a new unit for creation
+      security:
+        - bearer_auth: []
       requestBody:
-        description: Pet object that needs to be added to the store
+        description: Created unit object
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-      responses:
-        '400':
-          description: Invalid ID supplied
-          content: {}
-        '404':
-          description: Pet not found
-          content: {}
-        '405':
-          description: Validation exception
-          content: {}
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-      x-codegen-request-body-name: body
-    post:
-      tags:
-        - pet
-      summary: Add a new pet to the store
-      operationId: addPet
-      requestBody:
-        description: Pet object that needs to be added to the store
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Pet'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Pet'
-        required: true
-      responses:
-        '405':
-          description: Invalid input
-          content: {}
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-      x-codegen-request-body-name: body
-  /pet/findByStatus:
-    get:
-      tags:
-        - pet
-      summary: Finds Pets by status
-      description: Multiple status values can be provided with comma separated strings
-      operationId: findPetsByStatus
-      parameters:
-        - name: status
-          in: query
-          description: Status values that need to be considered for filter
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: array
-            items:
-              type: string
-              default: available
-              enum:
-                - available
-                - pending
-                - sold
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-        '400':
-          description: Invalid status value
-          content: {}
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-  /pet/findByTags:
-    get:
-      tags:
-        - pet
-      summary: Finds Pets by tags
-      description: >-
-        Muliple tags can be provided with comma separated strings. Use        
-        tag1, tag2, tag3 for testing.
-      operationId: findPetsByTags
-      parameters:
-        - name: tags
-          in: query
-          description: Tags to filter by
-          required: true
-          style: form
-          explode: true
-          schema:
-            type: array
-            items:
-              type: string
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
-        '400':
-          description: Invalid tag value
-          content: {}
-      deprecated: true
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-  /pet/{petId}:
-    get:
-      tags:
-        - pet
-      summary: Find pet by ID
-      description: Returns a single pet
-      operationId: getPetById
-      parameters:
-        - name: petId
-          in: path
-          description: ID of pet to return
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Pet'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Pet'
-        '400':
-          description: Invalid ID supplied
-          content: {}
-        '404':
-          description: Pet not found
-          content: {}
-      security:
-        - api_key: []
-    post:
-      tags:
-        - pet
-      summary: Updates a pet in the store with form data
-      operationId: updatePetWithForm
-      parameters:
-        - name: petId
-          in: path
-          description: ID of pet that needs to be updated
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          application/x-www-form-urlencoded:
-            schema:
+              type: object
               properties:
+                owner_id:
+                  type: integer
+                  format: int64
                 name:
                   type: string
-                  description: Updated name of the pet
-                status:
+                country_id:
+                  type: integer
+                  format: int64
+                city_id:
+                  type: integer
+                  format: int64
+                district_id:
+                  type: integer
+                  format: int64
+                description:
                   type: string
-                  description: Updated status of the pet
-      responses:
-        '405':
-          description: Invalid input
-          content: {}
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-    delete:
-      tags:
-        - pet
-      summary: Deletes a pet
-      operationId: deletePet
-      parameters:
-        - name: api_key
-          in: header
-          schema:
-            type: string
-        - name: petId
-          in: path
-          description: Pet id to delete
-          required: true
-          schema:
-            type: integer
-            format: int64
-      responses:
-        '400':
-          description: Invalid ID supplied
-          content: {}
-        '404':
-          description: Pet not found
-          content: {}
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-  /pet/{petId}/uploadImage:
-    post:
-      tags:
-        - pet
-      summary: uploads an image
-      operationId: uploadFile
-      parameters:
-        - name: petId
-          in: path
-          description: ID of pet to update
-          required: true
-          schema:
-            type: integer
-            format: int64
-      requestBody:
-        content:
-          multipart/form-data:
-            schema:
-              properties:
-                additionalMetadata:
+                profile_picture:
                   type: string
-                  description: Additional data to pass to server
-                file:
+                reservation_terms:
                   type: string
-                  description: file to upload
-                  format: binary
+                default_min_time:
+                  type: string
+                defaul_max_time:
+                  type: string
+                default_time_step:
+                  type: string
+        required: true
       responses:
-        '200':
-          description: successful operation
+        '201':
+          description: Unit created successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ApiResponse'
-      security:
-        - petstore_auth:
-            - write:pets
-            - read:pets
-  /store/inventory:
+                $ref: '#/components/schemas/Unit'
     get:
       tags:
-        - store
-      summary: Returns pet inventories by status
-      description: Returns a map of status codes to quantities
-      operationId: getInventory
+        - unit
+      summary: Get all units
+      description: Get all units filtered by the provided parameters
+      parameters:
+        - name: condensed
+          in: query
+          description: >-
+            True if the response should contain the short unit objects.
+            Otherwise the full unit objects are returned.
+          schema:
+            type: boolean
+        - name: owner_id
+          in: query
+          description: Filter the results by owner id
+          schema:
+            type: integer
+            format: int64
+        - name: country_id
+          in: query
+          description: Filter the results by country
+          schema:
+            type: integer
+            format: int64
+        - name: city_id
+          in: query
+          description: Filter the results by city
+          schema:
+            type: integer
+            format: int64
+        - name: district
+          in: query
+          description: Filter the results by district
+          schema:
+            type: integer
+            format: int64
+        - name: open_now
+          in: query
+          description: Filter the results by opening hours
+          schema:
+            type: boolean
       responses:
         '200':
           description: successful operation
           content:
             application/json:
               schema:
-                type: object
-                additionalProperties:
-                  type: integer
-                  format: int32
-      security:
-        - api_key: []
-  /store/order:
-    post:
+                type: array
+                items:
+                  oneOf:
+                    - $ref: '#/components/schemas/Unit'
+                    - $ref: '#/components/schemas/FullUnit'
+  /unit/{unit_id}:
+    get:
       tags:
-        - store
-      summary: Place an order for a pet
-      operationId: placeOrder
+        - unit
+      summary: Get a unit by id
+      description: Get the details of a single unit by id
+      parameters:
+        - name: full
+          in: query
+          description: >-
+            True if the response should contain the full unit object.
+            Otherwise the short unit object is returned.
+          schema:
+            type: boolean
+        - name: unit_id
+          in: path
+          schema:
+            type: integer
+            format: int64
+          required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/Unit'
+                  - $ref: '#/components/schemas/FullUnit'
+        '404':
+          description: unit not found
+          content: {}
+    put:
+      tags:
+        - unit
+      summary: Update a unit by id
+      description: Update the details of a single unit by id
+      security:
+        - bearer_auth: []
+      parameters:
+        - name: full
+          in: query
+          description: >-
+            True if the response should contain the full unit object.
+            Otherwise the short unit object is returned.
+          schema:
+            type: boolean
+        - name: unit_id
+          in: path
+          schema:
+            type: integer
+            format: int64
+          required: true
       requestBody:
-        description: order placed for purchasing the pet
+        description: Updated unit object
         content:
-          '*/*':
+          application/json:
             schema:
-              $ref: '#/components/schemas/Order'
+              type: object
+              properties:
+                owner_id:
+                  type: integer
+                  format: int64
+                name:
+                  type: string
+                country_id:
+                  type: integer
+                  format: int64
+                city_id:
+                  type: integer
+                  format: int64
+                district_id:
+                  type: integer
+                  format: int64
+                description:
+                  type: string
+                profile_picture:
+                  type: string
+                reservation_terms:
+                  type: string
+                default_min_time:
+                  type: string
+                defaul_max_time:
+                  type: string
+                default_time_step:
+                  type: string
         required: true
       responses:
         '200':
-          description: successful operation
+          description: Successful operation
           content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Order'
             application/json:
               schema:
-                $ref: '#/components/schemas/Order'
-        '400':
-          description: Invalid Order
-          content: {}
-      x-codegen-request-body-name: body
-  /store/order/{orderId}:
-    get:
-      tags:
-        - store
-      summary: Find purchase order by ID
-      description: >-
-        For valid response try integer IDs with value >= 1 and <= 10.        
-        Other values will generated exceptions
-      operationId: getOrderById
-      parameters:
-        - name: orderId
-          in: path
-          description: ID of pet that needs to be fetched
-          required: true
-          schema:
-            maximum: 10
-            minimum: 1
-            type: integer
-            format: int64
-      responses:
-        '200':
-          description: successful operation
-          content:
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/Order'
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Order'
-        '400':
-          description: Invalid ID supplied
+                oneOf:
+                  - $ref: '#/components/schemas/Unit'
+                  - $ref: '#/components/schemas/FullUnit'
+        '401':
+          description: the user is not the owner or admin of the unit
           content: {}
         '404':
-          description: Order not found
+          description: unit not found
           content: {}
     delete:
       tags:
-        - store
-      summary: Delete purchase order by ID
-      description: >-
-        For valid response try integer IDs with positive integer value.        
-        Negative or non-integer values will generate API errors
-      operationId: deleteOrder
+        - unit
+      summary: Delete a unit by id
+      description: Submitting a deletion request for a unit.
+      security:
+        - bearer_auth: []
       parameters:
-        - name: orderId
+        - name: unit_id
           in: path
-          description: ID of the order that needs to be deleted
-          required: true
           schema:
-            minimum: 1
             type: integer
             format: int64
+          required: true
       responses:
+        '200':
+          description: Successful operation
+          content: {}
         '400':
-          description: Invalid ID supplied
+          description: Invalid user supplied
           content: {}
         '404':
-          description: Order not found
+          description: User not found
           content: {}
 components:
   schemas:
@@ -557,8 +445,6 @@ components:
         lastName:
           type: string
         email:
-          type: string
-        password:
           type: string
         phone:
           type: string
@@ -580,20 +466,30 @@ components:
         id:
           type: integer
           format: int64
-        owner_id:
-          type: integer
-          format: int64
         name:
           type: string
-        country_id:
+        address:
+          type: string
+        description:
+          type: string
+        profile_picture:
+          type: string
+    FullUnit:
+      type: object
+      properties:
+        id:
           type: integer
           format: int64
-        city_id:
-          type: integer
-          format: int64
-        district_id:
-          type: integer
-          format: int64
+        owner:
+          $ref: '#/components/schemas/User'
+        name:
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+        city:
+          $ref: '#/components/schemas/City'
+        district:
+          $ref: '#/components/schemas/District'
         description:
           type: string
         profile_picture:
@@ -605,6 +501,36 @@ components:
         defaul_max_time:
           type: string
         default_time_step:
+          type: string
+        opening_hours:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpeningHours'
+        floor_plan:
+          $ref: '#/components/schemas/FloorPlan'
+    OpeningHours:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        unit_id:
+          type: integer
+          format: int64
+        reservable_id:
+          type: integer
+          format: int64
+        day_from:
+          type: integer
+          format: int32
+        day_to:
+          type: integer
+          format: int32
+        time_from:
+          type: string
+        time_to:
+          type: string
+        specific_date:
           type: string
     Country:
       type: object
@@ -676,6 +602,14 @@ components:
           format: int64
         type:
           type: string
+          enum:
+            - blocked
+            - wall
+            - door
+            - window
+            - table
+            - chair
+            - misc
         custom_fp_data:
           type: string
         custom_user_data:
@@ -709,50 +643,33 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OpeningHours'
-    OpeningHours:
+    Reservation:
       type: object
       properties:
         id:
           type: integer
           format: int64
-        unit_id:
+        user_id:
           type: integer
           format: int64
         reservable_id:
           type: integer
           format: int64
-        day_from:
-          type: integer
-          format: int32
-        day_to:
-          type: integer
-          format: int32
-        time_from:
+        reserved_on:
           type: string
-        time_to:
+        start_time:
           type: string
-        specific_date:
+        end_time:
           type: string
-    ApiResponse:
-      type: object
-      properties:
-        code:
-          type: integer
-          format: int32
-        type:
+        status:
           type: string
-        message:
-          type: string
+          enum:
+            - pending
+            - accepted
+            - rejected
+            - cancelled
+            - expired
   securitySchemes:
-    petstore_auth:
-      type: oauth2
-      flows:
-        implicit:
-          authorizationUrl: http://petstore.swagger.io/oauth/dialog
-          scopes:
-            write:pets: modify pets in your account
-            read:pets: read your pets
-    api_key:
-      type: apiKey
-      name: api_key
-      in: header
+    bearer_auth:
+      type: http
+      scheme: bearer
