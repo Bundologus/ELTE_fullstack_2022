@@ -10,22 +10,22 @@ servers:
   - url: https://localhost:3000/
 tags:
   - name: user
-    description: Operations about user
+    description: Entity representing a user
   - name: unit
     description: >-
-      Bars, restaurants and other places of catering business that offer
+      Entity representing bars, restaurants and other establishments that offer
       reservations to be made.
   - name: opening hours
     description: >-
-      Entity describing opening hours for one or more days of the week,
-      or a specific calendar day.
+      Entities describing opening hours for one or more days of the week,
+      or a specific calendar day, for a specific unit.
   - name: country
   - name: city
   - name: district
   - name: floor plan
     description: >-
-      The floor plan of a unit, showing all the reservables available inside. It
-      is editable by the owner.
+      The floor plan of a unit, showing all the reservables available inside.
+      It is editable by the owner of the establishment.
   - name: reservable
     description: A specific table in a unit that is reservable.
   - name: reservation
@@ -66,7 +66,6 @@ paths:
                 $ref: '#/components/schemas/User'
         '409':
           description: Email already registered
-          content: {}
   /user/login:
     post:
       tags:
@@ -99,7 +98,6 @@ paths:
                     type: string
         '400':
           description: Invalid username/password supplied
-          content: {}
   /user/logout:
     post:
       tags:
@@ -110,24 +108,22 @@ paths:
       responses:
         '200':
           description: successful operation
-          content: {}
         '400':
           description: Invalid authentication token
-          content: {}
   /user/{email}:
+    parameters:
+      - name: email
+        in: path
+        description: The email of the affected user
+        required: true
+        schema:
+          type: string
     get:
       tags:
         - user
       summary: Get user by email
       security:
         - bearer_auth: []
-      parameters:
-        - name: email
-          in: path
-          description: 'The email of the user that needs to be fetched.'
-          required: true
-          schema:
-            type: string
       responses:
         '200':
           description: successful operation
@@ -137,24 +133,15 @@ paths:
                 $ref: '#/components/schemas/User'
         '400':
           description: Invalid username supplied
-          content: {}
         '404':
           description: User not found
-          content: {}
     put:
       tags:
         - user
-      summary: Update user
+      summary: Update user by email
       description: This can only be done by the logged in user.
       security:
         - bearer_auth: []
-      parameters:
-        - name: email
-          in: path
-          description: email that needs to be updated
-          required: true
-          schema:
-            type: string
       requestBody:
         description: Updated user object
         content:
@@ -176,34 +163,28 @@ paths:
       responses:
         '200':
           description: Successful operation
-          content: {}
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
         '400':
-          description: Invalid user supplied
-          content: {}
+          description: Invalid email supplied
         '404':
           description: User not found
-          content: {}
     delete:
       tags:
         - user
-      summary: Delete user
+      summary: Delete user by email
       description: This can only be done by the logged in user.
       security:
         - bearer_auth: []
-      parameters:
-        - name: email
-          in: path
-          description: The email that needs to be deleted
-          required: true
-          schema:
-            type: string
       responses:
+        '200':
+          description: Successful operation
         '400':
-          description: Invalid username supplied
-          content: {}
+          description: Invalid email supplied
         '404':
           description: User not found
-          content: {}
   /unit:
     post:
       tags:
@@ -256,7 +237,7 @@ paths:
     get:
       tags:
         - unit
-      summary: Get all units
+      summary: Get many/all units
       description: Get all units filtered by the provided parameters
       parameters:
         - name: condensed
@@ -306,7 +287,14 @@ paths:
                   oneOf:
                     - $ref: '#/components/schemas/Unit'
                     - $ref: '#/components/schemas/FullUnit'
-  /unit/{unit_id}:
+  /unit/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
     get:
       tags:
         - unit
@@ -320,12 +308,7 @@ paths:
             Otherwise the short unit object is returned.
           schema:
             type: boolean
-        - name: unit_id
-          in: path
-          schema:
-            type: integer
-            format: int64
-          required: true
+            default: false
       responses:
         '200':
           description: successful operation
@@ -337,7 +320,6 @@ paths:
                   - $ref: '#/components/schemas/FullUnit'
         '404':
           description: unit not found
-          content: {}
     put:
       tags:
         - unit
@@ -353,12 +335,7 @@ paths:
             Otherwise the short unit object is returned.
           schema:
             type: boolean
-        - name: unit_id
-          in: path
-          schema:
-            type: integer
-            format: int64
-          required: true
+            default: false
       requestBody:
         description: Updated unit object
         content:
@@ -404,10 +381,8 @@ paths:
                   - $ref: '#/components/schemas/FullUnit'
         '401':
           description: the user is not the owner or admin of the unit
-          content: {}
         '404':
           description: unit not found
-          content: {}
     delete:
       tags:
         - unit
@@ -415,23 +390,674 @@ paths:
       description: Submitting a deletion request for a unit.
       security:
         - bearer_auth: []
-      parameters:
-        - name: unit_id
-          in: path
-          schema:
-            type: integer
-            format: int64
-          required: true
       responses:
         '200':
           description: Successful operation
-          content: {}
         '400':
           description: Invalid user supplied
-          content: {}
         '404':
           description: User not found
-          content: {}
+  /opening_hours:
+    post:
+      tags:
+        - opening hours
+      summary: Create opening hours
+      description: Create a new opening hours entry
+      security:
+        - bearer_auth: []
+      requestBody:
+        description: The opening hours entity to be created
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unit_id:
+                  type: integer
+                  format: int64
+                reservable_id:
+                  type: integer
+                  format: int64
+                day_from:
+                  type: integer
+                  format: int32
+                day_to:
+                  type: integer
+                  format: int32
+                specific_date_from:
+                  type: string
+                specific_date_to:
+                  type: string
+                time_from:
+                  type: string
+                time_to:
+                  type: string
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpeningHours'
+    get:
+      tags:
+        - opening hours
+      summary: Get opening hours
+      description: >-
+        The opening hours of a unit or reservable may be specific for marked
+        day(s) of the week or a specific date or date range only.
+      parameters:
+        - name: unit_id
+          in: query
+          description: Filter results by unit id
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: reservable_id
+          in: query
+          description: Filter results by reservable id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OpeningHours'
+                minItems: 0
+        '404':
+          description: Unit or reservable not found.
+  /opening_hours/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+    get:
+      tags:
+        - opening hours
+      summary: Get opening hour entity by id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpeningHours'
+        '404':
+          description: Entity not found
+    put:
+      tags:
+        - opening hours
+      summary: Update opening hour entity by id
+      security:
+        - bearer_auth: []
+      requestBody:
+        description: The new state of the entity to be updated to
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpeningHours'
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OpeningHours'
+        '401':
+          description: User is not the owner of the unit this belongs to
+        '404':
+          description: Entity not found
+    delete:
+      tags:
+        - opening hours
+      summary: Delete opening hour entity by id
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: Successful operation
+        '401':
+          description: User is not the owner of the unit this belongs to
+        '404':
+          description: Entity not found
+  /country:
+    post:
+      tags:
+        - country
+      summary: Create country entity
+      description: Create new country entity
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '201': 
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '401':
+          description: User is not admin
+        '409':
+          description: Country with the same name already exists
+    get:
+      tags:
+        - country
+      summary: Get all countries
+      description: Get all countries
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+  /country/{id}:
+    parameters:
+      - name: id
+        description: id of the counry
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+    get:
+      tags:
+        - country
+      summary: Get country by id
+      description: Get the country data with the specific id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '404':
+          description: Specified country not found
+    put:
+      tags:
+        - country
+      summary: Update country by id
+      description: Update the country of the specified id
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Country'
+        '401':
+          description: User is not admin
+        '404':
+          description: Specified country not found
+    delete:
+      tags:
+        - country
+      summary: Delet country by id
+      description: Delete the country of the specified id
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: Successful operation'
+        '401':
+          description: User is not admin
+        '404':
+          description: Specified country not found
+  /city:
+    post:
+      tags:
+        - city
+      summary: Create city entity
+      description: Create new city entity
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                country_id:
+                  type: integer
+                  format: int64
+                post_code:
+                  type: string
+      responses:
+        '201': 
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '401':
+          description: User is not admin
+        '409':
+          description: City with the same name in the same country already exists
+    get:
+      tags:
+        - city
+      summary: Get all/many cities
+      description: Get all/many cities filtered by the query values
+      parameters:
+        - name: country_id
+          description: Filter results by country
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+  /city/{id}:
+    parameters:
+      - name: id
+        description: id of the city
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+    get:
+      tags:
+        - city
+      summary: Get city by id
+      description: Get the city data with the specific id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '404':
+          description: Specified city not found
+    put:
+      tags:
+        - city
+      summary: Update city by id
+      description: Update the city of the specified id
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '401':
+          description: User is not admin
+        '404':
+          description: Specified city not found
+    delete:
+      tags:
+        - city
+      summary: Delet city by id
+      description: Delete the city of the specified id
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: Successful operation'
+        '401':
+          description: User is not admin
+        '404':
+          description: Specified city not found
+  /district:
+    post:
+      tags:
+        - district
+      summary: Create district entity
+      description: Create new district entity
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                city_id:
+                  type: integer
+                  format: int64
+                post_code:
+                  type: string
+      responses:
+        '201': 
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/District'
+        '401':
+          description: User is not admin
+        '409':
+          description: District with the same name in the same city already exists
+    get:
+      tags:
+        - district
+      summary: Get all/many districts
+      description: Get all/many districts filtered by the query values
+      parameters:
+        - name: city_id
+          description: Filter results by city
+          in: query
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/District'
+  /district/{id}:
+    parameters:
+      - name: id
+        description: id of the district
+        in: path
+        schema:
+          type: integer
+          format: int64
+        required: true
+    get:
+      tags:
+        - district
+      summary: Get district by id
+      description: Get the district data with the specific id
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/District'
+        '404':
+          description: Specified district not found
+    put:
+      tags:
+        - district
+      summary: Update district by id
+      description: Update the district of the specified id
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/District'
+        '401':
+          description: User is not admin
+        '404':
+          description: Specified district not found
+    delete:
+      tags:
+        - district
+      summary: Delet district by id
+      description: Delete the district of the specified id
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: Successful operation'
+        '401':
+          description: User is not admin
+        '404':
+          description: Specified district not found
+  /unit/{id}/floor_plan:
+    parameters:
+      - name: id
+        in: path
+        description: The id of the parent unit
+        schema:
+          type: integer
+          format: int64
+        required: true
+    post:
+      tags:
+        - floor plan
+      summary: Create new floor plan
+      description: Create new floor plan for a unit
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                unit_id:
+                  type: integer
+                  format: int64
+                width:
+                  type: integer
+                  format: int32
+                height:
+                  type: integer
+                  format: int32          
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FloorPlan'
+        '401':
+          description: User is not administrator of the specified unit
+        '409':
+          description: Specified unit already has a floor plan
+    get:
+      tags:
+        - floor plan
+      summary: Get the floor plan of the unit
+      description: Get the data for the floor plan of the specified unit
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FloorPlan'
+        '404':
+          description: Unit or floor plan not found
+    put:
+      tags:
+        - floor plan
+      summary: Update floor plan
+      description: Update the floor plan of a unit
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+                  format: int64
+                unit_id:
+                  type: integer
+                  format: int64
+                width:
+                  type: integer
+                  format: int32
+                height:
+                  type: integer
+                  format: int32
+      responses:
+        '200':
+          description: Successful operation returning the updated object
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FloorPlan'
+        '401':
+          description: User is not administrator of the specified unit
+        '404':
+          description: Unit or floor plan not found
+        '409':
+          description: The unit already has a floor plan with different id
+    delete:
+      tags:
+        - floor plan
+      summary: Delete the floor plan of the unit
+      description: Delete the floor plan of the specified unit
+      security:
+        - bearer_auth: []
+      responses:
+        '200':
+          description: Successful operation
+        '404':
+          description: Unit or floor plan not found
+  /unit/{id}/floor_plan/entity:
+    parameters:
+      - name: id
+        in: path
+        description: The id of the parent unit
+        schema:
+          type: integer
+          format: int64
+        required: true
+    post:
+      tags:
+        - floor plan
+      summary: Add entities
+      description: Add new entities to a floor plan
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                properties:
+                  parent_id:
+                    type: integer
+                    format: int64
+                  type:
+                    type: string
+                    enum:
+                      - blocked
+                      - wall
+                      - door
+                      - window
+                      - table
+                      - chair
+                      - misc
+                  custom_fp_data:
+                    type: string
+                  custom_user_data:
+                    type: string
+                  vertices:
+                    type: string
+                  reservable:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                      min_spaces:
+                        type: integer
+                        format: int32
+                      max_spaces:
+                        type: integer
+                        format: int32
+                      min_time:
+                        type: string
+                      max_time:
+                        type: string
+                      time_step:
+                        type: string
+                      opening_hours:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/OpeningHours'
+      responses:
+        '201':
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FpEntity'
+        '401':
+          description: User is not administrator of parent unit
+        '404':
+          description: Unit or floor plan not found
+    get:
+      tags:
+        - floor plan
+      summary: Get entities
+      description: Get all entities of a floor plan
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FpEntity'
+        '404':
+          description: Unit or floor plan not found
 components:
   schemas:
     User:
@@ -526,11 +1152,13 @@ components:
         day_to:
           type: integer
           format: int32
+        specific_date_from:
+          type: string
+        specific_date_to:
+          type: string
         time_from:
           type: string
         time_to:
-          type: string
-        specific_date:
           type: string
     Country:
       type: object
@@ -592,9 +1220,6 @@ components:
           type: integer
           format: int64
         reservable_id:
-          type: integer
-          format: int64
-        floor_plan_id:
           type: integer
           format: int64
         parent_id:
