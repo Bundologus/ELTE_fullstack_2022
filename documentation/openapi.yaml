@@ -137,6 +137,8 @@ paths:
                 $ref: "#/components/schemas/User"
         "400":
           description: Invalid username supplied
+        "403":
+          description: User is forbidden to view other users' data
         "404":
           description: User not found
     put:
@@ -173,6 +175,8 @@ paths:
                 $ref: "#/components/schemas/User"
         "400":
           description: Invalid email supplied
+        "403":
+          description: User is forbidden to modify other users' data
         "404":
           description: User not found
     delete:
@@ -187,6 +191,8 @@ paths:
           description: Successful operation
         "400":
           description: Invalid email supplied
+        "403":
+          description: User is forbidden to delete other users' data
         "404":
           description: User not found
   /unit:
@@ -280,6 +286,12 @@ paths:
           description: Filter the results by opening hours
           schema:
             type: boolean
+        - name: admin_id
+          in: query
+          description: Filter the results by administrator user id
+          schema:
+            type: integer
+            format: int64
       responses:
         "200":
           description: successful operation
@@ -383,7 +395,7 @@ paths:
                 oneOf:
                   - $ref: "#/components/schemas/Unit"
                   - $ref: "#/components/schemas/FullUnit"
-        "401":
+        "403":
           description: the user is not the owner or admin of the unit
         "404":
           description: unit not found
@@ -516,8 +528,8 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/OpeningHours"
-        "401":
-          description: User is not the owner of the unit this belongs to
+        "403":
+          description: The user is not the owner or admin of the unit
         "404":
           description: Entity not found
     delete:
@@ -529,8 +541,8 @@ paths:
       responses:
         "200":
           description: Successful operation
-        "401":
-          description: User is not the owner of the unit this belongs to
+        "403":
+          description: The user is not the owner or admin of the unit
         "404":
           description: Entity not found
   /country:
@@ -556,7 +568,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Country"
-        "401":
+        "403":
           description: User is not admin
         "409":
           description: Country with the same name already exists
@@ -617,7 +629,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Country"
-        "401":
+        "403":
           description: User is not admin
         "404":
           description: Specified country not found
@@ -631,7 +643,7 @@ paths:
       responses:
         "200":
           description: Successful operation'
-        "401":
+        "403":
           description: User is not admin
         "404":
           description: Specified country not found
@@ -663,7 +675,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/City"
-        "401":
+        "403":
           description: User is not admin
         "409":
           description: City with the same name in the same country already exists
@@ -731,7 +743,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/City"
-        "401":
+        "403":
           description: User is not admin
         "404":
           description: Specified city not found
@@ -745,7 +757,7 @@ paths:
       responses:
         "200":
           description: Successful operation'
-        "401":
+        "403":
           description: User is not admin
         "404":
           description: Specified city not found
@@ -777,7 +789,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/District"
-        "401":
+        "403":
           description: User is not admin
         "409":
           description: District with the same name in the same city already exists
@@ -845,7 +857,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/District"
-        "401":
+        "403":
           description: User is not admin
         "404":
           description: Specified district not found
@@ -859,7 +871,7 @@ paths:
       responses:
         "200":
           description: Successful operation'
-        "401":
+        "403":
           description: User is not admin
         "404":
           description: Specified district not found
@@ -901,7 +913,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FloorPlan"
-        "401":
+        "403":
           description: User is not administrator of the specified unit
         "409":
           description: Specified unit already has a floor plan
@@ -951,7 +963,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FloorPlan"
-        "401":
+        "403":
           description: User is not administrator of the specified unit
         "404":
           description: Unit or floor plan not found
@@ -1042,7 +1054,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/FpEntity"
-        "401":
+        "403":
           description: User is not administrator of parent unit
         "404":
           description: Unit or floor plan not found
@@ -1113,7 +1125,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/FpEntity"
-        "401":
+        "403":
           description: User is not administrator of parent unit
         "404":
           description: Fp entity not found.
@@ -1127,7 +1139,7 @@ paths:
       responses:
         "200":
           description: Successful operation
-        "401":
+        "403":
           description: User is not administrator of parent unit
         "404":
           description: Fp entity not found.
@@ -1186,7 +1198,7 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Reservable"
-        "401":
+        "403":
           description: User is not administrator of parent unit
         "404":
           description: Reservable not found.
@@ -1223,7 +1235,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Reservable"
-        "401":
+        "403":
           description: User is not administrator of parent unit
         "404":
           description: Reservable not found.
@@ -1237,10 +1249,216 @@ paths:
       responses:
         "200":
           description: Successful operation
-        "401":
+        "403":
           description: User is not administrator of parent unit
         "404":
           description: Reservable not found.
+  /reservation:
+    post:
+      tags:
+        - reservation
+      summary: Create new reservation
+      description: Create a new reservation for a specific reservable for a specific time
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                reservable_id:
+                  type: integer
+                  format: int64
+                reserved_on:
+                  type: string
+                start_time:
+                  type: string
+                end_time:
+                  type: string
+      responses:
+        "201":
+          description: Successfully created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationResponse"
+        "404":
+          description: Reservable not found.
+        "409":
+          description: The reservation could not be made.
+          content:
+            application/json:
+              schema:
+                type: string
+                description: Reason for conflict.
+    get:
+      tags:
+        - reservation
+      summary: Get many reservations with filters
+      description: >-
+        Get many reservations filtered by any combination of the parameters.
+        The results will also be implicitly filtered based on authorization:
+        a user can only view their own reservations and the reservations made for
+        units the user has administrative rights over.
+      security:
+        - bearer_auth: []
+      parameters:
+        - name: user_id
+          in: query
+          description: ID of the user owning the reservation
+          schema:
+            type: integer
+            format: int64
+        - name: reservable_id
+          in: query
+          description: ID of the reservable the reservation is made for
+          schema:
+            type: integer
+            format: int64
+        - name: unit_id
+          in: query
+          description: ID of the unit the reservation is made for
+          schema:
+            type: integer
+            format: int64
+        - name: time_from
+          in: query
+          description: YYYY-MM-DDThh:mmTZD (ISO 8601) earliest start time of reservation
+          schema:
+            type: string
+        - name: time_to
+          in: query
+          description: YYYY-MM-DDThh:mmTZD (ISO 8601) latest end time of reservation
+          schema:
+            type: string
+        - name: status
+          in: query
+          description: status of the reservation
+          schema:
+            type: array
+            items:
+              type: string
+              enum:
+                - pending
+                - accepted
+                - rejected
+                - cancelled
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ReservationResponse"
+  /reservation/{id}:
+    parameters:
+      - name: id
+        in: path
+        description: ID of the affected reservation
+        schema:
+          type: integer
+          format: int64
+        required: true
+    get:
+      tags:
+        - reservation
+      summary: Get reservation by id
+      description: Get a specific reservation by id
+      security:
+        - bearer_auth: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationResponse"
+        "404":
+          description: Reservation not found or user is forbidden to view
+    put:
+      tags:
+        - reservation
+      summary: Update reservation by id
+      description: Update a specific reservation by id
+      security:
+        - bearer_auth: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Reservation"
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationResponse"
+        "404":
+          description: Reservation not found or user is forbidden to update
+  /reservation/{id}/accept:
+    post:
+      tags:
+        - reservation
+      summary: accept reservation
+      description: Set status of reservation to accepted
+      security:
+        - bearer_auth: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationResponse"
+        "403":
+          description: Operation not available for current user
+        "404":
+          description: Reservation not found or user is forbidden to view
+  /reservation/{id}/reject:
+    post:
+      tags:
+        - reservation
+      summary: accept reservation
+      description: Set status of reservation to accepted
+      security:
+        - bearer_auth: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationResponse"
+        "403":
+          description: Operation not available for current user
+        "404":
+          description: Reservation not found or user is forbidden to view
+  /reservation/{id}/cancel:
+    post:
+      tags:
+        - reservation
+      summary: accept reservation
+      description: Set status of reservation to accepted
+      security:
+        - bearer_auth: []
+      responses:
+        "200":
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ReservationResponse"
+        "403":
+          description: Operation not available for current user
+        "404":
+          description: Reservation not found or user is forbidden to view
 components:
   schemas:
     User:
@@ -1469,6 +1687,24 @@ components:
           type: string
         end_time:
           type: string
+    ReservationResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        user_id:
+          type: integer
+          format: int64
+        reservable_id:
+          type: integer
+          format: int64
+        reserved_on:
+          type: string
+        start_time:
+          type: string
+        end_time:
+          type: string
         status:
           type: string
           enum:
@@ -1476,7 +1712,6 @@ components:
             - accepted
             - rejected
             - cancelled
-            - expired
   securitySchemes:
     bearer_auth:
       type: http
