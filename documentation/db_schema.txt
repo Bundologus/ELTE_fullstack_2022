@@ -1,0 +1,131 @@
+project 2022_ELTE_fullstack {
+  database_type: 'sqlite'
+  note: 'Graphical table reservation app for bars, restaurants, etc.'
+}
+
+table users {
+  id int [pk, increment]
+  first_name string
+  last_name string
+  email string [unique]
+  phone string
+  pw_hash string
+  api_token string
+  token_expires_on time
+}
+
+table roles {
+  id int [pk, increment]
+  name string [unique]
+}
+
+table role_user {
+  user_id int [ref: > users.id]
+  role_id int [ref: > roles.id]
+}
+
+table units {
+  owner_id int [ref: > users.id]
+  id string [pk, increment]
+  name string
+  country_id int [ref: > countries.id]
+  city_id int [ref: > cities.id]
+  district_id int [ref: > districts.id, note: 'optional']
+  description text
+  profile_picture string [note: 'optional, relative url to the image file on the server']
+  reservation_terms text [note: 'terms and conditions of a reservation']
+  default_min_time time
+  default_max_time time
+  default_time_step time
+}
+
+table countries {
+  id int [pk, increment]
+  name string [unique]
+}
+
+table cities {
+  country_id int [ref: > countries.id]
+  id int [pk, increment]
+  name string
+  post_code string
+}
+
+table districts {
+  city_id int [ref: > cities.id]
+  id int [pk, increment]
+  name string
+  post_code string
+}
+
+table opening_hours {
+  id int [pk, increment]
+  unit_id int [ref: > units.id]
+  reservable_id int [ref: > reservables.id, note: 'optional']
+  day_from int [note: 'day of the week, 1-7, optional']
+  day_to int [note: 'day of the week, 1-7, otional']
+  specific_date_from date [note: 'optional, for overrides for specific dates, like public holidays, etc.']
+  specific_date_to date [note: 'optional, for overrides for specific dates, like public holidays, etc.']
+  time_from time
+  time_to time
+}
+
+table reservables {
+  id int [pk, increment]
+  name string
+  min_spaces int
+  max_spaces int
+  min_time time
+  max_time time
+  time_step time
+}
+
+table reservations {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  reservable_id int [ref: > reservables.id]
+  reserved_on time
+  start_time time
+  end_time time
+  status resev_state
+}
+
+enum reserv_state {
+  pending
+  accepted
+  rejected
+  cancelled
+  expired
+}
+
+
+/// Floor plan data
+
+table floor_plans {
+  id int [pk, increment]
+  unit_id int [ref: - units.id]
+  width int [note: 'width of plan in grids']
+  height int [note: 'height of plan in grids']
+}
+
+table fp_entities {
+  reservable_id int [ref: - reservables.id]
+  id int [pk, increment]
+  floor_plan_id int [ref: > floor_plans.id]
+  parent_id int [ref: > fp_entities.id, note: '-1 if none; parent of some entities, e.g. the table for chairs']
+  type fp_entity_type
+  custom_fp_data text [note: 'anything else (e.g. coloring) that is used by the editor but otherwise irrelevant (JSON)']
+  custom_user_data text [note: 'anything the user could add as textual description (JSON for coloring, etc.)']
+  vertices text [note: 'vertex list in json format']
+}
+
+enum fp_entity_type {
+  blocked
+  wall
+  door
+  window
+  table
+  chair
+  misc
+}
+
