@@ -73,7 +73,6 @@ table opening_hours {
 table reservables {
   id int [pk, increment]
   name string
-  unit_id int [ref: > units.id]
   min_spaces int
   max_spaces int
   min_time time
@@ -110,8 +109,8 @@ table floor_plans {
 }
 
 table fp_entities {
-  id int [pk, increment]
   reservable_id int [ref: - reservables.id]
+  id int [pk, increment]
   floor_plan_id int [ref: > floor_plans.id]
   parent_id int [ref: > fp_entities.id, note: '-1 if none; parent of some entities, e.g. the table for chairs']
   type fp_entity_type
@@ -129,3 +128,4 @@ enum fp_entity_type {
   chair
   misc
 }
+
