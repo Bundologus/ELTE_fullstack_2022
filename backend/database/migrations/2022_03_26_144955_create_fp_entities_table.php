@@ -15,13 +15,16 @@ class CreateFpEntitiesTable extends Migration {
             $table->id();
             $table->foreignId('reservable_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('floor_plan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('parent_id')->constrained('fp_entities')->onUpdate('')->onDelete('');
             $table->string('type');
             $table->text('custom_fp_data');
             $table->text('custom_user_data');
             $table->text('vertices');
             $table->softDeletes();
             $table->timestamps();
+        });
+
+        Schema::table('fp_entities', function (Blueprint $table) {
+            $table->foreignId('parent_id')->constrained('fp_entities')->onUpdate('')->onDelete('');
         });
     }
 
