@@ -16,6 +16,7 @@ class CreateFloorPlansTable extends Migration {
             $table->foreignId('unit_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->integer('width');
             $table->integer('height');
+            $table->softDeletes();
             $table->timestamps();
         });
     }

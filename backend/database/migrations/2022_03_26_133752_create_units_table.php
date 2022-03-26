@@ -24,6 +24,7 @@ class CreateUnitsTable extends Migration {
             $table->time('default_min_time');
             $table->time('default_max_time');
             $table->time('default_time_step');
+            $table->softDeletes();
             $table->timestamps();
         });
     }
