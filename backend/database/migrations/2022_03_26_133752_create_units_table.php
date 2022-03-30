@@ -16,7 +16,7 @@ class CreateUnitsTable extends Migration {
             $table->string('name');
             $table->foreignId('country_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
             $table->foreignId('city_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
-            $table->foreignId('distric_id')->nullable()->constrained()->onUpdate('cascade')->nullOnDelete();
+            $table->foreignId('district_id')->nullable()->constrained()->onUpdate('cascade')->nullOnDelete();
             $table->string('street_address');
             $table->text('description');
             $table->string('profile_picture');
