@@ -18,4 +18,16 @@ class Reservable extends Model {
         'max_time',
         'time_step',
     ];
+
+    public function fpEntity() {
+        return $this->hasOne(FpEntity::class);
+    }
+
+    public function reservation() {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function openingHours() {
+        return $this->hasMany(OpeningHours::class);
+    }
 }

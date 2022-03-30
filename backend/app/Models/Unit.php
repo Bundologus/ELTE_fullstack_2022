@@ -23,4 +23,24 @@ class Unit extends Model {
         'default_max_time',
         'default_time_step',
     ];
+
+    public function owner() {
+        return $this->belongsTo(User::class);
+    }
+
+    public function openingHours() {
+        return $this->hasMany(OpeningHours::class);
+    }
+
+    public function country() {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function city() {
+        return $this->belongsTo(City::class);
+    }
+
+    public function district() {
+        return $this->belongsTo(District::class)->withDefault();
+    }
 }

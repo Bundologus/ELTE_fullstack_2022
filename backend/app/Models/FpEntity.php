@@ -19,4 +19,20 @@ class FpEntity extends Model {
         'vertices',
         'parent_id',
     ];
+
+    public function reservable() {
+        return $this->belongsTo(Reservable::class);
+    }
+
+    public function floorPlan() {
+        return $this->belongsTo(FloorPlan::class);
+    }
+
+    public function parent() {
+        return $this->belongsTo(FpEntity::class, 'parent_id')->withDefault();
+    }
+
+    public function children() {
+        return $this->hasMany(FpEntity::class);
+    }
 }

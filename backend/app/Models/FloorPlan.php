@@ -15,4 +15,12 @@ class FloorPlan extends Model {
         'width',
         'height',
     ];
+
+    public function unit() {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function fpEntites() {
+        return $this->hasMany(FpEntity::class);
+    }
 }

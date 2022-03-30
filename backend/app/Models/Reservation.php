@@ -15,4 +15,12 @@ class Reservation extends Model {
         'end_time',
         'status',
     ];
+
+    public function reservable() {
+        return $this->belongsTo(Reservable::class);
+    }
+
+    public function user() {
+        return $this->belongsTo(User::class);
+    }
 }

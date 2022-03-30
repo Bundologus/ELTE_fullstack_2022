@@ -20,4 +20,12 @@ class OpeningHours extends Model {
         'time_from',
         'time_to',
     ];
+
+    public function unit() {
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function reservable() {
+        return $this->belongsTo(Reservable::class);
+    }
 }

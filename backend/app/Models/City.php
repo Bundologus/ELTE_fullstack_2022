@@ -13,4 +13,16 @@ class City extends Model {
         'name',
         'post_code',
     ];
+
+    public function country() {
+        return $this->belongsTo(Country::class);
+    }
+
+    public function districts() {
+        return $this->hasMany(District::class);
+    }
+
+    public function units() {
+        return $this->hasMany(Unit::class);
+    }
 }
