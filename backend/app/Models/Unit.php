@@ -28,6 +28,10 @@ class Unit extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function admins() {
+        return $this->belongsToMany(User::class);
+    }
+
     public function openingHours() {
         return $this->hasMany(OpeningHours::class);
     }

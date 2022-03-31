@@ -51,7 +51,11 @@ class User extends Authenticatable {
         return $this->hasMany(Reservation::class);
     }
 
-    public function units() {
-        return $this->hasMany(Units::class);
+    public function ownedUnits() {
+        return $this->hasMany(Unit::class);
+    }
+
+    public function adminedUnits() {
+        return $this->belongsToMany(Unit::class);
     }
 }
