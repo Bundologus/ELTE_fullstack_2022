@@ -13,6 +13,7 @@ class CreateUnitsTable extends Migration {
     public function up() {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('owner_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
             $table->string('name');
             $table->foreignId('country_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
             $table->foreignId('city_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
