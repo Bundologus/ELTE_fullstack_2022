@@ -27,8 +27,6 @@ class FpEntityFactory extends Factory {
         // TODO add frontend specific field generators
 
         return [
-            'reservable_id' => Reservable::all()->random()->id,
-            'floor_plan_id' => FloorPlan::all()->random()->id,
             'type' => array_rand($this->type_enum),
             'custom_fp_data' => "",
             'custom_user_data' => "",
