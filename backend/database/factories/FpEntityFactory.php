@@ -24,7 +24,7 @@ class FpEntityFactory extends Factory {
     );
 
     public function definition() {
-        /* TODO add frontend specific field generators */
+        // TODO add frontend specific field generators
 
         return [
             'reservable_id' => Reservable::all()->random()->id,
