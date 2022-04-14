@@ -12,11 +12,27 @@ class FpEntityFactory extends Factory {
      *
      * @return array
      */
+
+    private $type_enum = array(
+        "blocked",
+        "wall",
+        "door",
+        "window",
+        "table",
+        "chair",
+        "misc"
+    );
+
     public function definition() {
+        /* TODO add frontend specific field generators */
+
         return [
             'reservable_id' => Reservable::all()->random()->id,
             'floor_plan_id' => FloorPlan::all()->random()->id,
-            'type' => $this->faker->word(),
+            'type' => array_rand($this->type_enum),
+            'custom_fp_data' => "",
+            'custom_user_data' => "",
+            'vertices' => ""
         ];
     }
 }
