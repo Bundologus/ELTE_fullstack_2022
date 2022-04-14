@@ -15,10 +15,13 @@ class UnitFactory extends Factory {
      *
      * @return array
      */
+
+    private $street_types_enum = array('Ave', 'Blvd', 'Crt', 'Cres', 'Dr', 'Pl', 'Rd', 'Sq', 'Stn', 'St', 'Terr');
+
     public function definition() {
         $nameLength = rand(1, 3);
 
-        $address = rand(1, 150) . ' ' . $this->faker->word() . ' ' . (array('Ave', 'Blvd', 'Crt', 'Cres', 'Dr', 'Pl', 'Rd', 'Sq', 'Stn', 'St', 'Terr')[rand(0, 10)]) . '. ';
+        $address = rand(1, 150) . ' ' . $this->faker->word() . ' ' . array_rand($this->street_types_enum) . '. ';
 
         $time_step_hours = rand(0, 2);
         $time_step_minutes = ($time_step_hours == 0) ? 30 : rand(0, 1) * 30;
