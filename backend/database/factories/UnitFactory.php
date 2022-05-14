@@ -16,12 +16,12 @@ class UnitFactory extends Factory {
      * @return array
      */
 
-    private $street_types_enum = array('Ave', 'Blvd', 'Crt', 'Cres', 'Dr', 'Pl', 'Rd', 'Sq', 'Stn', 'St', 'Terr');
+    static $street_types_enum = array('Ave', 'Blvd', 'Crt', 'Cres', 'Dr', 'Pl', 'Rd', 'Sq', 'Stn', 'St', 'Terr');
 
     public function definition() {
         $nameLength = rand(1, 3);
 
-        $address = rand(1, 150) . ' ' . $this->faker->word() . ' ' . array_rand($this->street_types_enum) . '. ';
+        $address = rand(1, 150) . ' ' . ucwords($this->faker->words(rand(1, 2), true)) . ' ' . self::$street_types_enum[array_rand(self::$street_types_enum)] . '.';
 
         $time_step_hours = rand(0, 2);
         $time_step_minutes = ($time_step_hours == 0) ? 30 : rand(0, 1) * 30;
@@ -31,12 +31,17 @@ class UnitFactory extends Factory {
         $min_time->multiply(rand(0, 2));
         $max_time->multiply(rand(2, 4));
 
+        $country_id = Country::all()->random()->id;
+        $city = City::where('country_id', $country_id)->get()->random();
+        $city_id = $city->id;
+        $district_id = $city->districts->count() > 0 ? $city->districts->random()->id : null;
+
         return [
-            'name' => $this->faker->words($nameLength, true),
+            'name' => ucwords($this->faker->words($nameLength, true)),
             'owner_id' => User::all()->random()->id,
-            'country_id' => Country::all()->random()->id,
-            'city_id' => City::all()->random()->id,
-            'district_id' => (rand(0, 1) == 1) ? District::all()->random()->id : null,
+            'country_id' => $country_id,
+            'city_id' => $city_id,
+            'district_id' => $district_id,
             'street_address' => $address,
             'description' => $this->faker->paragraph(rand(4, 6)),
             'reservation_terms' => $this->faker->paragraph(rand(4, 6)),

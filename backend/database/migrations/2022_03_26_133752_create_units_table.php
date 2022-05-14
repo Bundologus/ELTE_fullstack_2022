@@ -20,7 +20,7 @@ class CreateUnitsTable extends Migration {
             $table->foreignId('district_id')->nullable()->constrained()->onUpdate('cascade')->nullOnDelete();
             $table->string('street_address');
             $table->text('description');
-            $table->string('profile_picture');
+            $table->string('profile_picture')->nullable();
             $table->text('reservation_terms');
             $table->time('default_min_time');
             $table->time('default_max_time');
