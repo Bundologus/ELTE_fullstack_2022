@@ -13,7 +13,7 @@ class FpEntityFactory extends Factory {
      * @return array
      */
 
-    private $type_enum = array(
+    static $type_enum = array(
         "blocked",
         "wall",
         "door",
@@ -27,7 +27,7 @@ class FpEntityFactory extends Factory {
         // TODO add frontend specific field generators
 
         return [
-            'type' => array_rand($this->type_enum),
+            'type' => array_rand(self::$type_enum),
             'custom_fp_data' => "",
             'custom_user_data' => "",
             'vertices' => ""

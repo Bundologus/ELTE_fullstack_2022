@@ -23,7 +23,7 @@ class ReservableFactory extends Factory {
 
         return [
             'name' => $this->faker->word(),
-            'min_sapces' => $min,
+            'min_spaces' => $min,
             'max_spaces' => $max,
             'min_time' => $min_time,
             'max_time' => $max_time,

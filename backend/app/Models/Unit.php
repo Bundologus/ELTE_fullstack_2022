@@ -47,4 +47,8 @@ class Unit extends Model {
     public function district() {
         return $this->belongsTo(District::class)->withDefault();
     }
+
+    public function floorPlan() {
+        return $this->hasOne(FloorPlan::class);
+    }
 }
