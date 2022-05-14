@@ -38,7 +38,7 @@ class UnitFactory extends Factory {
 
         return [
             'name' => ucwords($this->faker->words($nameLength, true)),
-            'owner_id' => User::all()->random()->id,
+            'owner_id' => User::where('admin', 0)->get()->random()->id,
             'country_id' => $country_id,
             'city_id' => $city_id,
             'district_id' => $district_id,
