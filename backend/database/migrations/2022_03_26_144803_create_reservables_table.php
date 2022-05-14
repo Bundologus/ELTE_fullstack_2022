@@ -16,9 +16,9 @@ class CreateReservablesTable extends Migration {
             $table->string('name');
             $table->integer('min_spaces');
             $table->integer('max_spaces');
-            $table->time('min_time');
-            $table->time('max_time');
-            $table->time('time_step');
+            $table->time('min_time')->nullable();
+            $table->time('max_time')->nullable();
+            $table->time('time_step')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
