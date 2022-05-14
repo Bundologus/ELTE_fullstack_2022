@@ -15,7 +15,7 @@ class CreateCitiesTable extends Migration {
             $table->id();
             $table->foreignId('country_id')->constrained();
             $table->string('name');
-            $table->string('post_code');
+            $table->string('post_code')->nullable();
             $table->timestamps();
         });
     }
