@@ -22,6 +22,7 @@ class User extends Authenticatable {
         'email',
         'phone',
         'password',
+        'admin',
     ];
 
     /**
@@ -43,15 +44,15 @@ class User extends Authenticatable {
         'email_verified_at' => 'datetime',
     ];
 
-    public function roles() {
-        return $this->belongsToMany(Role::class)->withTimestamps();
-    }
-
     public function reservations() {
         return $this->hasMany(Reservation::class);
     }
 
-    public function units() {
-        return $this->hasMany(Units::class);
+    public function ownedUnits() {
+        return $this->hasMany(Unit::class);
+    }
+
+    public function adminedUnits() {
+        return $this->belongsToMany(Unit::class);
     }
 }

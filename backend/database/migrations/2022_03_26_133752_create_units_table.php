@@ -13,13 +13,14 @@ class CreateUnitsTable extends Migration {
     public function up() {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('owner_id')->constrained('users')->onUpdate('cascade')->onDelete('restrict');
             $table->string('name');
             $table->foreignId('country_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
             $table->foreignId('city_id')->constrained()->onUpdate('cascade')->onDelete('restrict');
             $table->foreignId('district_id')->nullable()->constrained()->onUpdate('cascade')->nullOnDelete();
             $table->string('street_address');
             $table->text('description');
-            $table->string('profile_picture');
+            $table->string('profile_picture')->nullable();
             $table->text('reservation_terms');
             $table->time('default_min_time');
             $table->time('default_max_time');

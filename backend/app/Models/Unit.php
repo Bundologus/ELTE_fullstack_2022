@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\CarbonInterval;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -28,6 +29,10 @@ class Unit extends Model {
         return $this->belongsTo(User::class);
     }
 
+    public function admins() {
+        return $this->belongsToMany(User::class);
+    }
+
     public function openingHours() {
         return $this->hasMany(OpeningHours::class);
     }
@@ -42,5 +47,21 @@ class Unit extends Model {
 
     public function district() {
         return $this->belongsTo(District::class)->withDefault();
+    }
+
+    public function floorPlan() {
+        return $this->hasOne(FloorPlan::class);
+    }
+
+    public function getDefaultMinTimeAttribute($value) {
+        return CarbonInterval::createFromDateString($value);
+    }
+
+    public function getDefaultMaxTimeAttribute($value) {
+        return CarbonInterval::createFromDateString($value);
+    }
+
+    public function getDefaultTimeStepAttribute($value) {
+        return CarbonInterval::createFromDateString($value);
     }
 }
