@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Address;
 
 use App\Http\Controllers\Controller;
+use App\Models\Country;
 use Illuminate\Http\Request;
 
 class CountryController extends Controller {
@@ -12,7 +13,6 @@ class CountryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function list() {
-        //
     }
 
     /**

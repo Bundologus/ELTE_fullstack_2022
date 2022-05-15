@@ -1,5 +1,13 @@
 <?php
 
+use App\Http\Controllers\Address\CityController;
+use App\Http\Controllers\Address\CountryController;
+use App\Http\Controllers\Address\DistrictController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\Unit\FloorPlanController;
+use App\Http\Controllers\Unit\OpeningHoursController;
+use App\Http\Controllers\Unit\ReservableController;
+use App\Http\Controllers\Unit\UnitController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -98,7 +106,7 @@ Route::controller(ReservableController::class)->group(function () {
 Route::controller(ReservationController::class)->group(function () {
     Route::post('/reservation', 'store');
     Route::get('/reservation', 'find');
-    Route::get('/reservation/{id}', 'show');
+    Route::get('/reservation/{id}', 'show')->middleware(['auth:sanctum']);
     Route::put('/reservation/{id}', 'update');
     Route::post('/reservation/{id}/{action}', 'changeState');
 });

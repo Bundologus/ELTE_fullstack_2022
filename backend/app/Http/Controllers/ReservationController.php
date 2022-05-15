@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ReservationResource;
+use App\Models\Reservable;
+use App\Models\Reservation;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ReservationController extends Controller {
     /**
@@ -28,12 +33,17 @@ class ReservationController extends Controller {
     /**
      * Show the specified Reservation.
      *
-     * @param   \Illuminate\Http\Request
      * @param   int $id
      * @return  \Illuminate\Http\Response
      */
-    public function show(Request $request, $id) {
-        # code...
+    public function show($id) {
+        $current_user_id = Auth::id();
+        $reservation = Reservation::findOrFail($id);
+
+        if ($reservation->user_id == $current_user_id) {
+            return new ReservationResource($reservation);
+        }
+        return response('Reservation not found or user is forbidden to view.', 404);
     }
 
     /**
