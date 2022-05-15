@@ -25,6 +25,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { CustomPaginatorModule } from './extend/customPaginator';
+import { GridEditorComponent } from './grid-editor/grid-editor.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     RegisterFormComponent,
     ReservationListComponent,
     UnitListComponent,
+    GridEditorComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,6 +58,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
     MatSidenavModule,
     MatTabsModule,
     MatToolbarModule,
+    CustomPaginatorModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

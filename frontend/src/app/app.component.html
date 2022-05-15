@@ -17,6 +17,10 @@
           </button>
         </ng-container>
         <ng-container *ngIf="authService.isLoggedIn()">
+          <button mat-stroked-button [routerLink]="['/', 'profile']">
+            <mat-icon>account_circle</mat-icon>
+            {{ authService.getCurrentUser()!.firstName }}
+          </button>
           <button mat-raised-button (click)="logout()">Kijelentkezés</button>
         </ng-container>
       </div>
@@ -33,16 +37,6 @@
           Éttermek listája
         </a>
         <a
-          *ngIf="authService.isLoggedIn()"
-          color="link"
-          mat-stroked-button
-          [routerLink]="['/', 'reservations']"
-          routerLinkActive="active"
-        >
-          <mat-icon>menu_book</mat-icon>
-          Foglalásaim
-        </a>
-        <a
           *ngIf="authService.isOwner()"
           color="link"
           mat-stroked-button
@@ -51,6 +45,16 @@
         >
           <mat-icon>storefront</mat-icon>
           Egységek kezelése
+        </a>
+        <a
+          *ngIf="authService.isLoggedIn()"
+          color="link"
+          mat-stroked-button
+          [routerLink]="['/', 'reservations']"
+          routerLinkActive="active"
+        >
+          <mat-icon>menu_book</mat-icon>
+          Foglalásaim
         </a>
         <a
           *ngIf="authService.isLoggedIn()"

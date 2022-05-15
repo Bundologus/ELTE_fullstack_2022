@@ -1,1 +1,15 @@
-<p>plan-editor works!</p>
+<ng-container *ngIf="unit; then unitFound; else unitMissing"></ng-container>
+<ng-template #unitFound>
+  <div class="editor-tools">
+    <h1>{{ unit!.name }}</h1>
+    <ng-container *ngIf="authService.isDebugMode()">
+      <p>
+        Belső azonosító: <b>{{ unit!.id }}</b>
+      </p>
+    </ng-container>
+  </div>
+  <div class="editor-area"><app-grid-editor></app-grid-editor></div>
+</ng-template>
+<ng-template #unitMissing>
+  <p>Nem létezik az egység!</p>
+</ng-template>

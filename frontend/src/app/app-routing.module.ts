@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LandingComponent } from './landing/landing.component';
 import { LoginFormComponent } from './login-form/login-form.component';
+import { PlanEditorComponent } from './plan-editor/plan-editor.component';
 import { ProfileFormComponent } from './profile-form/profile-form.component';
 import { RegisterFormComponent } from './register-form/register-form.component';
 import { ReservationListComponent } from './reservation-list/reservation-list.component';
@@ -29,12 +30,20 @@ const routes: Routes = [
     component: UnitListComponent,
   },
   {
+    path: 'units',
+    component: UnitListComponent,
+  },
+  {
     path: 'reservations',
     component: ReservationListComponent,
   },
   {
-    path: 'units',
-    component: UnitListComponent,
+    path: 'reserve/:unitId',
+    component: PlanEditorComponent,
+  },
+  {
+    path: 'edit/:unitId',
+    component: PlanEditorComponent,
   },
   {
     path: '**',
