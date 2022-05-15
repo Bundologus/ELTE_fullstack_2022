@@ -9,10 +9,10 @@ class FpEntityController extends Controller {
     /**
      * Display a listing of the resource.
      *
-     * @param  int  $floor_plan_id
+     * @param  int  $unit_id
      * @return \Illuminate\Http\Response
      */
-    public function list($floor_plan_id) {
+    public function list($unit_id) {
         //
     }
 
@@ -20,21 +20,21 @@ class FpEntityController extends Controller {
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $floor_plan_id
+     * @param  int  $unit_id
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $floor_plan_id) {
+    public function store(Request $request, $unit_id) {
         //
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $floor_plan_id
+     * @param  int  $unit_id
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($floor_plan_id, $id) {
+    public function show($unit_id, $id) {
         //
     }
 
@@ -42,22 +42,22 @@ class FpEntityController extends Controller {
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $floor_plan_id
+     * @param  int  $unit_id
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $floor_plan_id, $id) {
+    public function update(Request $request, $unit_id, $id) {
         //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $floor_plan_id
+     * @param  int  $unit_id
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($floor_plan_id, $id) {
+    public function destroy($unit_id, $id) {
         //
     }
 }

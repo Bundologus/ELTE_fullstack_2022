@@ -54,7 +54,7 @@ class ReservationController extends Controller {
      * @param   string  $new_state
      * @return  \Illuminate\Http\Response
      */
-    public function setState($id, $new_state) {
+    public function changeState($id, $action) {
         # code...
     }
 }
