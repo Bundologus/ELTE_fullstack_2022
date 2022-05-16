@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Address;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\DistrictCollection;
+use App\Http\Resources\DistrictResource;
+use App\Models\District;
 use Illuminate\Http\Request;
 
 class DistrictController extends Controller {
@@ -11,8 +14,12 @@ class DistrictController extends Controller {
      *
      * @return \Illuminate\Http\Response
      */
-    public function list() {
-        //
+    public function list(Request $request) {
+        $query = $request->query('city_id');
+        if ($query == null) {
+            return new DistrictCollection(District::all());
+        }
+        return new DistrictCollection(District::where('city_id', $query)->get());
     }
 
     /**
@@ -31,7 +38,29 @@ class DistrictController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-        //
+        $data = $request->all();
+
+        if (District::where([
+            ['name', '=', $data['name']],
+            ['city_id', '=', $data['city_id']],
+        ])->count() > 0) {
+            return abort(409, 'District with the same name already exists.');
+        }
+
+        if (District::where([
+            ['post_code', '=', $data['post_code']],
+            ['city_id', '=', $data['city_id']],
+        ])->count() > 0) {
+            return abort(409, 'District with the same post code already exists.');
+        }
+
+        $new_district = District::create([
+            'name' => $data['name'],
+            'city_id' => $data['city_id'],
+            'post_code' => $data['post_code'],
+        ]);
+
+        return new DistrictResource($new_district);
     }
 
     /**
@@ -41,7 +70,13 @@ class DistrictController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function show($id) {
-        //
+        $district = District::find($id);
+
+        if ($district == null) {
+            return abort(404, 'Resource not found.');
+        }
+
+        return new DistrictResource($district);
     }
 
     /**
@@ -62,7 +97,19 @@ class DistrictController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        //
+        $data = $request->all();
+        $district = District::find($id);
+
+        if ($district == null) {
+            return abort(404, 'Resource not found');
+        }
+
+        foreach ($data as $key => $value) {
+            $district[$key] = $value;
+        }
+        $district->save();
+
+        return new DistrictResource($district);
     }
 
     /**
@@ -72,6 +119,14 @@ class DistrictController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
-        //
+        $district = District::find($id);
+
+        if ($district == null) {
+            return abort(404, 'Resource not found');
+        }
+
+        $district->delete();
+
+        return response('Success.', 200);
     }
 }
