@@ -32,11 +32,11 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
  */
 
 Route::controller(CountryController::class)->group(function () {
-    Route::post('/country', 'store');
+    Route::post('/country', 'store')->middleware('auth.admin');
     Route::get('/country', 'list');
     Route::get('/country/{id}', 'show');
-    Route::put('/country/{id}', 'update');
-    Route::delete('/country/{id}', 'destroy');
+    Route::put('/country/{id}', 'update')->middleware('auth.admin');
+    Route::delete('/country/{id}', 'destroy')->middleware('auth.admin');
 });
 
 Route::controller(CityController::class)->group(function () {
