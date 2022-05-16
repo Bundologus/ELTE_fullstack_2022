@@ -1,0 +1,14 @@
+<div
+  #grid_container
+  [style.background-color]="backgroundColor"
+  [style.border-top]="getWallTop()"
+  [style.border-left]="getWallLeft()"
+  [style.border-bottom]="getWallBottom()"
+  [style.border-right]="getWallRight()"
+  class="grid-element"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (mouseup)="onMouseClick()"
+>
+  <p>{{ grid.x }};{{ grid.y }}</p>
+</div>

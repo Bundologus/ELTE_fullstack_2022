@@ -1,8 +1,10 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { AppRoutingModule } from './app-routing.module';
+import { CustomPaginatorModule } from './extend/customPaginator';
+import { GridEditorComponent } from './grid-editor/grid-editor.component';
 import { LandingComponent } from './landing/landing.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { PlanEditorComponent } from './plan-editor/plan-editor.component';
@@ -17,20 +19,21 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatGridListModule } from '@angular/material/grid-list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatListModule } from '@angular/material/list';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { CustomPaginatorModule } from './extend/customPaginator';
-import { GridEditorComponent } from './grid-editor/grid-editor.component';
+import { GridElementComponent } from './grid-element/grid-element.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    GridEditorComponent,
     LandingComponent,
     LoginFormComponent,
     PlanEditorComponent,
@@ -38,11 +41,11 @@ import { GridEditorComponent } from './grid-editor/grid-editor.component';
     RegisterFormComponent,
     ReservationListComponent,
     UnitListComponent,
-    GridEditorComponent,
+    GridElementComponent,
   ],
   imports: [
-    BrowserModule,
     AppRoutingModule,
+    BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
@@ -51,6 +54,7 @@ import { GridEditorComponent } from './grid-editor/grid-editor.component';
     MatDialogModule,
     MatExpansionModule,
     MatFormFieldModule,
+    MatGridListModule,
     MatIconModule,
     MatInputModule,
     MatListModule,
