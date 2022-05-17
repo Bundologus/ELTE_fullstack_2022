@@ -2,11 +2,9 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Reservable;
-use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ReservationResource extends JsonResource {
+class FloorPlanResource extends JsonResource {
     /**
      * Indicates if the resource's collection keys should be preserved.
      *
@@ -21,18 +19,12 @@ class ReservationResource extends JsonResource {
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request) {
-        // return parent::toArray($request);
-        $user = User::find($this->user_id);
-        $reservable = Reservable::find($this->reservable_id);
-
         return [
             'id' => $this->id,
-            'user' => $user,
-            'reservable' => $reservable,
-            'created_at' => $this->created_at,
-            'start_time' => $this->start_time,
-            'end_time' => $this->end_time,
-            'status' => $this->status,
+            'unit_id' => $this->unit_id,
+            'width' => $this->width,
+            'height' => $this->height,
+            'entities' => FpEntityResource::collection($this->fpEntites),
         ];
     }
 }
