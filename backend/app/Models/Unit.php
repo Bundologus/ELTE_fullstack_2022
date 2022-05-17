@@ -46,7 +46,11 @@ class Unit extends Model {
     }
 
     public function district() {
-        return $this->belongsTo(District::class)->withDefault();
+        return $this->belongsTo(District::class)->withDefault([
+            "name" => "",
+            "post_code" => $this->city->post_code,
+            "full_name" => $this->city->name,
+        ]);
     }
 
     public function floorPlan() {
