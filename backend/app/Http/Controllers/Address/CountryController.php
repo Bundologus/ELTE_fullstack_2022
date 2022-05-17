@@ -14,7 +14,7 @@ class CountryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function list() {
-        return CountryResource::collection(Country::all());
+        return CountryResource::collection(Country::all()->keyBy->id);
     }
 
     /**

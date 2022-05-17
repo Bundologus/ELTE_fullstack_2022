@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Address;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\DistrictCollection;
 use App\Http\Resources\DistrictResource;
 use App\Models\District;
 use Illuminate\Http\Request;
@@ -17,9 +16,9 @@ class DistrictController extends Controller {
     public function list(Request $request) {
         $query = $request->query('city_id');
         if ($query == null) {
-            return new DistrictCollection(District::all());
+            return DistrictResource::collection(District::all()->keyBy->id);
         }
-        return new DistrictCollection(District::where('city_id', $query)->get());
+        return DistrictResource::collection(District::where('city_id', $query)->get()->keyBy->id);
     }
 
     /**
@@ -75,6 +74,12 @@ class DistrictController extends Controller {
         if ($district == null) {
             return abort(404, 'Resource not found.');
         }
+        return response([
+            'city_id' => $district->city_id,
+            'name' => $district->name,
+            'post_code' => $district->post_code,
+            'city' => $district->city->name . ", " . $district->name,
+        ], 200);
 
         return new DistrictResource($district);
     }

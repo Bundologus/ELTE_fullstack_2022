@@ -18,7 +18,7 @@ class CityController extends Controller {
         if ($query == null) {
             return CityResource::collection(City::all());
         }
-        return CityResource::collection(City::where('country_id', $query)->get());
+        return CityResource::collection(City::where('country_id', $query)->get()->keyBy->id);
     }
 
     /**
