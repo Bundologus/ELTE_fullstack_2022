@@ -29,6 +29,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { GridElementComponent } from './grid-element/grid-element.component';
+import { GridCenterComponent } from './grid-center/grid-center.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { GridElementComponent } from './grid-element/grid-element.component';
     ReservationListComponent,
     UnitListComponent,
     GridElementComponent,
+    GridCenterComponent,
   ],
   imports: [
     AppRoutingModule,

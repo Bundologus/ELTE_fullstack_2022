@@ -1,0 +1,10 @@
+<div
+  [style.background-color]="getBackgroundColor()"
+  [style.width]="getWidth()"
+  [style.height]="getHeight()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (mouseup)="onMouseClick()"
+>
+  {{ getContent() }}
+</div>

@@ -1,16 +1,21 @@
-p {
-  text-align: center;
-  vertical-align: middle;
-  margin: auto;
+div {
+  margin: 0;
+  padding: 0;
 }
 
-.grid-element {
+table {
+  display: block;
   background-color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 64px;
-  height: 64px;
+  border: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+tr,
+td {
+  border: 0;
+  border-spacing: 0;
+  border-collapse: 0;
   margin: 0;
   padding: 0;
 }

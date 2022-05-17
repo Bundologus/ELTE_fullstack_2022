@@ -14,7 +14,7 @@ export class GridEditorComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.initGrids(20, 12);
+    this.initGrids(6, 6);
   }
 
   initGrids(cols: number, rows: number) {
@@ -24,7 +24,7 @@ export class GridEditorComponent implements OnInit {
     for (let y = 0; y < rows; y++) {
       const columns: Grid[] = [];
       for (let x = 0; x < cols; x++) {
-        columns.push(new Grid(x, y));
+        columns.push(new Grid(x, y, x == cols - 1, y == rows - 1));
       }
       this.grids.push(columns);
     }

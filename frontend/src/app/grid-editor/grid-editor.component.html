@@ -1,10 +1,12 @@
 <div class="editor-area">
   <div class="editor-toolbar"></div>
-  <table width="{{ cols * 64 }}px">
+  <table width="{{ cols * 80 }}px">
     <ng-container *ngFor="let row of grids">
       <tr>
         <ng-container *ngFor="let grid of row">
-          <td><app-grid-element [grid]="grid"></app-grid-element></td>
+          <td>
+            <app-grid-element [grid]="grid" [grids]="grids"></app-grid-element>
+          </td>
         </ng-container>
       </tr>
     </ng-container>
