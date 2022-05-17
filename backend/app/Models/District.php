@@ -21,4 +21,11 @@ class District extends Model {
     public function units() {
         return $this->hasMany(Unit::class);
     }
+
+    public function getPostCodeAttribute($value) {
+        if (!$value) {
+            return $this->city->post_code;
+        }
+        return $value;
+    }
 }
