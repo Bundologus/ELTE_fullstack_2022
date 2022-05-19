@@ -7,6 +7,7 @@ use App\Http\Resources\ShortUnitResource;
 use App\Http\Resources\UnitResource;
 use App\Models\Unit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class UnitController extends Controller {
     /**
@@ -27,7 +28,7 @@ class UnitController extends Controller {
             if ($key == "condensed") {
                 $isCondensed = true;
             } else if ($key == "open_now") {
-                // TODO
+                // TODO filter by open now
             } else {
                 array_push($whereClause, [$key, "=", $value]);
             }
@@ -56,6 +57,14 @@ class UnitController extends Controller {
      */
     public function store(Request $request) {
         $data = $request->all();
+        $hashName = '';
+
+        if ($request->hasFile('profile_picture')) {
+            $file = $request->file('profile_picture');
+            $hashName = $file->hashName();
+            Storage::disk('public')->put('images/units/' . $hashName, file_get_contents($file));
+        }
+
 
         $new_unit = Unit::create([
             "owner_id" => $data["owner_id"],
@@ -64,12 +73,14 @@ class UnitController extends Controller {
             "city_id" => $data["city_id"],
             "district_id" => $data["district_id"],
             "description" => $data["description"],
-            // TODO "profile_picture" => ,
+            "profile_picture" => $hashName,
             "reservation_terms" => $data["reservation_terms"],
             "default_min_time" => $data["default_min_time"], // TODO agree on format
             "defaul_max_time" => $data["defaul_max_time"],
             "default_time_step" => $data["default_time_step"],
         ]);
+
+        return new UnitResource($new_unit);
     }
 
     /**
@@ -112,6 +123,7 @@ class UnitController extends Controller {
     public function update(Request $request, $id) {
         $data = $request->all();
         $unit = Unit::find($id);
+        $deleted_image_path = '';
 
         if ($unit == null) {
             return abort(404, 'Resource not found');
@@ -119,12 +131,23 @@ class UnitController extends Controller {
 
         foreach ($data as $key => $value) {
             if ($key == "profile_picture") {
-                // TODO profile picture update
+                $pubDisk = Storage::disk('public');
+                $file = $request->file('profile_picture');
+                $hashName = $file->hashName();
+                $pubDisk->put('images/units/' . $hashName, file_get_contents($file));
+
+                if ($unit->profile_picture != '' and $pubDisk->exists('images/units/' . $unit->profile_picture)) {
+                    $deleted_image_path = 'images/units/' . $unit->profile_picture;
+                }
             } else {
                 $unit[$key] = $value;
             }
         }
         $unit->save();
+
+        if ($deleted_image_path != '') {
+            Storage::disk('public')->delete($deleted_image_path);
+        }
 
         return new UnitResource($unit);
     }
