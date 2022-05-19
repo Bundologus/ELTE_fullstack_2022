@@ -8,9 +8,42 @@
           Belső azonosító: <b>{{ unit!.id }}</b>
         </p>
       </ng-container>
+      <form [formGroup]="planSizeForm" (ngSubmit)="changePlanSize()">
+        <div style="display: flex; width: 100%">
+          <mat-form-field appearance="fill" color="accent" style="width: 125px">
+            <mat-label>Szélesség</mat-label>
+            <input
+              formControlName="width"
+              name="width"
+              matInput
+              placeholder="8"
+            />
+            <mat-error *ngIf="width.invalid">
+              <span *ngIf="width.invalid">Szám 6 és 20 között!</span>
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field
+            appearance="fill"
+            color="accent"
+            style="width: 125px; padding-left: 10px"
+          >
+            <mat-label>Magasság</mat-label>
+            <input
+              formControlName="height"
+              name="height"
+              matInput
+              placeholder="8"
+            />
+            <mat-error *ngIf="height.invalid">Szám 6 és 20 között!</mat-error>
+          </mat-form-field>
+        </div>
+        <button mat-raised-button color="accent" style="margin-top: 10px">
+          Átméretezés
+        </button>
+      </form>
     </div>
     <div class="editor-area">
-      <app-grid-editor></app-grid-editor>
+      <app-grid-editor #grid_editor [plan]="plan!"></app-grid-editor>
     </div>
   </div>
 </ng-template>

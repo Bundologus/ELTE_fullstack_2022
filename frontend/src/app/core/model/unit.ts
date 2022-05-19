@@ -3,7 +3,7 @@ import { User } from './user';
 
 export interface Unit {
   owner: User;
-  id?: string;
+  id?: number;
   name?: string;
   countryId?: number;
   cityId?: number;

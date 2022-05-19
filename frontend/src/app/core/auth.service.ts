@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Unit } from '../core/unit';
-import { User, UserRole } from '../core/user';
+import { Unit } from './model/unit';
+import { User, UserRole } from './model/user';
 
 export interface UserAuthRequest {
   userName: string;

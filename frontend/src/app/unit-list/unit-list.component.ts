@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { PageEvent } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { AuthService } from '../core/auth.service';
-import { Unit } from '../core/unit';
+import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
-import { User } from '../core/user';
+import { User } from '../core/model/user';
 
 @Component({
   selector: 'app-unit-list',
