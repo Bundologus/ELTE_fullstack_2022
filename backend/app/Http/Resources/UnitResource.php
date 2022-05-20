@@ -22,7 +22,7 @@ class UnitResource extends JsonResource {
     public function toArray($request) {
         return [
             "id" => $this->id,
-            "owner" => new UserResource($this->user),
+            "owner" => new UserResource($this->owner),
             "name" => $this->name,
             "county" => new CountryResource($this->country),
             "city" => new CityResource($this->city),
