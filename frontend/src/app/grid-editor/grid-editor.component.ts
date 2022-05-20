@@ -1,4 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  ViewChildren,
+} from '@angular/core';
+import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { Grid } from '../core/grid';
 import { Floor_Plan } from '../core/model/floor_plan';
 
@@ -10,9 +17,12 @@ import { Floor_Plan } from '../core/model/floor_plan';
 export class GridEditorComponent implements OnInit {
   @Input() plan!: Floor_Plan;
 
+  @ViewChildren('paint_tool') paintToolSelector!: MatButtonToggleChange;
+
   cols!: number;
   rows!: number;
   grids!: Grid[][];
+  paintTool: string = 'walls';
 
   constructor() {}
 
@@ -31,5 +41,9 @@ export class GridEditorComponent implements OnInit {
       }
       this.grids.push(columns);
     }
+  }
+
+  onChangePaintTool(change: MatButtonToggleChange) {
+    this.paintTool = change.value;
   }
 }

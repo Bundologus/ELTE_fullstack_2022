@@ -20,6 +20,7 @@ import { GridEditorComponent } from '../grid-editor/grid-editor.component';
 })
 export class PlanEditorComponent implements OnInit {
   @ViewChild('grid_editor') gridEditor!: GridEditorComponent;
+
   unit?: Unit;
   plan?: Floor_Plan;
 

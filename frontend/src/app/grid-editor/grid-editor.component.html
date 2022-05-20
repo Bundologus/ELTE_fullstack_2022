@@ -1,11 +1,30 @@
 <div class="editor-area">
-  <div class="editor-toolbar"></div>
+  <div class="editor-toolbar">
+    <mat-button-toggle-group
+      #paint_tool="matButtonToggleGroup"
+      (change)="onChangePaintTool($event)"
+    >
+      <mat-button-toggle value="walls" checked=""
+        ><mat-icon>border_style</mat-icon> Falak</mat-button-toggle
+      >
+      <mat-button-toggle value="tables"
+        ><mat-icon>table_restaurant</mat-icon> Asztalok
+      </mat-button-toggle>
+      <mat-button-toggle value="chairs"
+        ><mat-icon>chair</mat-icon> Székek</mat-button-toggle
+      >
+    </mat-button-toggle-group>
+  </div>
   <table width="{{ cols * 80 }}px">
     <ng-container *ngFor="let row of grids">
       <tr>
         <ng-container *ngFor="let grid of row">
           <td>
-            <app-grid-element [grid]="grid" [grids]="grids"></app-grid-element>
+            <app-grid-element
+              [grid]="grid"
+              [grids]="grids"
+              [tool]="paintTool"
+            ></app-grid-element>
           </td>
         </ng-container>
       </tr>

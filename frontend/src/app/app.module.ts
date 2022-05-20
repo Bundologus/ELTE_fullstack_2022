@@ -17,6 +17,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -53,6 +54,7 @@ import { GridCenterComponent } from './grid-center/grid-center.component';
     ReactiveFormsModule,
     HttpClientModule,
     MatButtonModule,
+    MatButtonToggleModule,
     MatDialogModule,
     MatExpansionModule,
     MatFormFieldModule,

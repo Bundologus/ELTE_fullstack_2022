@@ -9,6 +9,7 @@ import { Grid } from '../core/grid';
 export class GridElementComponent implements OnInit {
   @Input() grid!: Grid;
   @Input() grids!: Grid[][];
+  @Input() tool!: string;
 
   dirs: [number, number][] = [
     [0, 0],
@@ -35,7 +36,7 @@ export class GridElementComponent implements OnInit {
   }
 
   onElementClick(dir: number) {
-    this.wallNeighboringSides(dir);
+    if (this.tool === 'walls') this.wallNeighboringSides(dir);
   }
 
   wallNeighboringSides(dir: number) {
