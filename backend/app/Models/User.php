@@ -49,7 +49,7 @@ class User extends Authenticatable {
     }
 
     public function ownedUnits() {
-        return $this->hasMany(Unit::class);
+        return $this->hasMany(Unit::class, 'owner_id');
     }
 
     public function adminedUnits() {

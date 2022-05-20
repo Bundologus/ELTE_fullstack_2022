@@ -13,6 +13,7 @@ class Reservable extends Model {
 
     protected $fillable = [
         'name',
+        'fp_entity_id',
         'min_spaces',
         'max_spaces',
         'min_time',
@@ -21,7 +22,7 @@ class Reservable extends Model {
     ];
 
     public function fpEntity() {
-        return $this->hasOne(FpEntity::class);
+        return $this->belongsTo(FpEntity::class);
     }
 
     public function reservation() {

@@ -12,6 +12,7 @@ class Unit extends Model {
     use SoftDeletes;
 
     protected $fillable = [
+        'owner_id',
         'name',
         'country_id',
         'city_id',
@@ -26,7 +27,7 @@ class Unit extends Model {
     ];
 
     public function owner() {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'owner_id');
     }
 
     public function admins() {
@@ -46,7 +47,11 @@ class Unit extends Model {
     }
 
     public function district() {
-        return $this->belongsTo(District::class)->withDefault();
+        return $this->belongsTo(District::class)->withDefault([
+            "name" => "",
+            "post_code" => $this->city->post_code,
+            "full_name" => $this->city->name,
+        ]);
     }
 
     public function floorPlan() {

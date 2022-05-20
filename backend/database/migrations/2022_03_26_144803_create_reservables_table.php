@@ -14,6 +14,7 @@ class CreateReservablesTable extends Migration {
         Schema::create('reservables', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->foreignId('fp_entity_id')->nullable()->constrained()->onDelete('cascade')->onUpdate('cascade');
             $table->integer('min_spaces');
             $table->integer('max_spaces');
             $table->time('min_time')->nullable();

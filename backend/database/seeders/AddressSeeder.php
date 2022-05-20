@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\City;
 use App\Models\Country;
+use App\Models\District;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class AddressSeeder extends Seeder {
     /**
@@ -14,21 +14,21 @@ class AddressSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        DB::table('countries')->insert([
+        $hungary = Country::create([
             'name' => 'Hungary'
         ]);
-        $hungary = Country::where('name', 'Hungary')->first();
-        DB::table('cities')->insert([
+        # $hungary = Country::where('name', 'Hungary')->first();
+        $budapest = City::create([
             'country_id' => $hungary->id,
             'name' => 'Budapest',
         ]);
-        $budapest = City::where('name', 'Budapest')->first();
+        # $budapest = City::where('name', 'Budapest')->first();
 
         $districts = array(
             'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII', 'XIII', 'XIV', 'XV', 'XVI', 'XVII', 'XVIII', 'XIX', 'XX', 'XXI', 'XXII', 'XXIII'
         );
         foreach ($districts as $key => $district) {
-            DB::table('districts')->insert([
+            District::create([
                 'city_id' => $budapest->id,
                 'name' => $district,
                 'post_code' => ($key + 1 < 10 ? '10' : '1') . ($key + 1) . '1',

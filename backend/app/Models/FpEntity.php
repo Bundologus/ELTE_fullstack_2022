@@ -11,7 +11,6 @@ class FpEntity extends Model {
     use SoftDeletes;
 
     protected $fillable = [
-        'reservable_id',
         'floor_plan_id',
         'type',
         'custom_fp_data',
@@ -21,7 +20,7 @@ class FpEntity extends Model {
     ];
 
     public function reservable() {
-        return $this->belongsTo(Reservable::class);
+        return $this->hasOne(Reservable::class);
     }
 
     public function floorPlan() {
@@ -29,7 +28,7 @@ class FpEntity extends Model {
     }
 
     public function parent() {
-        return $this->belongsTo(FpEntity::class, 'parent_id')->withDefault();
+        return $this->belongsTo(FpEntity::class, 'parent_id');
     }
 
     public function children() {
