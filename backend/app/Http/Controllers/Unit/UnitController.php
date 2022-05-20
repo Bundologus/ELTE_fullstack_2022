@@ -97,7 +97,7 @@ class UnitController extends Controller {
             return abort(404, 'Resource not found.');
         }
 
-        if ($request->query["full"]) {
+        if ($request->query("full")) {
             return new UnitResource($unit);
         }
         return new ShortUnitResource($unit);
