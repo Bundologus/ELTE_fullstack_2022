@@ -16,20 +16,27 @@ class UnitSeeder extends Seeder {
      * @return void
      */
     public function run() {
-        $units = Unit::factory(10)->has(FloorPlan::factory(1))->has(OpeningHours::factory())->create();
+        $units = Unit::factory(10)->has(FloorPlan::factory())->has(OpeningHours::factory())->create();
 
         foreach ($units as $unit) {
             $floorPlan = $unit->floorPlan;
             $entity_count = rand(5, 10);
-            FpEntity::factory($entity_count)->for($floorPlan)->create();
+            $rootEntities = FpEntity::factory($entity_count)->for($floorPlan)->create();
 
             $entity_count = rand(3, 5);
             for ($i = 0; $i < $entity_count; $i++) {
-                FpEntity::factory()->for($floorPlan)->forReservable()->create();
+                $parent = $rootEntities->random();
+                FpEntity::factory()->for($floorPlan)->state(['parent_id' => $parent->id])->create();
             }
 
-            $reservable_with_time = Reservable::factory()->withTime()->create();
-            FpEntity::factory()->for($floorPlan)->for($reservable_with_time)->create();
+            $fpEntity = $rootEntities->random();
+            Reservable::factory()->for($fpEntity)->create();
+
+            $fpEntity = FpEntity::where([
+                ['parent_id', '=', null],
+                ['floor_plan_id', '=', $floorPlan->id]
+            ])->get()->first();
+            Reservable::factory()->withTime()->for($fpEntity)->create();
 
             $special_hours_count = rand(3, 7);
             OpeningHours::factory($special_hours_count)->specificDate()->for($unit)->create();

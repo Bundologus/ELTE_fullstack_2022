@@ -13,7 +13,6 @@ class CreateFpEntitiesTable extends Migration {
     public function up() {
         Schema::create('fp_entities', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('reservable_id')->nullable()->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('floor_plan_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->string('type');
             $table->text('custom_fp_data');
@@ -24,7 +23,7 @@ class CreateFpEntitiesTable extends Migration {
         });
 
         Schema::table('fp_entities', function (Blueprint $table) {
-            $table->foreignId('parent_id')->nullable()->constrained('fp_entities')->onUpdate('')->onDelete('');
+            $table->foreignId('parent_id')->nullable()->constrained('fp_entities')->onUpdate('cascade')->onDelete('cascade');
         });
     }
 
