@@ -139,6 +139,8 @@ class UnitController extends Controller {
                 if ($unit->profile_picture != '' and $pubDisk->exists('images/units/' . $unit->profile_picture)) {
                     $deleted_image_path = 'images/units/' . $unit->profile_picture;
                 }
+
+                $unit[$key] = $hashName;
             } else {
                 $unit[$key] = $value;
             }
