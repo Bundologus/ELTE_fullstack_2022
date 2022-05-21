@@ -1,10 +1,11 @@
 import { Floor_Plan } from './floor_plan';
+import { Reservable } from './reservable';
 
 export class Entity {
   id?: number;
-  parent?: Entity;
-  floorPlan!: Floor_Plan;
-  reservable?: number; // TBD: create 'Reservable' class
+  parent?: Entity; // link to DTO
+  floorPlan!: Floor_Plan; // link to DTO
+  reservable?: Reservable; // link to DTO
   type!: Entity_Type;
   customPlanData?: string;
   customUserData?: string;
@@ -12,7 +13,7 @@ export class Entity {
 }
 
 export enum Entity_Type {
-  Blocked = 0,
+  None = 0,
   Wall = 1,
   Door = 8,
   Window = 16,

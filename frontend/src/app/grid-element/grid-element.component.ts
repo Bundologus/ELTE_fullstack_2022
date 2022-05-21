@@ -1,5 +1,7 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Grid } from '../core/grid';
+import { Entity_Type } from '../core/model/entity';
+import { EditorOptions } from '../grid-editor/grid-editor.component';
 
 @Component({
   selector: 'app-grid-element',
@@ -9,7 +11,7 @@ import { Grid } from '../core/grid';
 export class GridElementComponent implements OnInit {
   @Input() grid!: Grid;
   @Input() grids!: Grid[][];
-  @Input() tool!: string;
+  @Input() editorOptions!: EditorOptions;
 
   dirs: [number, number][] = [
     [0, 0],
@@ -28,22 +30,118 @@ export class GridElementComponent implements OnInit {
   ngOnInit(): void {}
 
   onElementHover(dir: number) {
+    if (!this.evaluateSideEligibility(dir)) return;
     this.markNeighboringSides(dir, true);
   }
 
   onElementCancelHover(dir: number) {
+    if (!this.evaluateSideEligibility(dir)) return;
     this.markNeighboringSides(dir, false);
   }
 
   onElementClick(dir: number) {
-    if (this.tool === 'walls') this.wallNeighboringSides(dir);
+    if (!this.evaluateSideEligibility(dir)) return;
+    if (this.editorOptions.paintTool === 'walls')
+      this.setNeighboringSides(dir, Entity_Type.Wall);
+    else if (this.editorOptions.paintTool === 'doors')
+      this.setNeighboringSides(dir, Entity_Type.Door);
+    else if (this.editorOptions.paintTool === 'windows')
+      this.setNeighboringSides(dir, Entity_Type.Window);
+    else if (this.editorOptions.paintTool === 'tables')
+      if (
+        this.setNeighboringSides(dir, Entity_Type.Table) === Entity_Type.Table
+      )
+        this.placeTable();
+      else this.removeTable();
+    else if (this.editorOptions.paintTool === 'chairs')
+      if (
+        this.setNeighboringSides(dir, Entity_Type.Chair) === Entity_Type.Chair
+      )
+        this.placeChair();
+      else this.removeChair();
   }
 
-  wallNeighboringSides(dir: number) {
-    this.grid.isWall[dir] = !this.grid.isWall[dir];
-    for (const [x, y, d] of this.getNeighboringSides(dir)) {
-      this.grids[y][x].isWall[d] = !this.grids[y][x].isWall[d];
+  placeTable() {
+    const neighboringTables: Grid[] = this.getNeighboringEntities(
+      Entity_Type.Table
+    );
+    // Nincs asztal mellette
+    if (neighboringTables.length === 0) {
     }
+    // Egy asztal, vagy ugyanannak a nagy asztalnak több eleme van mellette
+    else if (
+      neighboringTables.filter(
+        (t) => t.runtimeId !== neighboringTables[0].runtimeId
+      ).length === 0
+    ) {
+    }
+    // Több különböző asztal van mellette
+    else {
+      this.setNeighboringSides(0, Entity_Type.None);
+    }
+  }
+
+  removeTable() {}
+
+  placeChair() {
+    const neighboringTables: Grid[] = this.getNeighboringEntities(
+      Entity_Type.Table
+    );
+    // Nincs asztal mellette
+    if (neighboringTables.length === 0) {
+      this.setNeighboringSides(0, Entity_Type.None);
+    }
+    // Egy asztal, vagy ugyanannak a nagy asztalnak több eleme van mellette
+    else if (
+      neighboringTables.filter(
+        (t) => t.runtimeId !== neighboringTables[0].runtimeId
+      ).length === 0
+    ) {
+    }
+    // Több különböző asztal van mellette
+    else {
+      this.setNeighboringSides(0, Entity_Type.None);
+    }
+  }
+
+  removeChair() {}
+
+  getNeighboringEntities(type: Entity_Type): Grid[] {
+    const neighboringEntityGrids: Grid[] = [];
+    for (var d = 1; d <= 7; d += 2) {
+      const x = this.grid.x + this.dirs[d][0];
+      const y = this.grid.y + this.dirs[d][1];
+      if (x < 0 || y < 0 || y >= this.grids.length || x >= this.grids[y].length)
+        continue;
+      if (this.grids[y][x].type[0] === type)
+        neighboringEntityGrids.push(this.grids[y][x]);
+    }
+    return neighboringEntityGrids;
+  }
+
+  evaluateSideEligibility(dir: number): boolean {
+    if (
+      dir % 2 === 0 &&
+      ['doors', 'windows'].includes(this.editorOptions.paintTool)
+    ) {
+      return false;
+    }
+    if (
+      dir !== 0 &&
+      ['tables', 'chairs', 'text'].includes(this.editorOptions.paintTool)
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  setNeighboringSides(dir: number, type: Entity_Type): Entity_Type {
+    if (this.grid.type[dir] === type) this.grid.type[dir] = Entity_Type.None;
+    else this.grid.type[dir] = type;
+    for (const [x, y, d] of this.getNeighboringSides(dir)) {
+      this.grids[y][x].type[d] = this.grid.type[dir];
+    }
+    return this.grid.type[dir];
   }
 
   markNeighboringSides(dir: number, state: boolean) {

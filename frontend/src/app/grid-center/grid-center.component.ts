@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Grid } from '../core/grid';
+import { Entity_Type } from '../core/model/entity';
 
 export enum ElementType {
   Center = 0,
@@ -44,7 +45,13 @@ export class GridCenterComponent implements OnInit {
 
   getBackgroundColor() {
     if (this.grid.isMarked[this.elementDir]) return '#0f0';
-    if (this.grid.isWall[this.elementDir]) return '#000';
+    if (this.grid.type[this.elementDir] === Entity_Type.Wall) return '#000';
+    else if (this.grid.type[this.elementDir] === Entity_Type.Door)
+      return '#0a0';
+    else if (this.grid.type[this.elementDir] === Entity_Type.Window)
+      return '#44f';
+    else if (this.grid.type[this.elementDir] === Entity_Type.Table)
+      return '#d88';
     return this.backgroundColor;
   }
 
@@ -86,8 +93,22 @@ export class GridCenterComponent implements OnInit {
         : '8px';
   }
 
+  getIcon() {
+    if (this.elementType === ElementType.Center) {
+      if (this.grid.type[0] === Entity_Type.Table) return 'table_restaurant';
+      else if (this.grid.type[0] === Entity_Type.Chair) return 'chair';
+    }
+    return '';
+  }
+
+  getIconColor() {
+    if (this.grid.type[0] === Entity_Type.Table) return '#444';
+    else if (this.grid.type[0] === Entity_Type.Chair) return '#888';
+    return '#000';
+  }
+
   getContent() {
-    if (this.elementType == ElementType.Center) {
+    if (this.elementType === ElementType.Center) {
       return this.grid.x + ';' + this.grid.y;
     }
     return '';

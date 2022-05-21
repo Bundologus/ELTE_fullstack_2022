@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
+import { Entity } from './model/entity';
 import { Floor_Plan } from './model/floor_plan';
 import { Unit } from './model/unit';
 
@@ -29,6 +30,8 @@ export class UnitService {
     { id: 2, unit: this.units[1], width: 13, height: 9 },
   ];
 
+  entities: Entity[] = [];
+
   constructor() {}
 
   getUnit(unitId: number) {
@@ -41,5 +44,21 @@ export class UnitService {
 
   getUnitPlan(unit: Unit) {
     return this.plans.find((p) => p.unit === unit);
+  }
+
+  getEntities(plan: Floor_Plan) {
+    return this.entities.filter((e) => e.floorPlan === plan);
+  }
+
+  setEntities(plan: Floor_Plan, entities: Entity[]) {
+    const entitiesToRemove: Entity[] = this.getEntities(plan);
+    for (var entity of entitiesToRemove) {
+      this.deleteEntity(entity);
+    }
+    this.entities = this.entities.concat(entities);
+  }
+
+  deleteEntity(entity: Entity) {
+    this.entities.splice(this.entities.findIndex((e) => e === entity));
   }
 }
