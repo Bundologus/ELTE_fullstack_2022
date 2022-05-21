@@ -6,5 +6,11 @@
   (mouseleave)="onMouseLeave()"
   (mouseup)="onMouseClick()"
 >
-  {{ getContent() }}
+  <ng-container *ngIf="getIcon() !== ''"
+    ><mat-icon
+      style="font-size: 64px; margin-left: -40px; margin-top: -40px"
+      [style.color]="getIconColor()"
+      >{{ getIcon() }}</mat-icon
+    ></ng-container
+  >
 </div>

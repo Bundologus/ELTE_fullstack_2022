@@ -1,17 +1,34 @@
 <div class="editor-area">
   <div class="editor-toolbar">
+    <button
+      mat-raised-button
+      color="accent"
+      style="margin-right: 10px"
+      (click)="savePlan()"
+    >
+      Mentés
+    </button>
     <mat-button-toggle-group
       #paint_tool="matButtonToggleGroup"
       (change)="onChangePaintTool($event)"
     >
       <mat-button-toggle value="walls" checked=""
-        ><mat-icon>border_style</mat-icon> Falak</mat-button-toggle
+        ><mat-icon>border_style</mat-icon> Fal</mat-button-toggle
+      >
+      <mat-button-toggle value="doors"
+        ><mat-icon>meeting_room</mat-icon> Ajtó</mat-button-toggle
+      >
+      <mat-button-toggle value="windows"
+        ><mat-icon>window</mat-icon> Ablak</mat-button-toggle
       >
       <mat-button-toggle value="tables"
-        ><mat-icon>table_restaurant</mat-icon> Asztalok
+        ><mat-icon>table_restaurant</mat-icon> Asztal
       </mat-button-toggle>
       <mat-button-toggle value="chairs"
-        ><mat-icon>chair</mat-icon> Székek</mat-button-toggle
+        ><mat-icon>chair</mat-icon> Szék</mat-button-toggle
+      >
+      <mat-button-toggle value="text"
+        ><mat-icon>notes</mat-icon> Felirat</mat-button-toggle
       >
     </mat-button-toggle-group>
   </div>
@@ -23,7 +40,7 @@
             <app-grid-element
               [grid]="grid"
               [grids]="grids"
-              [tool]="paintTool"
+              [editorOptions]="editorOptions"
             ></app-grid-element>
           </td>
         </ng-container>
