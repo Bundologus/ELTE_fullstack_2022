@@ -15,7 +15,7 @@ class AddressSeeder extends Seeder {
      */
     public function run() {
         $hungary = Country::create([
-            'name' => 'Hungary'
+            'name' => 'Hungary',
         ]);
         # $hungary = Country::where('name', 'Hungary')->first();
         $budapest = City::create([

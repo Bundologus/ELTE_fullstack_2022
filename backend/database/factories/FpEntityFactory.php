@@ -2,8 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\FloorPlan;
-use App\Models\Reservable;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class FpEntityFactory extends Factory {
@@ -20,7 +18,7 @@ class FpEntityFactory extends Factory {
         "window",
         "table",
         "chair",
-        "misc"
+        "misc",
     );
 
     public function definition() {
@@ -30,7 +28,7 @@ class FpEntityFactory extends Factory {
             'type' => array_rand(self::$type_enum),
             'custom_fp_data' => "",
             'custom_user_data' => "",
-            'vertices' => ""
+            'vertices' => "",
         ];
     }
 }

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FpEntityResource;
 use App\Models\FloorPlan;
 use App\Models\FpEntity;
-use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class FpEntityController extends Controller {
