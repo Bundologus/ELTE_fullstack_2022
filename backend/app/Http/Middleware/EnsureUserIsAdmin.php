@@ -15,9 +15,9 @@ class EnsureUserIsAdmin {
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next) {
-        if (!Auth::user()->isAdmin) {
-            return abort(403, 'Insufficient access level.');
+        if (Auth::check() and Auth::user()->admin) {
+            return $next($request);
         }
-        return $next($request);
+        return abort(403, 'Insufficient access level.');
     }
 }
