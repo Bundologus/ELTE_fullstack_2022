@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "frontend": {
+    "vendeglato-manager": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -100,7 +100,7 @@
             "scripts": []
           }
         },
-        "test:ci": {
+        "test-ci": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
@@ -119,5 +119,5 @@
       }
     }
   },
-  "defaultProject": "frontend"
+  "defaultProject": "vendeglato-manager"
 }
