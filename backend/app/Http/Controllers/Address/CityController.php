@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CityResource;
 use App\Models\City;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CityController extends Controller {
     /**
@@ -22,21 +23,16 @@ class CityController extends Controller {
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create() {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+        if (Gate::denies('write-city')) {
+            return abort(403);
+        }
+
         $data = $request->all();
 
         if (City::where([
@@ -80,16 +76,6 @@ class CityController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -97,6 +83,10 @@ class CityController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
+        if (Gate::denies('write-city')) {
+            return abort(403);
+        }
+
         $data = $request->all();
         $city = City::find($id);
 
@@ -119,6 +109,10 @@ class CityController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
+        if (Gate::denies('write-city')) {
+            return abort(403);
+        }
+
         $city = City::find($id);
 
         if ($city == null) {

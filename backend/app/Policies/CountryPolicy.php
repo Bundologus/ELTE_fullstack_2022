@@ -10,16 +10,6 @@ class CountryPolicy {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any models.
-     *
-     * @param  \App\Models\User  $user
-     * @return \Illuminate\Auth\Access\Response|bool
-     */
-    public function read(User $user) {
-        return Response::allow();
-    }
-
-    /**
      * Determine whether the user can create/modify/delete models.
      *
      * @param  \App\Models\User  $user
