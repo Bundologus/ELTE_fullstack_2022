@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\CountryResource;
 use App\Models\Country;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CountryController extends Controller {
     /**
@@ -18,21 +19,16 @@ class CountryController extends Controller {
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create() {
-        //
-    }
-
-    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
+        if (Gate::denies('write-country')) {
+            return abort(403);
+        }
+
         $data = $request->all();
 
         if (Country::where('name', $data['name'])->count() > 0) {
@@ -63,16 +59,6 @@ class CountryController extends Controller {
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id) {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -80,6 +66,10 @@ class CountryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
+        if (Gate::denies('write-country')) {
+            return abort(403);
+        }
+
         $data = $request->all();
         $country = Country::find($id);
 
@@ -100,6 +90,10 @@ class CountryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function destroy($id) {
+        if (Gate::denies('write-country')) {
+            return abort(403);
+        }
+
         $country = Country::find($id);
 
         if ($country == null) {

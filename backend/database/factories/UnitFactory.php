@@ -2,12 +2,11 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\User;
-use App\Models\Country;
 use App\Models\City;
-use App\Models\District;
+use App\Models\Country;
+use App\Models\User;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class UnitFactory extends Factory {
     /**

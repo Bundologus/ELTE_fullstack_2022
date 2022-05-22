@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\CarbonInterval;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 class ReservableFactory extends Factory {
     /**
@@ -40,7 +40,7 @@ class ReservableFactory extends Factory {
             return [
                 'min_time' => $min_time,
                 'max_time' => $max_time,
-                'time_step' => $time_step
+                'time_step' => $time_step,
             ];
         });
     }
