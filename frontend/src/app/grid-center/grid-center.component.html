@@ -1,0 +1,16 @@
+<div
+  [style.background-color]="getBackgroundColor()"
+  [style.width]="getWidth()"
+  [style.height]="getHeight()"
+  (mouseenter)="onMouseEnter()"
+  (mouseleave)="onMouseLeave()"
+  (mouseup)="onMouseClick()"
+>
+  <ng-container *ngIf="getIcon() !== ''"
+    ><mat-icon
+      style="font-size: 64px; margin-left: -40px; margin-top: -40px"
+      [style.color]="getIconColor()"
+      >{{ getIcon() }}</mat-icon
+    ></ng-container
+  >
+</div>

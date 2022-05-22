@@ -1,0 +1,59 @@
+<div class="main-container">
+  <mat-paginator
+    [length]="units?.length"
+    [pageSizeOptions]="[firstPageSize, 10, 25]"
+    (page)="paginateUnits($event)"
+  >
+  </mat-paginator>
+  <div style="height: 20px"></div>
+  <mat-accordion class="headers-align" *ngIf="units">
+    <mat-expansion-panel *ngFor="let unit of paginatedUnits" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>restaurant</mat-icon>
+          <span class="restaurant-title">{{ unit.name }}</span>
+        </mat-panel-title>
+        <mat-panel-description>{{ unit.shortDesc }}</mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>{{ unit.description }}</p>
+      <ng-container *ngIf="!managerMode">
+        <p>
+          <b>Tulajdonos:</b>
+          <ng-container
+            *ngIf="!authService.isOwnerOf(unit); then notMyUnit; else myUnit"
+          ></ng-container>
+          <ng-template #notMyUnit> {{ unit.owner.firstName }}</ng-template>
+          <ng-template #myUnit>
+            <span style="color: lime"> én</span>
+          </ng-template>
+        </p>
+      </ng-container>
+      <mat-action-row>
+        <button
+          *ngIf="authService.isLoggedIn() && !authService.isOwnerOf(unit)"
+          mat-raised-button
+          color="accent"
+          [routerLink]="['/', 'reserve', unit.id]"
+        >
+          Asztalt foglalok!
+        </button>
+        <ng-container *ngIf="authService.isOwnerOf(unit)">
+          <button
+            mat-raised-button
+            color="accent"
+            [routerLink]="['/', 'edit', unit.id]"
+          >
+            Egység kezelése
+          </button>
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="goToReservationsManagement(unit)"
+          >
+            Foglalások kezelése
+          </button>
+        </ng-container>
+      </mat-action-row>
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>

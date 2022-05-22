@@ -1,0 +1,37 @@
+.main-container {
+  width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.mat-paginator {
+  margin-top: 10px;
+  background-color: #660066;
+}
+
+.mat-expansion-panel {
+  margin-top: 5px;
+}
+
+.mat-expansion-panel button,
+a {
+  margin-left: 10px;
+}
+
+.headers-align .mat-expansion-panel-header-title,
+.headers-align .mat-expansion-panel-header-description {
+  flex-basis: 0;
+}
+
+.headers-align .mat-expansion-panel-header-description {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.headers-align .mat-form-field + .mat-form-field {
+  margin-left: 8px;
+}
+
+.restaurant-title {
+  margin-left: 10px;
+}
