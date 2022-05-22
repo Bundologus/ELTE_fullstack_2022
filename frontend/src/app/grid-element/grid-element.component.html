@@ -1,0 +1,100 @@
+<div>
+  <table>
+    <tr class="side-row">
+      <td class="rect-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="3"
+          [elementDir]="8"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+      <td class="main-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="1"
+          [elementDir]="1"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+      <td class="rect-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="3"
+          [elementDir]="2"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+    </tr>
+    <tr class="main-row">
+      <td class="side-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="2"
+          [elementDir]="7"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+      <td class="grid-center">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="0"
+          [elementDir]="0"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+      <td class="side-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="2"
+          [elementDir]="3"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+    </tr>
+    <tr class="side-row">
+      <td class="rect-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="3"
+          [elementDir]="6"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+      <td class="main-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="1"
+          [elementDir]="5"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+      <td class="rect-col">
+        <app-grid-center
+          [grid]="grid"
+          [elementType]="3"
+          [elementDir]="4"
+          (onHover)="onElementHover($event)"
+          (onCancelHover)="onElementCancelHover($event)"
+          (onClick)="onElementClick($event)"
+        ></app-grid-center>
+      </td>
+    </tr>
+  </table>
+</div>
