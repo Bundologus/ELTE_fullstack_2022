@@ -1,4 +1,9 @@
-import { Component, Injectable, NgModule } from '@angular/core';
+import {
+  Component,
+  Injectable,
+  NgModule,
+  CUSTOM_ELEMENTS_SCHEMA,
+} from '@angular/core';
 import {
   MatPaginatorIntl,
   MatPaginatorModule,
@@ -34,5 +39,6 @@ export class CustomPaginator {}
   imports: [MatPaginatorModule],
   declarations: [CustomPaginator],
   providers: [{ provide: MatPaginatorIntl, useClass: CustomPaginatorIntl }],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CustomPaginatorModule {}

@@ -1,7 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UnitService } from '../core/unit.service';
 
+import { UnitService } from '../core/unit.service';
+import { GridCenterComponent } from '../grid-center/grid-center.component';
 import { GridEditorComponent } from './grid-editor.component';
+import { GridElementComponent } from '../grid-element/grid-element.component';
 
 describe('GridEditorComponent', () => {
   let component: GridEditorComponent;
@@ -9,7 +11,11 @@ describe('GridEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [GridEditorComponent],
+      declarations: [
+        GridEditorComponent,
+        GridElementComponent,
+        GridCenterComponent,
+      ],
     }).compileComponents();
   });
 

@@ -1,10 +1,12 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CustomPaginatorModule } from './extend/customPaginator';
+import { GridCenterComponent } from './grid-center/grid-center.component';
 import { GridEditorComponent } from './grid-editor/grid-editor.component';
+import { GridElementComponent } from './grid-element/grid-element.component';
 import { LandingComponent } from './landing/landing.component';
 import { LoginFormComponent } from './login-form/login-form.component';
 import { PlanEditorComponent } from './plan-editor/plan-editor.component';
@@ -29,12 +31,12 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { GridElementComponent } from './grid-element/grid-element.component';
-import { GridCenterComponent } from './grid-center/grid-center.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+    GridCenterComponent,
+    GridElementComponent,
     GridEditorComponent,
     LandingComponent,
     LoginFormComponent,
@@ -43,8 +45,6 @@ import { GridCenterComponent } from './grid-center/grid-center.component';
     RegisterFormComponent,
     ReservationListComponent,
     UnitListComponent,
-    GridElementComponent,
-    GridCenterComponent,
   ],
   imports: [
     AppRoutingModule,
@@ -70,5 +70,6 @@ import { GridCenterComponent } from './grid-center/grid-center.component';
   ],
   providers: [],
   bootstrap: [AppComponent],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}
