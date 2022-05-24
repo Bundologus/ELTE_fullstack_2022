@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { UnitListComponent } from './unit-list.component';
 
@@ -8,9 +9,9 @@ describe('UnitListComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ UnitListComponent ]
-    })
-    .compileComponents();
+      imports: [RouterTestingModule],
+      declarations: [UnitListComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

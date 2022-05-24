@@ -8,10 +8,7 @@
     >
       Mentés
     </button>
-    <mat-button-toggle-group
-      #paint_tool="matButtonToggleGroup"
-      (change)="onChangePaintTool($event)"
-    >
+    <mat-button-toggle-group #paint_tool (change)="onChangePaintTool($event)">
       <mat-button-toggle value="walls" checked=""
         ><mat-icon>border_style</mat-icon> Fal</mat-button-toggle
       >

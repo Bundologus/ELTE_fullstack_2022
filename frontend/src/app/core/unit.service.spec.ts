@@ -13,4 +13,14 @@ describe('UnitService', () => {
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
+
+  it('should properly delete a unit', () => {
+    let l: number = service.getUnits().length;
+    if (l > 0) {
+      service.deleteUnit(1);
+      expect(service.getUnits().length).toEqual(l - 1);
+    } else {
+      expect(service.getUnits().length).toEqual(0);
+    }
+  });
 });

@@ -1,4 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { PlanEditorComponent } from './plan-editor.component';
 
@@ -8,9 +10,9 @@ describe('PlanEditorComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ PlanEditorComponent ]
-    })
-    .compileComponents();
+      imports: [ReactiveFormsModule, RouterTestingModule],
+      declarations: [PlanEditorComponent],
+    }).compileComponents();
   });
 
   beforeEach(() => {

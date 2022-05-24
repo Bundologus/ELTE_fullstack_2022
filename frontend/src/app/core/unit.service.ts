@@ -42,6 +42,13 @@ export class UnitService {
     return this.units;
   }
 
+  deleteUnit(id: number) {
+    this.units.splice(
+      this.units.findIndex((u) => u.id === id),
+      1
+    );
+  }
+
   getUnitPlan(unit: Unit) {
     return this.plans.find((p) => p.unit === unit);
   }
@@ -59,6 +66,9 @@ export class UnitService {
   }
 
   deleteEntity(entity: Entity) {
-    this.entities.splice(this.entities.findIndex((e) => e === entity));
+    this.entities.splice(
+      this.entities.findIndex((e) => e === entity),
+      1
+    );
   }
 }
