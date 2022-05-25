@@ -3,12 +3,10 @@ import { Reservable } from './reservable';
 
 export class Entity {
   id?: number;
-  parent?: Entity; // link to DTO
   floorPlan!: Floor_Plan; // link to DTO
   reservable?: Reservable; // link to DTO
   type!: Entity_Type;
-  customPlanData?: string;
-  customUserData?: string;
+  data?: string;
   vertices!: string;
 }
 

@@ -10,7 +10,8 @@ export class Grid {
   isLastY!: boolean;
   isMarked!: boolean[];
   type!: Entity_Type[];
-  runtimeId: number = 0;
+  caption?: string;
+  runtimeId: number = 0; // only used for grouped entities (tables), all others (and also the first group) can have it at 0
 
   constructor(x: number, y: number, isLastX: boolean, isLastY: boolean) {
     this.x = x;

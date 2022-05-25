@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+
 import { Grid } from '../core/grid';
 import { Entity_Type } from '../core/model/entity';
 import { EditorOptions } from '../grid-editor/grid-editor.component';
@@ -13,7 +14,7 @@ export class GridElementComponent implements OnInit {
   @Input() grids!: Grid[][];
   @Input() editorOptions!: EditorOptions;
 
-  dirs: [number, number][] = [
+  public static dirs: [number, number][] = [
     [0, 0],
     [0, -1],
     [1, -1],
@@ -41,32 +42,51 @@ export class GridElementComponent implements OnInit {
 
   onElementClick(dir: number) {
     if (!this.evaluateSideEligibility(dir)) return;
-    if (this.editorOptions.paintTool === 'walls')
+    if (this.editorOptions.paintTool === 'walls') {
+      if (this.grid.type[dir] === Entity_Type.Table) {
+        this.grid.type[dir] = Entity_Type.None;
+        this.removeTable();
+      }
       this.setNeighboringSides(dir, Entity_Type.Wall);
-    else if (this.editorOptions.paintTool === 'doors')
+    } else if (this.editorOptions.paintTool === 'doors') {
       this.setNeighboringSides(dir, Entity_Type.Door);
-    else if (this.editorOptions.paintTool === 'windows')
+    } else if (this.editorOptions.paintTool === 'windows') {
       this.setNeighboringSides(dir, Entity_Type.Window);
-    else if (this.editorOptions.paintTool === 'tables')
+    } else if (this.editorOptions.paintTool === 'tables') {
       if (
         this.setNeighboringSides(dir, Entity_Type.Table) === Entity_Type.Table
       )
         this.placeTable();
       else this.removeTable();
-    else if (this.editorOptions.paintTool === 'chairs')
+    } else if (this.editorOptions.paintTool === 'chairs') {
+      if (this.grid.type[dir] === Entity_Type.Table) {
+        this.grid.type[dir] = Entity_Type.None;
+        this.removeTable();
+      }
       if (
         this.setNeighboringSides(dir, Entity_Type.Chair) === Entity_Type.Chair
       )
         this.placeChair();
-      else this.removeChair();
+    } else if (this.editorOptions.paintTool === 'text') {
+      if (this.grid.type[dir] === Entity_Type.Table) {
+        this.grid.type[dir] = Entity_Type.None;
+        this.removeTable();
+      }
+      this.setNeighboringSides(dir, Entity_Type.Misc);
+      this.grid.caption = this.editorOptions.customData;
+    }
   }
 
   placeTable() {
-    const neighboringTables: Grid[] = this.getNeighboringEntities(
-      Entity_Type.Table
-    );
+    const neighboringTables: Grid[] =
+      GridElementComponent.getNeighboringEntities(
+        this.grid,
+        this.grids,
+        Entity_Type.Table
+      );
     // Nincs asztal mellette
     if (neighboringTables.length === 0) {
+      this.grid.runtimeId = this.editorOptions.nextId++;
     }
     // Egy asztal, vagy ugyanannak a nagy asztalnak több eleme van mellette
     else if (
@@ -74,6 +94,7 @@ export class GridElementComponent implements OnInit {
         (t) => t.runtimeId !== neighboringTables[0].runtimeId
       ).length === 0
     ) {
+      this.grid.runtimeId = neighboringTables[0].runtimeId;
     }
     // Több különböző asztal van mellette
     else {
@@ -81,12 +102,34 @@ export class GridElementComponent implements OnInit {
     }
   }
 
-  removeTable() {}
+  removeTable() {
+    const neighboringChairs: Grid[] =
+      GridElementComponent.getNeighboringEntities(
+        this.grid,
+        this.grids,
+        Entity_Type.Chair
+      );
+    for (const grid of neighboringChairs) {
+      // Invariáns: egy szék csak egyfajta azonosítójú asztal(ok) mellett lehet, tehát ha nincs ilyen, akkor lehet és kell elvenni
+      if (
+        GridElementComponent.getNeighboringEntities(
+          grid,
+          this.grids,
+          Entity_Type.Table
+        ).length === 0
+      ) {
+        grid.type[0] = Entity_Type.None;
+      }
+    }
+  }
 
   placeChair() {
-    const neighboringTables: Grid[] = this.getNeighboringEntities(
-      Entity_Type.Table
-    );
+    const neighboringTables: Grid[] =
+      GridElementComponent.getNeighboringEntities(
+        this.grid,
+        this.grids,
+        Entity_Type.Table
+      );
     // Nincs asztal mellette
     if (neighboringTables.length === 0) {
       this.setNeighboringSides(0, Entity_Type.None);
@@ -97,6 +140,7 @@ export class GridElementComponent implements OnInit {
         (t) => t.runtimeId !== neighboringTables[0].runtimeId
       ).length === 0
     ) {
+      this.grid.runtimeId = neighboringTables[0].runtimeId;
     }
     // Több különböző asztal van mellette
     else {
@@ -104,17 +148,23 @@ export class GridElementComponent implements OnInit {
     }
   }
 
-  removeChair() {}
-
-  getNeighboringEntities(type: Entity_Type): Grid[] {
+  public static getNeighboringEntities(
+    grid: Grid,
+    grids: Grid[][],
+    type: Entity_Type
+  ): Grid[] {
     const neighboringEntityGrids: Grid[] = [];
     for (var d = 1; d <= 7; d += 2) {
-      const x = this.grid.x + this.dirs[d][0];
-      const y = this.grid.y + this.dirs[d][1];
-      if (x < 0 || y < 0 || y >= this.grids.length || x >= this.grids[y].length)
+      const x = grid.x + GridElementComponent.dirs[d][0];
+      const y = grid.y + GridElementComponent.dirs[d][1];
+      if (x < 0 || y < 0 || y >= grids.length || x >= grids[y].length) continue;
+      if (
+        grids[y][x].type[this.flipDir(d)] >= Entity_Type.Wall &&
+        grids[y][x].type[this.flipDir(d)] <= Entity_Type.Window
+      )
         continue;
-      if (this.grids[y][x].type[0] === type)
-        neighboringEntityGrids.push(this.grids[y][x]);
+      if (grids[y][x].type[0] === type)
+        neighboringEntityGrids.push(grids[y][x]);
     }
     return neighboringEntityGrids;
   }
@@ -155,9 +205,15 @@ export class GridElementComponent implements OnInit {
     let sides: [number, number, number][] = [];
     if (dir === 0) return sides;
     if (dir % 2 === 0) {
-      const x1: number = this.grid.x + this.dirs[this.nextDir(dir)][0];
-      const y1: number = this.grid.y + this.dirs[this.nextDir(dir)][1];
-      const d1: number = this.prevDir(this.prevDir(dir));
+      const x1: number =
+        this.grid.x +
+        GridElementComponent.dirs[GridElementComponent.nextDir(dir)][0];
+      const y1: number =
+        this.grid.y +
+        GridElementComponent.dirs[GridElementComponent.nextDir(dir)][1];
+      const d1: number = GridElementComponent.prevDir(
+        GridElementComponent.prevDir(dir)
+      );
       if (
         y1 >= 0 &&
         x1 >= 0 &&
@@ -165,9 +221,15 @@ export class GridElementComponent implements OnInit {
         x1 < this.grids[y1].length
       )
         sides.push([x1, y1, d1]);
-      const x2: number = this.grid.x + this.dirs[this.prevDir(dir)][0];
-      const y2: number = this.grid.y + this.dirs[this.prevDir(dir)][1];
-      const d2: number = this.nextDir(this.nextDir(dir));
+      const x2: number =
+        this.grid.x +
+        GridElementComponent.dirs[GridElementComponent.prevDir(dir)][0];
+      const y2: number =
+        this.grid.y +
+        GridElementComponent.dirs[GridElementComponent.prevDir(dir)][1];
+      const d2: number = GridElementComponent.nextDir(
+        GridElementComponent.nextDir(dir)
+      );
       if (
         y2 >= 0 &&
         x2 >= 0 &&
@@ -177,9 +239,9 @@ export class GridElementComponent implements OnInit {
         sides.push([x2, y2, d2]);
     }
     if (!this.isSideElement(dir)) {
-      const xx: number = this.grid.x + this.dirs[dir][0];
-      const yy: number = this.grid.y + this.dirs[dir][1];
-      const dd: number = this.flipDir(dir);
+      const xx: number = this.grid.x + GridElementComponent.dirs[dir][0];
+      const yy: number = this.grid.y + GridElementComponent.dirs[dir][1];
+      const dd: number = GridElementComponent.flipDir(dir);
       sides.push([xx, yy, dd]);
     }
     return sides;
@@ -197,15 +259,15 @@ export class GridElementComponent implements OnInit {
     return false;
   }
 
-  flipDir(dir: number) {
+  public static flipDir(dir: number) {
     return dir > 4 ? dir - 4 : dir + 4;
   }
 
-  nextDir(dir: number) {
+  public static nextDir(dir: number) {
     return dir + 1 >= 9 ? 1 : dir + 1;
   }
 
-  prevDir(dir: number) {
+  public static prevDir(dir: number) {
     return dir - 1 <= 0 ? 8 : dir - 1;
   }
 }

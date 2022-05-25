@@ -11,6 +11,9 @@
       style="font-size: 64px; margin-left: -40px; margin-top: -40px"
       [style.color]="getIconColor()"
       >{{ getIcon() }}</mat-icon
-    ></ng-container
-  >
+    >
+  </ng-container>
+  <ng-container *ngIf="getCaption() !== ''">
+    <p>{{ getCaption() }}</p>
+  </ng-container>
 </div>

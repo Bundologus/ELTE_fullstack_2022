@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
 import { Grid } from '../core/grid';
 import { Entity_Type } from '../core/model/entity';
 
@@ -47,7 +48,7 @@ export class GridCenterComponent implements OnInit {
     if (this.grid.isMarked[this.elementDir]) return '#0f0';
     if (this.grid.type[this.elementDir] === Entity_Type.Wall) return '#000';
     else if (this.grid.type[this.elementDir] === Entity_Type.Door)
-      return '#0a0';
+      return '#a00';
     else if (this.grid.type[this.elementDir] === Entity_Type.Window)
       return '#44f';
     else if (this.grid.type[this.elementDir] === Entity_Type.Table)
@@ -105,6 +106,16 @@ export class GridCenterComponent implements OnInit {
     if (this.grid.type[0] === Entity_Type.Table) return '#444';
     else if (this.grid.type[0] === Entity_Type.Chair) return '#888';
     return '#000';
+  }
+
+  getCaption() {
+    if (
+      this.grid.type[0] === Entity_Type.Misc &&
+      this.elementType === ElementType.Center
+    ) {
+      return this.grid.caption;
+    }
+    return '';
   }
 
   getContent() {

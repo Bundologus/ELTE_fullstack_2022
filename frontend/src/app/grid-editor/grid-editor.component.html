@@ -28,6 +28,7 @@
         ><mat-icon>notes</mat-icon> Felirat</mat-button-toggle
       >
     </mat-button-toggle-group>
+    <input mat-input id="datafield" [(ngModel)]="editorOptions.customData" />
   </div>
   <table width="{{ cols * 80 }}px">
     <ng-container *ngFor="let row of grids">
