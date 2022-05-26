@@ -20,22 +20,17 @@ class UnitSeeder extends Seeder {
 
         foreach ($units as $unit) {
             $floorPlan = $unit->floorPlan;
-            $entity_count = rand(5, 10);
+            $entity_count = rand(7, 15);
             $rootEntities = FpEntity::factory($entity_count)->for($floorPlan)->create();
-
-            $entity_count = rand(3, 5);
-            for ($i = 0; $i < $entity_count; $i++) {
-                $parent = $rootEntities->random();
-                FpEntity::factory()->for($floorPlan)->state(['parent_id' => $parent->id])->create();
-            }
 
             $fpEntity = $rootEntities->random();
             Reservable::factory()->for($fpEntity)->create();
 
-            $fpEntity = FpEntity::where([
-                ['parent_id', '=', null],
-                ['floor_plan_id', '=', $floorPlan->id]
-            ])->get()->first();
+            $fpEntity = FpEntity::where(
+                'floor_plan_id',
+                '=',
+                $floorPlan->id
+            )->get()->first();
             Reservable::factory()->withTime()->for($fpEntity)->create();
 
             $special_hours_count = rand(3, 7);

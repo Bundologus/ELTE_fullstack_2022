@@ -12,7 +12,7 @@ class FpEntityFactory extends Factory {
      */
 
     static $type_enum = array(
-        "blocked",
+        "none",
         "wall",
         "door",
         "window",
@@ -26,8 +26,7 @@ class FpEntityFactory extends Factory {
 
         return [
             'type' => array_rand(self::$type_enum),
-            'custom_fp_data' => "",
-            'custom_user_data' => "",
+            'data' => "",
             'vertices' => "",
         ];
     }

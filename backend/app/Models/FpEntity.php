@@ -13,10 +13,8 @@ class FpEntity extends Model {
     protected $fillable = [
         'floor_plan_id',
         'type',
-        'custom_fp_data',
-        'custom_user_data',
+        'data',
         'vertices',
-        'parent_id',
     ];
 
     public function reservable() {
@@ -25,13 +23,5 @@ class FpEntity extends Model {
 
     public function floorPlan() {
         return $this->belongsTo(FloorPlan::class);
-    }
-
-    public function parent() {
-        return $this->belongsTo(FpEntity::class, 'parent_id');
-    }
-
-    public function children() {
-        return $this->hasMany(FpEntity::class);
     }
 }
