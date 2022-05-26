@@ -19,6 +19,7 @@ export class GridCenterComponent implements OnInit {
   @Input() grid!: Grid;
   @Input() elementType!: ElementType;
   @Input() elementDir!: number;
+  @Input() isSelected?: boolean;
 
   @Output() onHover: EventEmitter<number> = new EventEmitter();
   @Output() onCancelHover: EventEmitter<number> = new EventEmitter();
@@ -45,6 +46,7 @@ export class GridCenterComponent implements OnInit {
   }
 
   getBackgroundColor() {
+    if (this.isSelected) return '#ff0';
     if (this.grid.isMarked[this.elementDir]) return '#0f0';
     if (this.grid.type[this.elementDir] === Entity_Type.Wall) return '#000';
     else if (this.grid.type[this.elementDir] === Entity_Type.Door)
@@ -113,7 +115,16 @@ export class GridCenterComponent implements OnInit {
       this.grid.type[0] === Entity_Type.Misc &&
       this.elementType === ElementType.Center
     ) {
-      return this.grid.caption;
+      return this.grid.caption !== '' && this.grid.caption !== undefined
+        ? this.grid.caption
+        : '(felirat)';
+    } else if (
+      this.grid.type[0] === Entity_Type.Table &&
+      this.elementDir === 1
+    ) {
+      return this.grid.caption !== '' && this.grid.caption !== undefined
+        ? this.grid.caption
+        : '(' + this.grid.runtimeId + ')';
     }
     return '';
   }

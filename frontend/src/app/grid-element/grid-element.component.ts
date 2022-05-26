@@ -74,6 +74,19 @@ export class GridElementComponent implements OnInit {
       }
       this.setNeighboringSides(dir, Entity_Type.Misc);
       this.grid.caption = this.editorOptions.customData;
+    } else if (this.editorOptions.paintTool === 'edit') {
+      if (
+        dir === 0 &&
+        this.editorOptions.selectedGrid !== this.grid &&
+        (this.grid.type[0] === Entity_Type.Table ||
+          this.grid.type[0] === Entity_Type.Misc)
+      ) {
+        this.editorOptions.customData = this.grid.caption;
+        this.editorOptions.selectedGrid = this.grid;
+      } else {
+        this.editorOptions.customData = undefined;
+        this.editorOptions.selectedGrid = undefined;
+      }
     }
   }
 

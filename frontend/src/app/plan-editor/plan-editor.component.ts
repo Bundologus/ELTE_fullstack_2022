@@ -80,6 +80,7 @@ export class PlanEditorComponent implements OnInit {
     this.plan!.width = this.planSizeForm.controls['width'].value;
     this.plan!.height = this.planSizeForm.controls['height'].value;
     this.gridEditor.initGrids();
+    this.gridEditor.loadPlan();
   }
 }
 
@@ -88,7 +89,6 @@ export class CustomPlanValidators {
     if (!control.value) {
       return null;
     }
-
     return String(control.value).match(/^[0-9]+$/) ? null : { isNumbers: true };
   }
 }

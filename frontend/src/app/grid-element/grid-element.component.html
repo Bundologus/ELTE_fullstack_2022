@@ -48,6 +48,7 @@
           [grid]="grid"
           [elementType]="0"
           [elementDir]="0"
+          [isSelected]="editorOptions.selectedGrid === grid"
           (onHover)="onElementHover($event)"
           (onCancelHover)="onElementCancelHover($event)"
           (onClick)="onElementClick($event)"

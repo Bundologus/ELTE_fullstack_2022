@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChildren } from '@angular/core';
 
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
-import { MatInput } from '@angular/material/input';
 import { Grid } from '../core/grid';
 import { Entity, Entity_Type } from '../core/model/entity';
 import { Floor_Plan } from '../core/model/floor_plan';
@@ -11,6 +10,7 @@ export class EditorOptions {
   nextId: number = 0;
   paintTool!: string;
   customData?: string;
+  selectedGrid?: Grid;
 }
 
 @Component({
@@ -51,6 +51,14 @@ export class GridEditorComponent implements OnInit {
 
   onChangePaintTool(change: MatButtonToggleChange) {
     this.editorOptions.paintTool = change.value;
+    this.editorOptions.customData = undefined;
+    this.editorOptions.selectedGrid = undefined;
+  }
+
+  onChangeDatafield(value: string) {
+    if (this.editorOptions.selectedGrid !== undefined) {
+      this.editorOptions.selectedGrid.caption = value;
+    }
   }
 
   loadPlan() {
@@ -58,13 +66,19 @@ export class GridEditorComponent implements OnInit {
     let entities: Entity[] = this.unitService.getEntities(this.plan);
     for (var entity of entities) {
       const vertices = JSON.parse(entity.vertices);
+      let outOfBounds = false;
       for (var vertex of vertices) {
+        if (vertex.x >= this.plan.width || vertex.y >= this.plan.height) {
+          outOfBounds = true;
+          continue;
+        }
         this.grids[vertex.y][vertex.x].type[vertex.d] = entity.type;
+        this.grids[vertex.y][vertex.x].caption = entity.data;
         if (entity.type === Entity_Type.Table) {
           this.grids[vertex.y][vertex.x].runtimeId = this.editorOptions.nextId;
         }
       }
-      if (entity.type === Entity_Type.Table) {
+      if (!outOfBounds && entity.type === Entity_Type.Table) {
         this.editorOptions.nextId++;
       }
     }
@@ -92,11 +106,17 @@ export class GridEditorComponent implements OnInit {
             const entity: Entity = new Entity();
             entity.floorPlan = this.plan;
             entity.type = this.grids[y][x].type[d];
+            entity.data = this.grids[y][x].caption;
             const vertices = [{ x: x, y: y, d: d }];
             entity.vertices = JSON.stringify(vertices);
             entities.push(entity);
           } else if (this.grids[y][x].type[d] === Entity_Type.Table) {
-            const table = { x: x, y: y, id: this.grids[y][x].runtimeId };
+            const table = {
+              x: x,
+              y: y,
+              id: this.grids[y][x].runtimeId,
+              data: this.grids[y][x].caption,
+            };
             tables.push(table);
           }
         }
@@ -107,10 +127,12 @@ export class GridEditorComponent implements OnInit {
     const keys = Object.keys(tableGroups);
     for (let i = 0; i < keys.length; i++) {
       const tableGroup: Entity = new Entity();
+      const key: string = keys[i].toString();
       tableGroup.floorPlan = this.plan;
       tableGroup.type = Entity_Type.Table;
+      console.log(tableGroups[key][0].data);
+      tableGroup.data = tableGroups[key][0].data;
       const vertices = [];
-      const key: string = keys[i].toString();
       for (let j = 0; j < tableGroups[key].length; j++) {
         vertices.push({
           x: tableGroups[key][j].x,
