@@ -26,33 +26,32 @@ Route::middleware(['auth:sanctum'])->get('user', function (Request $request) {
     return $request->user();
 });
 
-
 /**
  * Address routes
  */
 
 Route::controller(CountryController::class)->group(function () {
-    Route::post('country', 'store')->middleware('auth.admin');
+    Route::post('country', 'store')->middleware('auth');
     Route::get('country', 'list');
     Route::get('country/{id}', 'show');
-    Route::put('country/{id}', 'update')->middleware('auth.admin');
-    Route::delete('country/{id}', 'destroy')->middleware('auth.admin');
+    Route::put('country/{id}', 'update')->middleware('auth');
+    Route::delete('country/{id}', 'destroy')->middleware('auth');
 });
 
 Route::controller(CityController::class)->group(function () {
-    Route::post('city', 'store');
+    Route::post('city', 'store')->middleware('auth');
     Route::get('city', 'list');
     Route::get('city/{id}', 'show');
-    Route::put('city/{id}', 'update');
-    Route::delete('city/{id}', 'destroy');
+    Route::put('city/{id}', 'update')->middleware('auth');
+    Route::delete('city/{id}', 'destroy')->middleware('auth');
 });
 
 Route::controller(DistrictController::class)->group(function () {
-    Route::post('district', 'store');
+    Route::post('district', 'store')->middleware('auth');
     Route::get('district', 'list');
     Route::get('district/{id}', 'show');
-    Route::put('district/{id}', 'update');
-    Route::delete('district/{id}', 'destroy');
+    Route::put('district/{id}', 'update')->middleware('auth');
+    Route::delete('district/{id}', 'destroy')->middleware('auth');
 });
 
 
@@ -61,41 +60,41 @@ Route::controller(DistrictController::class)->group(function () {
  */
 
 Route::controller(UnitController::class)->group(function () {
-    Route::post('unit', 'store');
+    Route::post('unit', 'store')->middleware('auth');
     Route::get('unit', 'list');
     Route::get('unit/{id}', 'show');
-    Route::put('unit/{id}', 'update');
-    Route::delete('unit/{id}', 'destroy');
+    Route::put('unit/{id}', 'update')->middleware('auth');
+    Route::delete('unit/{id}', 'destroy')->middleware('auth');
 });
 
 Route::controller(OpeningHoursController::class)->group(function () {
-    Route::post('opening_hours', 'store');
+    Route::post('opening_hours', 'store')->middleware('auth');
     Route::get('opening_hours', 'list');
     Route::get('opening_hours/{id}', 'show');
-    Route::put('opening_hours/{id}', 'update');
-    Route::delete('opening_hours/{id}', 'destroy');
+    Route::put('opening_hours/{id}', 'update')->middleware('auth');
+    Route::delete('opening_hours/{id}', 'destroy')->middleware('auth');
 });
 
 Route::controller(FloorPlanController::class)->group(function () {
-    Route::post('unit/{id}/floor_plan', 'store');
+    Route::post('unit/{id}/floor_plan', 'store')->middleware('auth');
     Route::get('unit/{id}/floor_plan', 'show');
-    Route::put('unit/{id}/floor_plan', 'update');
-    Route::delete('unit/{id}/floor_plan', 'destroy');
+    Route::put('unit/{id}/floor_plan', 'update')->middleware('auth');
+    Route::delete('unit/{id}/floor_plan', 'destroy')->middleware('auth');
 });
 
 Route::controller(FpEntityController::class)->group(function () {
-    Route::post('unit/{unit_id}/floor_plan/entity', 'store');
+    Route::post('unit/{unit_id}/floor_plan/entity', 'store')->middleware('auth');
     Route::get('unit/{unit_id}/floor_plan/entity', 'list');
     Route::get('unit/{unit_id}/floor_plan/entity/{id}', 'show');
-    Route::put('unit/{unit_id}/floor_plan/entity/{id}', 'update');
-    Route::delete('unit/{unit_id}/floor_plan/entity/{id}', 'destroy');
+    Route::put('unit/{unit_id}/floor_plan/entity/{id}', 'update')->middleware('auth');
+    Route::delete('unit/{unit_id}/floor_plan/entity/{id}', 'destroy')->middleware('auth');
 });
 
 Route::controller(ReservableController::class)->group(function () {
-    Route::post('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'store');
+    Route::post('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'store')->middleware('auth');
     Route::get('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'show');
-    Route::put('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'update');
-    Route::delete('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'destroy');
+    Route::put('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'update')->middleware('auth');
+    Route::delete('unit/{unit_id}/floor_plan/entity/{entity_id}/reservable', 'destroy')->middleware('auth');
 });
 
 
@@ -104,9 +103,9 @@ Route::controller(ReservableController::class)->group(function () {
  */
 
 Route::controller(ReservationController::class)->group(function () {
-    Route::post('reservation', 'store');
-    Route::get('reservation', 'find');
-    Route::get('reservation/{id}', 'show')->middleware(['auth:sanctum']);
-    Route::put('reservation/{id}', 'update');
-    Route::post('reservation/{id}/{action}', 'changeState');
+    Route::post('reservation', 'store')->middleware('auth');
+    Route::get('reservation', 'find')->middleware('auth');
+    Route::get('reservation/{id}', 'show')->middleware('auth');
+    Route::put('reservation/{id}', 'update')->middleware('auth');
+    Route::post('reservation/{id}/{action}', 'changeState')->middleware('auth');
 });
