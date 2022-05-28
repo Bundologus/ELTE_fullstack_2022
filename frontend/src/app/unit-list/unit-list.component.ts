@@ -12,7 +12,7 @@ import { User } from '../core/model/user';
   styleUrls: ['./unit-list.component.scss'],
 })
 export class UnitListComponent implements OnInit {
-  users?: User[] = this.authService.getUsers();
+  //users?: User[] = this.authService.getUsers();
   units?: Unit[];
   paginatedUnits?: Unit[];
   firstPageSize: number = 5;

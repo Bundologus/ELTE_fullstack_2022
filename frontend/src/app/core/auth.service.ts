@@ -1,15 +1,18 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { lastValueFrom } from 'rxjs';
 import { Unit } from './model/unit';
 import { User, UserRole } from './model/user';
 
 export interface UserAuthRequest {
-  userName: string;
+  email: string;
   password: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthService {
   static users: User[] = [
     {
@@ -29,7 +32,9 @@ export class AuthService {
     },
   ];
 
-  private _currentUser?: User = AuthService.users[0];
+  private _currentUser?: User;
+
+  constructor(private httpClient: HttpClient) {}
 
   isDebugMode() {
     return true;
@@ -47,15 +52,32 @@ export class AuthService {
     return unit.owner === this._currentUser;
   }
 
-  login() {
-    this._currentUser = AuthService.users[0];
+  async login(userAuthRequest: UserAuthRequest) {
+    //const user$ = this.httpClient.post('/login', userAuthRequest);
+    //this._currentUser = await lastValueFrom(user$) as User;
+    await lastValueFrom(this.httpClient.get('/sanctum/csrf-cookie'));
+
+    console.log("session ok");
+    const loginResult = await lastValueFrom(
+      this.httpClient.post('/api/login', userAuthRequest)
+    );
+
+    console.log("login result");
+    console.log(loginResult);
+
+    const user$ = this.httpClient.get('/api/user');
+    this._currentUser = await lastValueFrom(user$) as User;
+    console.log(this._currentUser);
   }
 
   logout() {
     this._currentUser = undefined;
   }
 
-  getUsers() {
+  async getUsers() {
+    const result = await lastValueFrom(this.httpClient.get('/api/users'));
+
+    //return result;
     return AuthService.users;
   }
 
