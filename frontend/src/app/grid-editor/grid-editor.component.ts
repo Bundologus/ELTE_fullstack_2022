@@ -1,16 +1,27 @@
-import { Component, Input, OnInit, ViewChildren } from '@angular/core';
-
+import {
+  Component,
+  Input,
+  EventEmitter,
+  OnInit,
+  Output,
+  ViewChildren,
+} from '@angular/core';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
+
+import { AuthService } from '../core/auth.service';
 import { Grid } from '../core/grid';
 import { Entity, Entity_Type } from '../core/model/entity';
 import { Floor_Plan } from '../core/model/floor_plan';
+import { Reservable } from '../core/model/reservable';
 import { UnitService } from '../core/unit.service';
+import { GridElementComponent } from '../grid-element/grid-element.component';
 
 export class EditorOptions {
   nextId: number = 0;
   paintTool!: string;
   customData?: string;
   selectedGrid?: Grid;
+  isDirty: boolean = false;
 }
 
 @Component({
@@ -21,6 +32,9 @@ export class EditorOptions {
 export class GridEditorComponent implements OnInit {
   @Input() plan!: Floor_Plan;
 
+  @Output() onSelectReservable: EventEmitter<Reservable> = new EventEmitter();
+  @Output() onDeselectReservable: EventEmitter<void> = new EventEmitter();
+
   @ViewChildren('paint_tool') paintToolSelector!: MatButtonToggleChange;
 
   cols!: number;
@@ -28,10 +42,13 @@ export class GridEditorComponent implements OnInit {
   grids!: Grid[][];
   editorOptions: EditorOptions = new EditorOptions();
 
-  constructor(private unitService: UnitService) {}
+  constructor(
+    public authService: AuthService,
+    private unitService: UnitService
+  ) {}
 
   ngOnInit(): void {
-    this.editorOptions.paintTool = 'walls';
+    this.editorOptions.paintTool = 'edit';
     this.initGrids();
     this.loadPlan();
   }
@@ -61,9 +78,56 @@ export class GridEditorComponent implements OnInit {
     }
   }
 
+  onGridChange() {
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        if (this.grids[y][x].type[0] === Entity_Type.Table) {
+          this.grids[y][x].reservableData!.maxSpaces = 0;
+        }
+        this.grids[y][x].special = false;
+      }
+    }
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        if (this.grids[y][x].type[0] === Entity_Type.Table) {
+          const chairs: Grid[] = GridElementComponent.getNeighboringEntities(
+            this.grids[y][x],
+            this.grids,
+            Entity_Type.Chair
+          );
+          for (var chair of chairs) {
+            if (this.grids[chair.y][chair.x].special === false) {
+              this.grids[y][x].reservableData!.maxSpaces++;
+              this.grids[chair.y][chair.x].special = true;
+            }
+          }
+        }
+      }
+    }
+    for (let y = 0; y < this.rows; y++) {
+      for (let x = 0; x < this.cols; x++) {
+        if (this.grids[y][x].type[0] === Entity_Type.Table) {
+          if (
+            this.grids[y][x].reservableData!.minSpaces >
+            this.grids[y][x].reservableData!.maxSpaces
+          )
+            this.grids[y][x].reservableData!.minSpaces =
+              this.grids[y][x].reservableData!.maxSpaces;
+        }
+      }
+    }
+    this.onDeselectReservable.emit();
+  }
+
+  onReservableSelected(reservable: Reservable) {
+    if (reservable !== undefined && this.editorOptions.isDirty) this.savePlan();
+    this.onSelectReservable.emit(reservable);
+  }
+
   loadPlan() {
     this.editorOptions.nextId = 0;
     let entities: Entity[] = this.unitService.getEntities(this.plan);
+    let reservables: Reservable[] = this.unitService.getReservables();
     for (var entity of entities) {
       const vertices = JSON.parse(entity.vertices);
       let outOfBounds = false;
@@ -76,12 +140,14 @@ export class GridEditorComponent implements OnInit {
         this.grids[vertex.y][vertex.x].caption = entity.data;
         if (entity.type === Entity_Type.Table) {
           this.grids[vertex.y][vertex.x].runtimeId = this.editorOptions.nextId;
+          this.grids[vertex.y][vertex.x].reservableData = entity.reservable;
         }
       }
       if (!outOfBounds && entity.type === Entity_Type.Table) {
         this.editorOptions.nextId++;
       }
     }
+    console.log('Plan loaded.');
   }
 
   savePlan() {
@@ -116,11 +182,14 @@ export class GridEditorComponent implements OnInit {
               y: y,
               id: this.grids[y][x].runtimeId,
               data: this.grids[y][x].caption,
+              reservableData: this.grids[y][x].reservableData,
             };
             tables.push(table);
           }
         }
       }
+      this.editorOptions.isDirty = false;
+      console.log('Plan saved.');
     }
 
     const tableGroups = this.groupBy(tables, 'id');
@@ -129,8 +198,17 @@ export class GridEditorComponent implements OnInit {
       const tableGroup: Entity = new Entity();
       const key: string = keys[i].toString();
       tableGroup.floorPlan = this.plan;
+      if (tableGroups[key][0].reservableData.id === -1) {
+        // Új Reservable tényleges létrehozhása, visszakapjuk a DB id-t
+        tableGroups[key][0].reservableData = this.unitService.createReservable(
+          tableGroups[key][0].reservableData
+        );
+      } else {
+        // Reservable DB módosítása
+        this.unitService.updateReservable(tableGroups[key][0].reservableData);
+      }
+      tableGroup.reservable = tableGroups[key][0].reservableData;
       tableGroup.type = Entity_Type.Table;
-      console.log(tableGroups[key][0].data);
       tableGroup.data = tableGroups[key][0].data;
       const vertices = [];
       for (let j = 0; j < tableGroups[key].length; j++) {
@@ -144,6 +222,10 @@ export class GridEditorComponent implements OnInit {
       entities.push(tableGroup);
     }
 
+    // A Planhez tartozó összes Entity-t "kihajítja", és újakat hoz létre a jelenleg mentett Plan alapán;
+    // így nem kell kezelni multigrid-entity-ket binding szinten, és mindig konzisztens az Entities tábla mentés után.
+    // A "kihajított" és újraírt Entity-k adatainak perzisztenciájáért pedig az Editor felel.
+    // Mentés után egy Plan összes Entity-je egymás után található a táblában, így akár az indexelést is meg lehetne könnyíteni stb.
     this.unitService.setEntities(this.plan, entities);
   }
 

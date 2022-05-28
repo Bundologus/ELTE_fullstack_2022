@@ -7,9 +7,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { Time } from '@angular/common';
 
 import { AuthService } from '../core/auth.service';
 import { Floor_Plan } from '../core/model/floor_plan';
+import { Reservable } from '../core/model/reservable';
 import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
 import { GridEditorComponent } from '../grid-editor/grid-editor.component';
@@ -24,6 +26,7 @@ export class PlanEditorComponent implements OnInit {
 
   unit?: Unit;
   plan?: Floor_Plan;
+  reservable?: Reservable;
 
   planSizeForm: FormGroup = this.formBuilder.group({
     width: [
@@ -44,6 +47,21 @@ export class PlanEditorComponent implements OnInit {
         CustomPlanValidators.isNumbers,
       ],
     ],
+  });
+
+  reservableEditorForm: FormGroup = this.formBuilder.group({
+    name: [this.reservable?.name, [Validators.required]],
+    minSpaces: [
+      this.reservable?.minSpaces,
+      [Validators.required, Validators.min(1), CustomPlanValidators.isNumbers],
+    ],
+    maxSpaces: [
+      this.reservable?.maxSpaces,
+      [Validators.required, Validators.min(1), CustomPlanValidators.isNumbers],
+    ],
+    minTime: [this.reservable?.minTime, [Validators.required]],
+    maxTime: [this.reservable?.maxTime, [Validators.required]],
+    timeStep: [this.reservable?.timeStep, [Validators.required]],
   });
 
   constructor(
@@ -81,6 +99,44 @@ export class PlanEditorComponent implements OnInit {
     this.plan!.height = this.planSizeForm.controls['height'].value;
     this.gridEditor.initGrids();
     this.gridEditor.loadPlan();
+  }
+
+  changeReservable() {
+    if (!this.reservableEditorForm.valid) {
+      return;
+    }
+    this.reservable!.name = this.reservableEditorForm.controls['name'].value;
+    this.reservable!.minSpaces =
+      this.reservableEditorForm.controls['minSpaces'].value;
+    this.reservable!.maxSpaces =
+      this.reservableEditorForm.controls['maxSpaces'].value;
+    // A minTime, maxTime, timeStep egyelőre nem frissíthető, majd ha a fontosabb részek mind működnek,
+    // még lehet ezzel foglalkozni.
+    this.unitService.updateReservable(this.reservable!);
+  }
+
+  onReservableSelected(reservable: Reservable) {
+    console.log(reservable);
+    this.reservable = reservable;
+    if (this.reservable === undefined) return;
+    this.reservableEditorForm.setValue({
+      name: this.reservable.name,
+      minSpaces: this.reservable.minSpaces,
+      maxSpaces: this.reservable.maxSpaces,
+      minTime: this.timeToString(this.reservable.minTime),
+      maxTime: this.timeToString(this.reservable.maxTime),
+      timeStep: this.timeToString(this.reservable.timeStep),
+    });
+  }
+
+  onReservableDeselected() {
+    this.reservable = undefined;
+  }
+
+  timeToString(time: Time): string {
+    return (
+      ('00' + time.hours).slice(-2) + ':' + ('00' + time.minutes).slice(-2)
+    );
   }
 }
 

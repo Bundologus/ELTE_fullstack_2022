@@ -124,7 +124,12 @@ export class GridCenterComponent implements OnInit {
     ) {
       return this.grid.caption !== '' && this.grid.caption !== undefined
         ? this.grid.caption
-        : '(' + this.grid.runtimeId + ')';
+        : '[' + this.grid.reservableData!.name + ']';
+    } else if (
+      this.grid.type[0] === Entity_Type.Table &&
+      this.elementDir === 5
+    ) {
+      return '(' + this.grid.reservableData!.maxSpaces + ' szék)';
     }
     return '';
   }
