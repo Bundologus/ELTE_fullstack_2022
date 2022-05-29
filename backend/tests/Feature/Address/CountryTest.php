@@ -20,7 +20,8 @@ class CountryTest extends TestCase {
         );
 
         $this->assertGuest();
-        $response->assertStatus(403);
+        $response->assertStatus(401);
+        //$response->assertStatus(302);
     }
 
     public function test_user_can_not_post_country() {
@@ -152,7 +153,7 @@ class CountryTest extends TestCase {
         );
 
         $this->assertGuest();
-        $response->assertStatus(403);
+        $response->assertStatus(401);
     }
 
     public function test_user_can_not_update_country_by_id() {
@@ -198,7 +199,7 @@ class CountryTest extends TestCase {
         $response = $this->delete('api/country/' . $country->id);
 
         $this->assertGuest();
-        $response->assertStatus(403);
+        $response->assertStatus(401);
     }
 
     public function test_user_can_not_delete_country_by_id() {

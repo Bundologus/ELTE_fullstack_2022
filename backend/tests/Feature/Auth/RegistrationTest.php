@@ -9,7 +9,7 @@ class RegistrationTest extends TestCase {
     use RefreshDatabase;
 
     public function test_new_users_can_register() {
-        $response = $this->post('api/register', [
+        $response = $this->post('register', [
             'first_name' => 'Test',
             'last_name' => 'User',
             'email' => 'test@example.com',
