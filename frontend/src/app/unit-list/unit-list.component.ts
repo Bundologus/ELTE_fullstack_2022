@@ -5,6 +5,7 @@ import { AuthService } from '../core/auth.service';
 import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
 import { User } from '../core/model/user';
+import { UserService } from '../core/user.service';
 
 @Component({
   selector: 'app-unit-list',
@@ -20,6 +21,7 @@ export class UnitListComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public userService: UserService,
     private unitService: UnitService,
     private router: Router
   ) {}
@@ -34,7 +36,7 @@ export class UnitListComponent implements OnInit {
     this.managerMode = this.router.url.endsWith('units');
     if (this.managerMode)
       filteredUnits = filteredUnits.filter(
-        (u) => u.owner === this.authService.getCurrentUser()
+        (u) => u.owner === this.userService.getCurrentUser()
       );
     this.units = filteredUnits;
   }

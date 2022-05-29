@@ -15,6 +15,7 @@ import { Reservable } from '../core/model/reservable';
 import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
 import { GridEditorComponent } from '../grid-editor/grid-editor.component';
+import { UserService } from '../core/user.service';
 
 @Component({
   selector: 'app-plan-editor',
@@ -66,6 +67,7 @@ export class PlanEditorComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public userService: UserService,
     private unitService: UnitService,
     private route: ActivatedRoute,
     private formBuilder: FormBuilder

@@ -13,7 +13,6 @@ export class AppComponent {
   constructor(private router: Router, public authService: AuthService) {}
 
   login() {
-    //this.authService.login();
     this.router.navigate(['/', 'login']);
   }
 

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../core/auth.service';
 
 @Component({
@@ -22,7 +23,7 @@ export class LoginFormComponent implements OnInit {
     return this.loginForm.get('password') as FormControl;
   }
 
-  constructor(private fb: FormBuilder, private authSvc: AuthService) { }
+  constructor(private fb: FormBuilder, private authSvc: AuthService, private router: Router) { }
 
   ngOnInit(): void {
   }
@@ -31,9 +32,8 @@ export class LoginFormComponent implements OnInit {
     if (!this.loginForm.valid) {
       return;
     }
-
-    console.log(this.loginForm.value);
     this.authSvc.login(this.loginForm.value);
+    this.router.navigate(['/', 'landing']);
   }
 
 }

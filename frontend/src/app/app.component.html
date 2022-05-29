@@ -19,7 +19,7 @@
         <ng-container *ngIf="authService.isLoggedIn()">
           <button mat-stroked-button [routerLink]="['/', 'profile']">
             <mat-icon>account_circle</mat-icon>
-            {{ authService.getCurrentUser()!.firstName }}
+            {{ authService.getCurrentUser().first_name }}
           </button>
           <button mat-raised-button (click)="logout()">Kijelentkezés</button>
         </ng-container>

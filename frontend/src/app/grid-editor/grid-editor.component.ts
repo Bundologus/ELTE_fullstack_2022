@@ -14,6 +14,7 @@ import { Entity, Entity_Type } from '../core/model/entity';
 import { Floor_Plan } from '../core/model/floor_plan';
 import { Reservable } from '../core/model/reservable';
 import { UnitService } from '../core/unit.service';
+import { UserService } from '../core/user.service';
 import { GridElementComponent } from '../grid-element/grid-element.component';
 
 export class EditorOptions {
@@ -44,6 +45,7 @@ export class GridEditorComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public userService: UserService,
     private unitService: UnitService
   ) {}
 

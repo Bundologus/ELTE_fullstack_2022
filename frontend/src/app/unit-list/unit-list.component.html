@@ -20,9 +20,9 @@
         <p>
           <b>Tulajdonos:</b>
           <ng-container
-            *ngIf="!authService.isOwnerOf(unit); then notMyUnit; else myUnit"
+            *ngIf="!userService.isOwnerOf(unit); then notMyUnit; else myUnit"
           ></ng-container>
-          <ng-template #notMyUnit> {{ unit.owner.firstName }}</ng-template>
+          <ng-template #notMyUnit> {{ unit.owner.first_name }}</ng-template>
           <ng-template #myUnit>
             <span style="color: lime"> én</span>
           </ng-template>
@@ -30,14 +30,14 @@
       </ng-container>
       <mat-action-row>
         <button
-          *ngIf="authService.isLoggedIn() && !authService.isOwnerOf(unit)"
+          *ngIf="!userService.isOwnerOf(unit)"
           mat-raised-button
           color="accent"
           [routerLink]="['/', 'reserve', unit.id]"
         >
           Asztalt foglalok!
         </button>
-        <ng-container *ngIf="authService.isOwnerOf(unit)">
+        <ng-container *ngIf="userService.isOwnerOf(unit)">
           <button
             mat-raised-button
             color="accent"

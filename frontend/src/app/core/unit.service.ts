@@ -1,6 +1,6 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-
+import { lastValueFrom } from 'rxjs';
 import { Entity } from './model/entity';
 import { Floor_Plan } from './model/floor_plan';
 import { Reservable } from './model/reservable';
@@ -10,51 +10,28 @@ import { Unit } from './model/unit';
   providedIn: 'root',
 })
 export class UnitService {
-  units: Unit[] = [
-    {
-      id: 1,
-      owner: AuthService.users[0],
-      name: 'Süsü konyhája',
-      shortDesc: 'hagyományos magyar',
-      description: 'Mesebeli magyar ételek',
-    },
-    {
-      id: 2,
-      owner: AuthService.users[1],
-      name: 'Gyors Gyros',
-      shortDesc: 'görög, közel-keleti',
-      description: 'A pitába!',
-    },
-  ];
-
-  plans: Floor_Plan[] = [
-    { id: 1, unit: this.units[0], width: 8, height: 8 },
-    { id: 2, unit: this.units[1], width: 13, height: 9 },
-  ];
 
   entities: Entity[] = [];
 
   reservables: Reservable[] = [];
 
-  constructor() {}
+  constructor(private http: HttpClient) {}
 
-  getUnit(unitId: number) {
-    return this.units.find((u) => u.id === unitId);
+  async getUnit(id: number): Unit {
+    const unit = await lastValueFrom(this.http.get(`/api/unit/${id}`)) as Unit;
+    return unit;
   }
 
-  getUnits() {
-    return this.units;
+  async getUnits() {
+    return await lastValueFrom(this.http.get('/api/unit'));
   }
 
-  deleteUnit(id: number) {
-    this.units.splice(
-      this.units.findIndex((u) => u.id === id),
-      1
-    );
+  async deleteUnit(id: number) {
+    return await lastValueFrom(this.http.delete(`/api/unit/${id}`))
   }
 
-  getUnitPlan(unit: Unit) {
-    return this.plans.find((p) => p.unit === unit);
+  async getUnitPlan(unit: Unit) {
+    return ;
   }
 
   getEntities(plan: Floor_Plan) {

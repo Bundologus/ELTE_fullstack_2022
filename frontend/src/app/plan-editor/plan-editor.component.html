@@ -8,7 +8,7 @@
           Belső azonosító: <b>{{ unit!.id }}</b>
         </p>
       </ng-container>
-      <ng-container *ngIf="authService.isOwnerOf(unit!)">
+      <ng-container *ngIf="userService.isOwnerOf(unit!)">
         <form [formGroup]="planSizeForm" (ngSubmit)="changePlanSize()">
           <div style="display: flex; width: 100%">
             <mat-form-field
@@ -115,7 +115,7 @@
           </form>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="!authService.isOwnerOf(unit!)">
+      <ng-container *ngIf="!userService.isOwnerOf(unit!)">
         <div
           style="
             display: flex;
