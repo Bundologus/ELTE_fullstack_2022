@@ -1,43 +1,45 @@
 <div class="editor-area">
-  <div class="editor-toolbar">
-    <button
-      mat-raised-button
-      color="accent"
-      style="margin-right: 10px"
-      (click)="savePlan()"
-    >
-      Mentés
-    </button>
-    <mat-button-toggle-group #paint_tool (change)="onChangePaintTool($event)">
-      <mat-button-toggle value="walls" checked=""
-        ><mat-icon>border_style</mat-icon> Fal</mat-button-toggle
+  <ng-container *ngIf="authService.isOwnerOf(plan.unit!)">
+    <div class="editor-toolbar">
+      <button
+        mat-raised-button
+        color="accent"
+        style="margin-right: 10px"
+        (click)="savePlan()"
       >
-      <mat-button-toggle value="doors"
-        ><mat-icon>meeting_room</mat-icon> Ajtó</mat-button-toggle
-      >
-      <mat-button-toggle value="windows"
-        ><mat-icon>window</mat-icon> Ablak</mat-button-toggle
-      >
-      <mat-button-toggle value="tables"
-        ><mat-icon>table_restaurant</mat-icon> Asztal
-      </mat-button-toggle>
-      <mat-button-toggle value="chairs"
-        ><mat-icon>chair</mat-icon> Szék</mat-button-toggle
-      >
-      <mat-button-toggle value="text"
-        ><mat-icon>notes</mat-icon> Felirat</mat-button-toggle
-      >
-      <mat-button-toggle value="edit"
-        ><mat-icon>highlight_alt</mat-icon> Kijelölés</mat-button-toggle
-      >
-    </mat-button-toggle-group>
-    <input
-      mat-input
-      id="datafield"
-      [(ngModel)]="editorOptions.customData"
-      (ngModelChange)="onChangeDatafield($event)"
-    />
-  </div>
+        Mentés
+      </button>
+      <mat-button-toggle-group #paint_tool (change)="onChangePaintTool($event)">
+        <mat-button-toggle value="walls"
+          ><mat-icon>border_style</mat-icon> Fal</mat-button-toggle
+        >
+        <mat-button-toggle value="doors"
+          ><mat-icon>meeting_room</mat-icon> Ajtó</mat-button-toggle
+        >
+        <mat-button-toggle value="windows"
+          ><mat-icon>window</mat-icon> Ablak</mat-button-toggle
+        >
+        <mat-button-toggle value="tables"
+          ><mat-icon>table_restaurant</mat-icon> Asztal
+        </mat-button-toggle>
+        <mat-button-toggle value="chairs"
+          ><mat-icon>chair</mat-icon> Szék</mat-button-toggle
+        >
+        <mat-button-toggle value="text"
+          ><mat-icon>notes</mat-icon> Felirat</mat-button-toggle
+        >
+        <mat-button-toggle value="edit" checked=""
+          ><mat-icon>highlight_alt</mat-icon> Szerkesztés</mat-button-toggle
+        >
+      </mat-button-toggle-group>
+      <input
+        mat-input
+        id="datafield"
+        [(ngModel)]="editorOptions.customData"
+        (ngModelChange)="onChangeDatafield($event)"
+      />
+    </div>
+  </ng-container>
   <table width="{{ cols * 80 }}px">
     <ng-container *ngFor="let row of grids">
       <tr>
@@ -47,6 +49,8 @@
               [grid]="grid"
               [grids]="grids"
               [editorOptions]="editorOptions"
+              (onGridChange)="onGridChange()"
+              (onSelectReservable)="onReservableSelected($event)"
             ></app-grid-element>
           </td>
         </ng-container>

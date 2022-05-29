@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Grid } from '../core/grid';
 import { Entity_Type } from '../core/model/entity';
+import { Reservable } from '../core/model/reservable';
 import { EditorOptions } from '../grid-editor/grid-editor.component';
 
 @Component({
@@ -13,6 +14,9 @@ export class GridElementComponent implements OnInit {
   @Input() grid!: Grid;
   @Input() grids!: Grid[][];
   @Input() editorOptions!: EditorOptions;
+
+  @Output() onGridChange: EventEmitter<void> = new EventEmitter();
+  @Output() onSelectReservable: EventEmitter<Reservable> = new EventEmitter();
 
   public static dirs: [number, number][] = [
     [0, 0],
@@ -44,8 +48,9 @@ export class GridElementComponent implements OnInit {
     if (!this.evaluateSideEligibility(dir)) return;
     if (this.editorOptions.paintTool === 'walls') {
       if (this.grid.type[dir] === Entity_Type.Table) {
-        this.grid.type[dir] = Entity_Type.None;
-        this.removeTable();
+        //this.grid.type[dir] = Entity_Type.None;
+        //this.removeTable();
+        return;
       }
       this.setNeighboringSides(dir, Entity_Type.Wall);
     } else if (this.editorOptions.paintTool === 'doors') {
@@ -55,22 +60,29 @@ export class GridElementComponent implements OnInit {
     } else if (this.editorOptions.paintTool === 'tables') {
       if (
         this.setNeighboringSides(dir, Entity_Type.Table) === Entity_Type.Table
-      )
+      ) {
         this.placeTable();
-      else this.removeTable();
+      } else {
+        this.removeTable();
+      }
     } else if (this.editorOptions.paintTool === 'chairs') {
       if (this.grid.type[dir] === Entity_Type.Table) {
-        this.grid.type[dir] = Entity_Type.None;
-        this.removeTable();
+        //this.grid.type[dir] = Entity_Type.None;
+        //this.removeTable();
+        return;
       }
       if (
         this.setNeighboringSides(dir, Entity_Type.Chair) === Entity_Type.Chair
-      )
+      ) {
         this.placeChair();
+      } else {
+        this.editorOptions.isDirty = true;
+      }
     } else if (this.editorOptions.paintTool === 'text') {
       if (this.grid.type[dir] === Entity_Type.Table) {
-        this.grid.type[dir] = Entity_Type.None;
-        this.removeTable();
+        //this.grid.type[dir] = Entity_Type.None;
+        //this.removeTable();
+        return;
       }
       this.setNeighboringSides(dir, Entity_Type.Misc);
       this.grid.caption = this.editorOptions.customData;
@@ -83,11 +95,16 @@ export class GridElementComponent implements OnInit {
       ) {
         this.editorOptions.customData = this.grid.caption;
         this.editorOptions.selectedGrid = this.grid;
+        if (this.grid.type[0] === Entity_Type.Table)
+          this.onSelectReservable.emit(this.grid.reservableData);
+        console.log(this.grid);
       } else {
         this.editorOptions.customData = undefined;
         this.editorOptions.selectedGrid = undefined;
+        this.onSelectReservable.emit(undefined);
       }
     }
+    if (this.editorOptions.paintTool !== 'edit') this.onGridChange.emit();
   }
 
   placeTable() {
@@ -100,6 +117,15 @@ export class GridElementComponent implements OnInit {
     // Nincs asztal mellette
     if (neighboringTables.length === 0) {
       this.grid.runtimeId = this.editorOptions.nextId++;
+      this.grid.reservableData = {
+        id: -1, // azt jelzi, hogy ez teljesen új Reservable lesz az adatbázisban
+        name: 'Asztal ' + this.grid.runtimeId,
+        minSpaces: 1,
+        maxSpaces: 0,
+        minTime: { hours: 1, minutes: 0 },
+        maxTime: { hours: 3, minutes: 0 },
+        timeStep: { hours: 0, minutes: 30 },
+      };
     }
     // Egy asztal, vagy ugyanannak a nagy asztalnak több eleme van mellette
     else if (
@@ -108,14 +134,17 @@ export class GridElementComponent implements OnInit {
       ).length === 0
     ) {
       this.grid.runtimeId = neighboringTables[0].runtimeId;
+      this.grid.reservableData = neighboringTables[0].reservableData;
     }
     // Több különböző asztal van mellette
     else {
       this.setNeighboringSides(0, Entity_Type.None);
     }
+    this.editorOptions.isDirty = true;
   }
 
   removeTable() {
+    this.grid.caption = undefined;
     const neighboringChairs: Grid[] =
       GridElementComponent.getNeighboringEntities(
         this.grid,
@@ -134,6 +163,7 @@ export class GridElementComponent implements OnInit {
         grid.type[0] = Entity_Type.None;
       }
     }
+    this.editorOptions.isDirty = true;
   }
 
   placeChair() {
@@ -154,6 +184,7 @@ export class GridElementComponent implements OnInit {
       ).length === 0
     ) {
       this.grid.runtimeId = neighboringTables[0].runtimeId;
+      this.editorOptions.isDirty = true;
     }
     // Több különböző asztal van mellette
     else {

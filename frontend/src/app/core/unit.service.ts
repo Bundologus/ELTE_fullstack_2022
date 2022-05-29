@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
+
 import { Entity } from './model/entity';
 import { Floor_Plan } from './model/floor_plan';
+import { Reservable } from './model/reservable';
 import { Unit } from './model/unit';
 
 @Injectable({
@@ -31,6 +33,8 @@ export class UnitService {
   ];
 
   entities: Entity[] = [];
+
+  reservables: Reservable[] = [];
 
   constructor() {}
 
@@ -68,6 +72,33 @@ export class UnitService {
   deleteEntity(entity: Entity) {
     this.entities.splice(
       this.entities.findIndex((e) => e === entity),
+      1
+    );
+  }
+
+  getReservables() {
+    console.log(this.reservables);
+    return this.reservables;
+  }
+
+  createReservable(reservable: Reservable) {
+    reservable.id = this.reservables.length + 1;
+    this.reservables.push(reservable);
+    console.log(this.reservables);
+    return reservable;
+  }
+
+  updateReservable(reservable: Reservable) {
+    const reservableId: number = this.reservables.findIndex(
+      (r) => r.id === reservable.id
+    );
+    if (reservableId === 0) return;
+    this.reservables.splice(reservableId, 1, reservable);
+  }
+
+  deleteReservable(reservable: Reservable) {
+    this.reservables.splice(
+      this.reservables.findIndex((r) => r.id === reservable.id),
       1
     );
   }
