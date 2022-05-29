@@ -5,6 +5,7 @@ use App\Http\Controllers\Address\CountryController;
 use App\Http\Controllers\Address\DistrictController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\Unit\FloorPlanController;
+use App\Http\Controllers\Unit\FpEntityController;
 use App\Http\Controllers\Unit\OpeningHoursController;
 use App\Http\Controllers\Unit\ReservableController;
 use App\Http\Controllers\Unit\UnitController;
@@ -21,6 +22,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+/**
+ * 
+ */
 
 Route::middleware(['auth:sanctum'])->get('user', function (Request $request) {
     return $request->user();
