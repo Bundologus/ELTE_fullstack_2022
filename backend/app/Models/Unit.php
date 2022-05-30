@@ -48,6 +48,7 @@ class Unit extends Model {
 
     public function district() {
         return $this->belongsTo(District::class)->withDefault([
+            "id" => -1,
             "name" => "",
             "post_code" => $this->city->post_code,
             "full_name" => $this->city->name,
@@ -55,7 +56,13 @@ class Unit extends Model {
     }
 
     public function floorPlan() {
-        return $this->hasOne(FloorPlan::class);
+        return $this->hasOne(FloorPlan::class)->withDefault([
+            "id" => -1,
+            "unit_id" => $this->id,
+            "width" => 0,
+            "height" => 0,
+            "entities" => [],
+        ]);
     }
 
     public function getDefaultMinTimeAttribute($value) {
