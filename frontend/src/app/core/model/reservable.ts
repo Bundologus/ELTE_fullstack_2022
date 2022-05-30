@@ -1,11 +1,13 @@
 import { Time } from '@angular/common';
+import { OpeningHours } from './openingHours';
 
 export interface Reservable {
-  id?: number;
+  id: number;
   name: string;
-  minSpaces: number;
-  maxSpaces: number;
-  minTime: Time;
-  maxTime: Time;
-  timeStep: Time;
+  min_spaces: number;
+  max_spaces: number;
+  min_time: Time;
+  max_time: Time;
+  time_step: Time;
+  opening_hours: OpeningHours[];
 }

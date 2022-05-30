@@ -5,6 +5,7 @@ import { AuthService } from '../core/auth.service';
 import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
 import { User } from '../core/model/user';
+import { UserService } from '../core/user.service';
 
 @Component({
   selector: 'app-unit-list',
@@ -12,7 +13,7 @@ import { User } from '../core/model/user';
   styleUrls: ['./unit-list.component.scss'],
 })
 export class UnitListComponent implements OnInit {
-  users?: User[] = this.authService.getUsers();
+  //users?: User[] = this.authService.getUsers();
   units?: Unit[];
   paginatedUnits?: Unit[];
   firstPageSize: number = 5;
@@ -20,6 +21,7 @@ export class UnitListComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public userService: UserService,
     private unitService: UnitService,
     private router: Router
   ) {}
@@ -29,12 +31,12 @@ export class UnitListComponent implements OnInit {
     this.paginatedUnits = this.units?.slice(0, this.firstPageSize);
   }
 
-  filterUnits() {
-    let filteredUnits: Unit[] = this.unitService.getUnits();
+  async filterUnits() {
+    let filteredUnits: Unit[] = await this.unitService.getUnits() as Unit[];
     this.managerMode = this.router.url.endsWith('units');
     if (this.managerMode)
       filteredUnits = filteredUnits.filter(
-        (u) => u.owner === this.authService.getCurrentUser()
+        (u) => u.owner === this.userService.getCurrentUser()
       );
     this.units = filteredUnits;
   }

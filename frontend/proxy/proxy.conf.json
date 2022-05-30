@@ -1,9 +1,17 @@
 {
   "/api": {
-    "target": "http://localhost:3000",
+    "target": "http://localhost:8000",
+    "secure": false
+  },
+  "/sanctum": {
+    "target": "http://localhost:8000",
+    "secure": false
+  },
+  "/auth": {
+    "target": "http://localhost:8000",
     "secure": false,
     "pathRewrite": {
-      "^/api": ""
+      "^/auth": ""
     }
   }
 }

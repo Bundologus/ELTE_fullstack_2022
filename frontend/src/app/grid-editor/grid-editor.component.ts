@@ -9,11 +9,12 @@ import {
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 
 import { AuthService } from '../core/auth.service';
-import { Grid } from '../core/grid';
+import { Grid } from '../core/model/grid';
 import { Entity, Entity_Type } from '../core/model/entity';
-import { Floor_Plan } from '../core/model/floor_plan';
+import { FloorPlan } from '../core/model/floorPlan';
 import { Reservable } from '../core/model/reservable';
 import { UnitService } from '../core/unit.service';
+import { UserService } from '../core/user.service';
 import { GridElementComponent } from '../grid-element/grid-element.component';
 
 export class EditorOptions {
@@ -30,7 +31,7 @@ export class EditorOptions {
   styleUrls: ['./grid-editor.component.scss'],
 })
 export class GridEditorComponent implements OnInit {
-  @Input() plan!: Floor_Plan;
+  @Input() plan!: FloorPlan;
 
   @Output() onSelectReservable: EventEmitter<Reservable> = new EventEmitter();
   @Output() onDeselectReservable: EventEmitter<void> = new EventEmitter();
@@ -44,6 +45,7 @@ export class GridEditorComponent implements OnInit {
 
   constructor(
     public authService: AuthService,
+    public userService: UserService,
     private unitService: UnitService
   ) {}
 
@@ -82,7 +84,7 @@ export class GridEditorComponent implements OnInit {
     for (let y = 0; y < this.rows; y++) {
       for (let x = 0; x < this.cols; x++) {
         if (this.grids[y][x].type[0] === Entity_Type.Table) {
-          this.grids[y][x].reservableData!.maxSpaces = 0;
+          this.grids[y][x].reservableData!.max_spaces = 0;
         }
         this.grids[y][x].special = false;
       }
@@ -97,7 +99,7 @@ export class GridEditorComponent implements OnInit {
           );
           for (var chair of chairs) {
             if (this.grids[chair.y][chair.x].special === false) {
-              this.grids[y][x].reservableData!.maxSpaces++;
+              this.grids[y][x].reservableData!.max_spaces++;
               this.grids[chair.y][chair.x].special = true;
             }
           }
@@ -108,11 +110,11 @@ export class GridEditorComponent implements OnInit {
       for (let x = 0; x < this.cols; x++) {
         if (this.grids[y][x].type[0] === Entity_Type.Table) {
           if (
-            this.grids[y][x].reservableData!.minSpaces >
-            this.grids[y][x].reservableData!.maxSpaces
+            this.grids[y][x].reservableData!.min_spaces >
+            this.grids[y][x].reservableData!.max_spaces
           )
-            this.grids[y][x].reservableData!.minSpaces =
-              this.grids[y][x].reservableData!.maxSpaces;
+            this.grids[y][x].reservableData!.min_spaces =
+              this.grids[y][x].reservableData!.max_spaces;
         }
       }
     }
@@ -154,8 +156,7 @@ export class GridEditorComponent implements OnInit {
     const entities: Entity[] = [];
     const tables = [];
 
-    const wall: Entity = new Entity();
-    wall.floorPlan = this.plan;
+    const wall: Entity = new Entity(this.plan.id);
     wall.type = Entity_Type.Wall;
     wall.vertices = this.bakeWallEntity();
     entities.push(wall);
@@ -169,8 +170,7 @@ export class GridEditorComponent implements OnInit {
             this.grids[y][x].type[d] === Entity_Type.Chair ||
             this.grids[y][x].type[d] === Entity_Type.Misc
           ) {
-            const entity: Entity = new Entity();
-            entity.floorPlan = this.plan;
+            const entity: Entity = new Entity(this.plan.id);
             entity.type = this.grids[y][x].type[d];
             entity.data = this.grids[y][x].caption;
             const vertices = [{ x: x, y: y, d: d }];
@@ -195,9 +195,8 @@ export class GridEditorComponent implements OnInit {
     const tableGroups = this.groupBy(tables, 'id');
     const keys = Object.keys(tableGroups);
     for (let i = 0; i < keys.length; i++) {
-      const tableGroup: Entity = new Entity();
+      const tableGroup: Entity = new Entity(this.plan.id);
       const key: string = keys[i].toString();
-      tableGroup.floorPlan = this.plan;
       if (tableGroups[key][0].reservableData.id === -1) {
         // Új Reservable tényleges létrehozhása, visszakapjuk a DB id-t
         tableGroups[key][0].reservableData = this.unitService.createReservable(
@@ -207,7 +206,7 @@ export class GridEditorComponent implements OnInit {
         // Reservable DB módosítása
         this.unitService.updateReservable(tableGroups[key][0].reservableData);
       }
-      tableGroup.reservable = tableGroups[key][0].reservableData;
+      // TODO fix me: tableGroup.reservable = tableGroups[key][0].reservableData;
       tableGroup.type = Entity_Type.Table;
       tableGroup.data = tableGroups[key][0].data;
       const vertices = [];

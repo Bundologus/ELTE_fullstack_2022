@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { Grid } from '../core/grid';
+import { Grid } from '../core/model/grid';
 import { GridCenterComponent } from './grid-center.component';
 
 describe('GridCenterComponent', () => {

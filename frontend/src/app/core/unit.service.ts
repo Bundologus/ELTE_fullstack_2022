@@ -1,67 +1,93 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { AuthService } from './auth.service';
-
+import { lastValueFrom } from 'rxjs';
+import { BackendResponse } from './model/backendResponse';
 import { Entity } from './model/entity';
-import { Floor_Plan } from './model/floor_plan';
+import { FloorPlan } from './model/floorPlan';
 import { Reservable } from './model/reservable';
-import { Unit } from './model/unit';
+import { CondensedUnit, PostUnitData, Unit } from './model/unit';
+
+export enum FilterType {
+  CONDENSED = "condensed",
+  OWNER_ID = "owner_id",
+  COUNTRY_ID = "country_id",
+  CITY_ID = "city_id",
+  DISTRICT_ID = "district_id",
+  ADMIN_ID = "admin_id",
+}
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class UnitService {
-  units: Unit[] = [
-    {
-      id: 1,
-      owner: AuthService.users[0],
-      name: 'Süsü konyhája',
-      shortDesc: 'hagyományos magyar',
-      description: 'Mesebeli magyar ételek',
-    },
-    {
-      id: 2,
-      owner: AuthService.users[1],
-      name: 'Gyors Gyros',
-      shortDesc: 'görög, közel-keleti',
-      description: 'A pitába!',
-    },
-  ];
+  constructor(private http: HttpClient) {}
 
-  plans: Floor_Plan[] = [
-    { id: 1, unit: this.units[0], width: 8, height: 8 },
-    { id: 2, unit: this.units[1], width: 13, height: 9 },
-  ];
-
-  entities: Entity[] = [];
-
-  reservables: Reservable[] = [];
-
-  constructor() {}
-
-  getUnit(unitId: number) {
-    return this.units.find((u) => u.id === unitId);
+  /**
+   * CORE UNIT HANDLERS
+   */
+  async postUnit(unitData: PostUnitData) {
+    const response = await lastValueFrom(this.http.post('/api/unit', unitData));
+    console.log(response);
   }
 
-  getUnits() {
-    return this.units;
+  async getUnit(id: number){
+    const unit = await lastValueFrom(this.http.get(`/api/unit/${id}`)) as Unit;
+    return unit;
   }
 
-  deleteUnit(id: number) {
-    this.units.splice(
-      this.units.findIndex((u) => u.id === id),
-      1
-    );
+  async getUnits(filters: Array<[FilterType, any]> = []) {
+    let path = '/api/unit';
+    if (filters !== []) {
+      path = path + "?";
+
+      filters.forEach((type, value) => {
+        path = path + `${type}=${value}`;
+      });
+    }
+    console.log(path);
+
+    const response =  await lastValueFrom(this.http.get(path)) as BackendResponse<Unit | CondensedUnit>;
+    return response.data;
   }
 
-  getUnitPlan(unit: Unit) {
-    return this.plans.find((p) => p.unit === unit);
+  async updateUnit(id: number, unitData: PostUnitData, fullResponse: boolean = false) {
+    const response = await lastValueFrom(this.http.put(
+        `/api/unit/${id}?full=${fullResponse}`,
+        unitData
+      )) as BackendResponse<Unit | CondensedUnit>;
+
+    return response.data;
   }
 
-  getEntities(plan: Floor_Plan) {
-    return this.entities.filter((e) => e.floorPlan === plan);
+  async deleteUnit(id: number) {
+    return await lastValueFrom(this.http.delete(`/api/unit/${id}`));
   }
 
-  setEntities(plan: Floor_Plan, entities: Entity[]) {
+
+  /**
+   * UNIT FLOOR PLAN HANDLERS
+   */
+  async getUnitPlan(unit: Unit) {
+    const response = await lastValueFrom(
+        this.http.get(`/api/unit/${unit.id}/floor_plan`)
+      ) as BackendResponse<FloorPlan>;
+    return response.data;
+  }
+
+
+  /**
+   * FLOOR PLAN ENTITY HANDLERS
+   */
+
+  async getEntities(plan: FloorPlan) {
+    const response = await lastValueFrom(
+        this.http.get(`/api/unit/${plan.unit_id}/floor_plan/entity`)
+      ) as BackendResponse<Entity[]>;
+    return response.data;
+  }
+
+  setEntities(plan: FloorPlan, entities: Entity[]) {
     const entitiesToRemove: Entity[] = this.getEntities(plan);
     for (var entity of entitiesToRemove) {
       this.deleteEntity(entity);
@@ -76,6 +102,10 @@ export class UnitService {
     );
   }
 
+
+  /**
+   * RESERVABLE HANDLERS
+   */
   getReservables() {
     console.log(this.reservables);
     return this.reservables;

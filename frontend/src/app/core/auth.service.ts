@@ -1,65 +1,50 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Unit } from './model/unit';
-import { User, UserRole } from './model/user';
+import { lastValueFrom } from 'rxjs';
+import { User } from './model/user';
+import { UserService } from './user.service';
 
 export interface UserAuthRequest {
-  userName: string;
+  email: string;
   password: string;
 }
 
 @Injectable({
   providedIn: 'root',
 })
-export class AuthService {
-  static users: User[] = [
-    {
-      firstName: 'Süsü',
-      email: 'susu@hetedhet.hu',
-      role: UserRole.Owner,
-    },
-    {
-      firstName: 'Leonidász',
-      email: 'this_is@sparta.gr',
-      role: UserRole.Owner,
-    },
-    {
-      firstName: 'Elek',
-      email: 'elek@teszt.hu',
-      role: UserRole.User,
-    },
-  ];
 
-  private _currentUser?: User = AuthService.users[0];
+export class AuthService {
+
+  private _loggedIn = false;
+
+  constructor(private http: HttpClient, private userSvc: UserService) {}
 
   isDebugMode() {
     return true;
   }
 
+  async login(userAuthRequest: UserAuthRequest) {
+    //const user$ = this.http.post('/login', userAuthRequest);
+    //this._currentUser = await lastValueFrom(user$) as User;
+    await lastValueFrom(this.http.get('/sanctum/csrf-cookie'));
+    await lastValueFrom(
+      this.http.post('/auth/login', userAuthRequest)
+    );
+
+    const user = await lastValueFrom(this.http.get('/api/user')) as User;
+    if (userAuthRequest.email === user.email) {
+      this.userSvc.setCurrentUser(user);
+      this._loggedIn = true;
+    }
+  }
+
+  async logout() {
+    await lastValueFrom(this.http.post('/auth/logut', {}));
+    this.userSvc.setCurrentUser(UserService._noUser);
+    this._loggedIn = false;
+  }
+
   isLoggedIn() {
-    return this._currentUser !== undefined;
-  }
-
-  isOwner() {
-    return this.isLoggedIn() && this._currentUser?.role === UserRole.Owner;
-  }
-
-  isOwnerOf(unit: Unit) {
-    return unit.owner === this._currentUser;
-  }
-
-  login() {
-    this._currentUser = AuthService.users[0];
-  }
-
-  logout() {
-    this._currentUser = undefined;
-  }
-
-  getUsers() {
-    return AuthService.users;
-  }
-
-  getCurrentUser() {
-    return this._currentUser;
+    return this._loggedIn;
   }
 }

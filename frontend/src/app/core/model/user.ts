@@ -1,14 +1,8 @@
 export interface User {
-  id?: number;
-  firstName: string;
-  lastName?: string;
+  id: number;
+  first_name: string;
+  last_name: string;
   email: string;
-  phone?: string;
-  role: UserRole;
-  // TBD: authentication data
-}
-
-export enum UserRole {
-  Owner = 'OWNER',
-  User = 'USER',
+  phone: string;
+  admin?: boolean;
 }
