@@ -15,6 +15,8 @@ export interface UserAuthRequest {
 
 export class AuthService {
 
+  private _loggedIn = false;
+
   constructor(private http: HttpClient, private userSvc: UserService) {}
 
   isDebugMode() {
@@ -32,12 +34,17 @@ export class AuthService {
     const user = await lastValueFrom(this.http.get('/api/user')) as User;
     if (userAuthRequest.email === user.email) {
       this.userSvc.setCurrentUser(user);
+      this._loggedIn = true;
     }
   }
 
   async logout() {
     await lastValueFrom(this.http.post('/auth/logut', {}));
     this.userSvc.setCurrentUser(UserService._noUser);
+    this._loggedIn = false;
   }
 
+  isLoggedIn() {
+    return this._loggedIn;
+  }
 }

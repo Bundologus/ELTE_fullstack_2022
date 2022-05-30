@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { Grid } from '../core/grid';
+import { Grid } from '../core/model/grid';
 import { Entity_Type } from '../core/model/entity';
 import { Reservable } from '../core/model/reservable';
 import { EditorOptions } from '../grid-editor/grid-editor.component';

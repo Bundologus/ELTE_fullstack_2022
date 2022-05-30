@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Time } from '@angular/common';
 
 import { AuthService } from '../core/auth.service';
-import { Floor_Plan } from '../core/model/floor_plan';
+import { FloorPlan } from '../core/model/floorPlan';
 import { Reservable } from '../core/model/reservable';
 import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
@@ -26,7 +26,7 @@ export class PlanEditorComponent implements OnInit {
   @ViewChild('grid_editor') gridEditor!: GridEditorComponent;
 
   unit?: Unit;
-  plan?: Floor_Plan;
+  plan?: FloorPlan;
   reservable?: Reservable;
 
   planSizeForm: FormGroup = this.formBuilder.group({
@@ -53,16 +53,16 @@ export class PlanEditorComponent implements OnInit {
   reservableEditorForm: FormGroup = this.formBuilder.group({
     name: [this.reservable?.name, [Validators.required]],
     minSpaces: [
-      this.reservable?.minSpaces,
+      this.reservable?.min_spaces,
       [Validators.required, Validators.min(1), CustomPlanValidators.isNumbers],
     ],
     maxSpaces: [
-      this.reservable?.maxSpaces,
+      this.reservable?.max_spaces,
       [Validators.required, Validators.min(1), CustomPlanValidators.isNumbers],
     ],
-    minTime: [this.reservable?.minTime, [Validators.required]],
-    maxTime: [this.reservable?.maxTime, [Validators.required]],
-    timeStep: [this.reservable?.timeStep, [Validators.required]],
+    minTime: [this.reservable?.min_time, [Validators.required]],
+    maxTime: [this.reservable?.max_time, [Validators.required]],
+    timeStep: [this.reservable?.time_step, [Validators.required]],
   });
 
   constructor(
@@ -77,7 +77,7 @@ export class PlanEditorComponent implements OnInit {
     const unitId = this.route.snapshot.paramMap.get('unitId');
     if (unitId) {
       this.unit = await this.unitService.getUnit(Number(unitId));
-      this.plan = await this.unitService.getUnitPlan(this.unit!);
+      this.plan = await this.unitService.getUnitPlan(this.unit!) as FloorPlan;
     }
     await this.planSizeForm.setValue({
       width: this.plan?.width,
@@ -108,9 +108,9 @@ export class PlanEditorComponent implements OnInit {
       return;
     }
     this.reservable!.name = this.reservableEditorForm.controls['name'].value;
-    this.reservable!.minSpaces =
+    this.reservable!.min_spaces =
       this.reservableEditorForm.controls['minSpaces'].value;
-    this.reservable!.maxSpaces =
+    this.reservable!.max_spaces =
       this.reservableEditorForm.controls['maxSpaces'].value;
     // A minTime, maxTime, timeStep egyelőre nem frissíthető, majd ha a fontosabb részek mind működnek,
     // még lehet ezzel foglalkozni.
@@ -123,11 +123,11 @@ export class PlanEditorComponent implements OnInit {
     if (this.reservable === undefined) return;
     this.reservableEditorForm.setValue({
       name: this.reservable.name,
-      minSpaces: this.reservable.minSpaces,
-      maxSpaces: this.reservable.maxSpaces,
-      minTime: this.timeToString(this.reservable.minTime),
-      maxTime: this.timeToString(this.reservable.maxTime),
-      timeStep: this.timeToString(this.reservable.timeStep),
+      minSpaces: this.reservable.min_spaces,
+      maxSpaces: this.reservable.max_spaces,
+      minTime: this.timeToString(this.reservable.min_time),
+      maxTime: this.timeToString(this.reservable.max_time),
+      timeStep: this.timeToString(this.reservable.time_step),
     });
   }
 

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { Grid } from '../core/grid';
+import { Grid } from '../core/model/grid';
 import { Entity_Type } from '../core/model/entity';
 
 export enum ElementType {

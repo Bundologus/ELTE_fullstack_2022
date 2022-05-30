@@ -31,8 +31,8 @@ export class UnitListComponent implements OnInit {
     this.paginatedUnits = this.units?.slice(0, this.firstPageSize);
   }
 
-  filterUnits() {
-    let filteredUnits: Unit[] = this.unitService.getUnits();
+  async filterUnits() {
+    let filteredUnits: Unit[] = await this.unitService.getUnits() as Unit[];
     this.managerMode = this.router.url.endsWith('units');
     if (this.managerMode)
       filteredUnits = filteredUnits.filter(

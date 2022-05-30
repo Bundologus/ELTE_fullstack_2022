@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { lastValueFrom } from 'rxjs';
-import { AuthService } from './auth.service';
+import { BackendResponse } from './model/backendResponse';
 import { Unit } from './model/unit';
 import { User } from './model/user';
+import { FilterType, UnitService } from './unit.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +18,11 @@ export class UserService {
     last_name: "",
     email: "",
     phone: "",
-    admin: false,
   }
 
   private _currentUser: User = UserService._noUser;
 
-  constructor(private http: HttpClient, private authSvc: AuthService) { }
+  constructor(private http: HttpClient, private unitSvc: UnitService) { }
 
   getCurrentUser() {
     return this._currentUser;
@@ -32,9 +32,9 @@ export class UserService {
     this._currentUser = user;
   }
 
-  async isOwner() {
+  async isOwner(user: User = this._currentUser) {
+    const units = await this.unitSvc.getUnits([{name: FilterType.OWNER_ID, value: user.id}]);
     return true;
-    // TODO get owned items of user and return if there are more than 0
   }
 
   isOwnerOf(unit: Unit) {
@@ -42,8 +42,8 @@ export class UserService {
   }
 
   async getUsers() {
-    const result = await lastValueFrom(this.http.get('/api/users'));
-    console.log(result);
-    return result;
+    const result = await lastValueFrom(this.http.get('/api/users')) as BackendResponse<User>;
+    console.log(result.data);
+    return result.data;
   }
 }
