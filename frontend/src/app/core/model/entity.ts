@@ -1,13 +1,16 @@
-import { Floor_Plan } from './floor_plan';
-import { Reservable } from './reservable';
-
 export class Entity {
+  constructor(fpId: number) {
+    this.floor_plan_id = fpId;
+    this.type = 0;
+    this.data = "";
+    this.vertices = "";
+  }
+
   id?: number;
-  floorPlan!: Floor_Plan; // link to DTO
-  reservable?: Reservable; // link to DTO
-  type!: Entity_Type;
-  data?: string;
-  vertices!: string;
+  floor_plan_id: number;
+  type: Entity_Type;
+  data: string;
+  vertices: string;
 }
 
 export enum Entity_Type {

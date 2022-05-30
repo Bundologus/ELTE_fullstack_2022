@@ -1,5 +1,5 @@
-import { Entity_Type } from './model/entity';
-import { Reservable } from './model/reservable';
+import { Entity_Type } from './entity';
+import { Reservable } from './reservable';
 
 // Runtime-only representation of editor grid elements
 // Converted to Entity.vertices/custom_fp_data on save
@@ -11,7 +11,7 @@ export class Grid {
   isLastY!: boolean;
   isMarked!: boolean[];
   type!: Entity_Type[];
-  caption?: string;
+  caption: string;
   runtimeId: number = 0; // only used for grouped entities (tables), all others (and also the first group) can have it at 0
   reservableData?: Reservable; // editor-only (identical) representation of reservable information
   special?: boolean; // editor-only special flag for some operations
@@ -23,5 +23,6 @@ export class Grid {
     this.isLastY = isLastY;
     this.isMarked = new Array(9).fill(false); // runtime highlighting
     this.type = new Array(9).fill(Entity_Type.None);
+    this.caption = "";
   }
 }
