@@ -8,7 +8,7 @@
           Belső azonosító: <b>{{ unit!.id }}</b>
         </p>
       </ng-container>
-      <ng-container *ngIf="userService.isOwnerOf(unit!)">
+      <ng-container *ngIf="isOwner()">
         <form [formGroup]="planSizeForm" (ngSubmit)="changePlanSize()">
           <div style="display: flex; width: 100%">
             <mat-form-field
@@ -115,7 +115,7 @@
           </form>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="!userService.isOwnerOf(unit!)">
+      <ng-container *ngIf="!isOwner()">
         <div
           style="
             display: flex;
@@ -129,14 +129,17 @@
         </div>
       </ng-container>
     </div>
-    <div class="editor-area">
-      <app-grid-editor
-        #grid_editor
-        [plan]="plan!"
-        (onSelectReservable)="onReservableSelected($event)"
-        (onDeselectReservable)="onReservableDeselected()"
-      ></app-grid-editor>
-    </div>
+    <ng-container *ngIf="plan">
+      <div class="editor-area">
+        <app-grid-editor
+          #grid_editor
+          [plan]="plan!"
+          [ownerMode]="isOwner()"
+          (onSelectReservable)="onReservableSelected($event)"
+          (onDeselectReservable)="onReservableDeselected()"
+        ></app-grid-editor>
+      </div>
+    </ng-container>
   </div>
 </ng-template>
 <ng-template #unitMissing>

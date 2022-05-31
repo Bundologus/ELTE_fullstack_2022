@@ -2,7 +2,6 @@
   <mat-paginator
     [length]="units?.length"
     [pageSizeOptions]="[firstPageSize, 10, 25]"
-    (page)="paginateUnits($event)"
   >
   </mat-paginator>
   <div style="height: 20px"></div>
@@ -13,14 +12,14 @@
           <mat-icon>restaurant</mat-icon>
           <span class="restaurant-title">{{ unit.name }}</span>
         </mat-panel-title>
-        <mat-panel-description>{{ unit.shortDesc }}</mat-panel-description>
+        <!--<mat-panel-description>{{ unit.description }}</mat-panel-description>-->
       </mat-expansion-panel-header>
       <p>{{ unit.description }}</p>
       <ng-container *ngIf="!managerMode">
         <p>
           <b>Tulajdonos:</b>
           <ng-container
-            *ngIf="!userService.isOwnerOf(unit); then notMyUnit; else myUnit"
+            *ngIf="!isOwnerOf(unit); then notMyUnit; else myUnit"
           ></ng-container>
           <ng-template #notMyUnit> {{ unit.owner.first_name }}</ng-template>
           <ng-template #myUnit>
@@ -30,14 +29,14 @@
       </ng-container>
       <mat-action-row>
         <button
-          *ngIf="!userService.isOwnerOf(unit)"
+          *ngIf="!isOwnerOf(unit)"
           mat-raised-button
           color="accent"
           [routerLink]="['/', 'reserve', unit.id]"
         >
           Asztalt foglalok!
         </button>
-        <ng-container *ngIf="userService.isOwnerOf(unit)">
+        <ng-container *ngIf="isOwnerOf(unit)">
           <button
             mat-raised-button
             color="accent"

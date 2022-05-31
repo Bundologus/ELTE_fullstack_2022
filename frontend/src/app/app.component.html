@@ -3,7 +3,7 @@
     <mat-toolbar-row>
       <span>{{ title }}</span>
       <div class="pull-right">
-        <ng-container *ngIf="!authService.isLoggedIn()">
+        <ng-container *ngIf="!authSvc.isLoggedIn()">
           <button
             mat-raised-button
             color="accent"
@@ -16,7 +16,7 @@
             Regisztráció
           </button>
         </ng-container>
-        <ng-container *ngIf="authService.isLoggedIn()">
+        <ng-container *ngIf="authSvc.isLoggedIn()">
           <button mat-stroked-button [routerLink]="['/', 'profile']">
             <mat-icon>account_circle</mat-icon>
             {{ userSvc.getCurrentUser().first_name }}
@@ -47,7 +47,7 @@
           Egységek kezelése
         </a>
         <a
-          *ngIf="authService.isLoggedIn()"
+          *ngIf="authSvc.isLoggedIn()"
           color="link"
           mat-stroked-button
           [routerLink]="['/', 'reservations']"
@@ -57,7 +57,7 @@
           Foglalásaim
         </a>
         <a
-          *ngIf="authService.isLoggedIn()"
+          *ngIf="authSvc.isLoggedIn()"
           color="link"
           mat-stroked-button
           [routerLink]="['/', 'profile']"
