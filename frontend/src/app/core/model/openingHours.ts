@@ -1,11 +1,13 @@
+import { Time } from '@angular/common';
+
 export interface OpeningHours {
   id: number;
   unit_id: number;
-  reservable_id: number;
+  //reservable_id: number;
   day_from: number;
   day_to: number;
-  specific_date_from: string;
-  specific_date_to: string;
-  time_from: string;
-  time_to: string;
+  specific_date_from?: Date;
+  specific_date_to?: Date;
+  time_from: Time;
+  time_to: Time;
 }

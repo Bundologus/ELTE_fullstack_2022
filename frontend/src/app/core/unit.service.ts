@@ -57,23 +57,45 @@ export class UnitService {
   units: Unit[] = [
     {
       id: 1,
-      owner: this.users[0],
+      owner_id: this.users[0].id,
       name: 'Süsü konyhája',
+      address: '1090 Budapest, Elek utca 1.',
       description: 'Mesebeli magyar ételek',
       floor_plan: this.plans[0],
       default_min_time: { hours: 1, minutes: 0 },
       default_max_time: { hours: 3, minutes: 0 },
       default_time_step: { hours: 0, minutes: 30 },
+      opening_hours: [
+        {
+          id: 1,
+          unit_id: 1,
+          day_from: 1,
+          day_to: 7,
+          time_from: { hours: 8, minutes: 0 },
+          time_to: { hours: 21, minutes: 0 },
+        },
+      ],
     },
     {
       id: 2,
-      owner: this.users[1],
+      owner_id: this.users[1].id,
       name: 'Gyors Gyros',
+      address: '1020 Budapest, Görög út 2.',
       description: 'A pitába!',
       floor_plan: this.plans[1],
       default_min_time: { hours: 2, minutes: 0 },
       default_max_time: { hours: 4, minutes: 0 },
       default_time_step: { hours: 1, minutes: 0 },
+      opening_hours: [
+        {
+          id: 2,
+          unit_id: 2,
+          day_from: 2,
+          day_to: 7,
+          time_from: { hours: 10, minutes: 0 },
+          time_to: { hours: 22, minutes: 30 },
+        },
+      ],
     },
   ];
 
@@ -140,6 +162,16 @@ export class UnitService {
     unitData: PostUnitData,
     fullResponse: boolean = false
   ) {
+    console.log('postUnit');
+
+    if (this._MOCK_ENABLED) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(this.mockUpdateUnit(id, unitData));
+        }, 10);
+      });
+    }
+
     const response = (await lastValueFrom(
       this.http.put(`/api/unit/${id}?full=${fullResponse}`, unitData)
     )) as BackendResponse<Unit | CondensedUnit>;
@@ -157,6 +189,13 @@ export class UnitService {
     }
 
     return await lastValueFrom(this.http.delete(`/api/unit/${id}`));
+  }
+
+  mockUpdateUnit(id: number, unitData: PostUnitData) {
+    const unit: Unit = this.units.find((u) => u.id === id)!;
+    unit.name = unitData.name;
+    unit.address = unitData.address;
+    unit.description = unitData.description;
   }
 
   /**

@@ -7,6 +7,7 @@ import {
   EditorOptions,
   GridEditorComponent,
 } from '../grid-editor/grid-editor.component';
+import { Unit } from '../core/model/unit';
 
 @Component({
   selector: 'app-grid-element',
@@ -14,6 +15,7 @@ import {
   styleUrls: ['./grid-element.component.scss'],
 })
 export class GridElementComponent implements OnInit {
+  @Input() unit!: Unit;
   @Input() grid!: Grid;
   @Input() grids!: Grid[][];
   @Input() editorOptions!: EditorOptions;
@@ -126,10 +128,10 @@ export class GridElementComponent implements OnInit {
         name: 'Asztal ' + this.grid.runtimeId,
         min_spaces: 1,
         max_spaces: 0,
-        min_time: { hours: 1, minutes: 0 },
-        max_time: { hours: 3, minutes: 0 },
-        time_step: { hours: 0, minutes: 30 },
-        opening_hours: [],
+        min_time: this.unit.default_min_time,
+        max_time: this.unit.default_max_time,
+        time_step: this.unit.default_time_step,
+        opening_hours: this.unit.opening_hours,
       };
     }
     // Egy asztal, vagy ugyanannak a nagy asztalnak több eleme van mellette

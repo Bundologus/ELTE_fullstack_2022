@@ -8,6 +8,62 @@
           Belső azonosító: <b>{{ unit!.id }}</b>
         </p>
       </ng-container>
+      <ng-container *ngIf="!isOwner() || authService.isDebugMode()">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 30px;
+          "
+        >
+          <h2>Asztalfoglalás</h2>
+          <p style="width: 260px">
+            Válassz egy dátumot és egy asztalt a szabad időpontok
+            megtekintéséhez!
+          </p>
+          <form
+            [formGroup]="createReservationForm"
+            (ngSubmit)="createReservation()"
+          >
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Dátum</mat-label>
+              <mat-select
+                formControlName="selectedDay"
+                name="selectedDay"
+                matInput
+              >
+                <mat-option *ngFor="let day of days" [value]="day.value">
+                  {{ day.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <!--
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Idősáv</mat-label>
+              <mat-select
+                formControlName="selectedTime"
+                name="selectedTime"
+                matInput
+              >
+                <mat-option *ngFor="let day of days" [value]="day.value">
+                  {{ day.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            -->
+          </form>
+          <div style="height: 60px"></div>
+        </div>
+      </ng-container>
       <ng-container *ngIf="isOwner()">
         <form [formGroup]="planSizeForm" (ngSubmit)="changePlanSize()">
           <div style="display: flex; width: 100%">
@@ -44,6 +100,77 @@
           </div>
           <button mat-raised-button color="accent" style="margin-top: 10px">
             Átméretezés
+          </button>
+        </form>
+        <form [formGroup]="unitDataForm" (ngSubmit)="changeUnit()">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              margin-top: 30px;
+            "
+          >
+            <h2>Étterem adatai</h2>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Név</mat-label>
+              <input formControlName="name" name="name" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Cím</mat-label>
+              <input formControlName="address" name="address" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Leírás</mat-label>
+              <input
+                formControlName="description"
+                name="description"
+                matInput
+              />
+            </mat-form-field>
+            <!--
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Alapértelmezett min. foglalási idő</mat-label>
+              <input formControlName="minTime" name="minTime" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Alapértelmezett max. foglalási idő</mat-label>
+              <input formControlName="maxTime" name="maxTime" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label
+                >Alapértelmezett foglalási időtartam léptetés</mat-label
+              >
+              <input formControlName="timeStep" name="timeStep" matInput />
+            </mat-form-field>
+            -->
+          </div>
+          <button mat-raised-button color="accent" style="margin-top: 10px">
+            Változtatások mentése
           </button>
         </form>
         <ng-container *ngIf="this.reservable !== undefined">
@@ -115,24 +242,12 @@
           </form>
         </ng-container>
       </ng-container>
-      <ng-container *ngIf="!isOwner()">
-        <div
-          style="
-            display: flex;
-            flex-direction: column;
-            width: 100%;
-            margin-top: 30px;
-          "
-        >
-          <h2>Asztalfoglalás</h2>
-          <p>Válassz egy asztalt a szabad időpontok megtekintéséhez!</p>
-        </div>
-      </ng-container>
     </div>
     <ng-container *ngIf="plan">
       <div class="editor-area">
         <app-grid-editor
           #grid_editor
+          [unit]="unit!"
           [plan]="plan!"
           [ownerMode]="isOwner()"
           (onSelectReservable)="onReservableSelected($event)"
