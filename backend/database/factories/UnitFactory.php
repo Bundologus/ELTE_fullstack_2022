@@ -30,17 +30,17 @@ class UnitFactory extends Factory {
         $min_time->multiply(rand(0, 2));
         $max_time->multiply(rand(2, 4));
 
-        $country_id = Country::all()->random()->id;
-        $city = City::where('country_id', $country_id)->get()->random();
-        $city_id = $city->id;
-        $district_id = $city->districts->count() > 0 ? $city->districts->random()->id : null;
+        //$country_id = Country::all()->random()->id;
+        //$city = City::where('country_id', $country_id)->get()->random();
+        //$city_id = $city->id;
+        //$district_id = $city->districts->count() > 0 ? $city->districts->random()->id : null;
 
         return [
             'name' => ucwords($this->faker->words($nameLength, true)),
             'owner_id' => User::where('admin', 0)->get()->random()->id,
-            'country_id' => $country_id,
+            /* 'country_id' => $country_id,
             'city_id' => $city_id,
-            'district_id' => $district_id,
+            'district_id' => $district_id, */
             'street_address' => $address,
             'description' => $this->faker->paragraph(rand(4, 6)),
             'reservation_terms' => $this->faker->paragraph(rand(4, 6)),

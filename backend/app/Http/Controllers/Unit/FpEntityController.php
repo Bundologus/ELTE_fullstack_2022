@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\FpEntityResource;
 use App\Models\FloorPlan;
 use App\Models\FpEntity;
+use App\Models\Reservable;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 
 class FpEntityController extends Controller {
@@ -56,6 +58,41 @@ class FpEntityController extends Controller {
         ]);
 
         return new FpEntityResource($new_fpEntity);
+    }
+
+    public function storeMany(Request $request, $unit_id) {
+        $data = $request->all();
+        //$floorPlan = FloorPlan::where('unit_id', '=', $unit_id)->getFirst();
+        $floorPlan = Unit::find($unit_id)->floorPlan;
+
+        // delete old entities without reservable
+        foreach ($floorPlan->fpEntites as $entity) {
+            if ($entity->resrvable = null) {
+                $entity->delete();
+            }
+        }
+
+        foreach ($data as $entity) {
+            if (array_key_exists('reservable_id', $entity)) {
+                // update entities with reservable
+                $dbEntity = Reservable::find($entity->reservable_id)->fpEntity;
+                $dbEntity->type = $entity->type;
+                $dbEntity->data = $entity->data;
+                $dbEntity->vertices = $entity->vertices;
+
+                $dbEntity->save();
+            } else {
+                // create new entities without reservable
+                $dbEntity = FpEntity::create([
+                    "floor_plan_id" => $floorPlan->id,
+                    "type" => $entity->type,
+                    "data" => $entity->data,
+                    "vertices" => $entity->vertices,
+                ]);
+            }
+        }
+
+        return FpEntityResource::collection($floorPlan->fpEntites);
     }
 
     /**

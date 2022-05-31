@@ -19,6 +19,13 @@ class FpEntityResource extends JsonResource {
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request) {
-        return parent::toArray($request);
+        return [
+            "id" => $this->id,
+            "floor_plan_id" => $this->floor_plan_id,
+            "type" => $this->type,
+            "data" => $this->data,
+            "vertices" => $this->vertices,
+            "reservable_id" => $this->when($this->reservable != null, $this->reservable->id),
+        ];
     }
 }

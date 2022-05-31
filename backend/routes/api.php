@@ -90,6 +90,7 @@ Route::controller(FloorPlanController::class)->group(function () {
 Route::controller(FpEntityController::class)->group(function () {
     Route::post('unit/{unit_id}/floor_plan/entity', 'store')->middleware('auth:sanctum');
     Route::get('unit/{unit_id}/floor_plan/entity', 'list');
+    Route::put('unit/{unit_id}/floor_plan/entity', 'storeMany')->middleware('auth:sanctum');
     Route::get('unit/{unit_id}/floor_plan/entity/{id}', 'show');
     Route::put('unit/{unit_id}/floor_plan/entity/{id}', 'update')->middleware('auth:sanctum');
     Route::delete('unit/{unit_id}/floor_plan/entity/{id}', 'destroy')->middleware('auth:sanctum');

@@ -10,9 +10,8 @@ use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\TestCase;
 
 class CountryTest extends TestCase {
-    use RefreshDatabase;
 
-    // post method
+    /*     // post method
     public function test_guest_can_not_post_country() {
         $response = $this->post(
             'api/country',
@@ -230,5 +229,5 @@ class CountryTest extends TestCase {
             ->get('api/country/' . $country->id);
 
         $response->assertStatus(404);
-    }
+    } */
 }
