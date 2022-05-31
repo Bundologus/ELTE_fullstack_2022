@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { AuthService } from '../core/auth.service';
 import { Unit } from '../core/model/unit';
 import { UnitService } from '../core/unit.service';
-import { User } from '../core/model/user';
 import { UserService } from '../core/user.service';
 
 @Component({
@@ -13,8 +12,7 @@ import { UserService } from '../core/user.service';
   styleUrls: ['./unit-list.component.scss'],
 })
 export class UnitListComponent implements OnInit {
-  //users?: User[] = this.authService.getUsers();
-  units?: Unit[];
+  units!: Unit[];
   paginatedUnits?: Unit[];
   firstPageSize: number = 5;
   managerMode: boolean = false;
@@ -26,23 +24,24 @@ export class UnitListComponent implements OnInit {
     private router: Router
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.filterUnits();
     this.paginatedUnits = this.units?.slice(0, this.firstPageSize);
   }
 
   async filterUnits() {
-    let filteredUnits: Unit[] = await this.unitService.getUnits() as Unit[];
+    let filteredUnits: Unit[] = (await this.unitService.getUnits()) as Unit[];
     this.managerMode = this.router.url.endsWith('units');
     if (this.managerMode)
       filteredUnits = filteredUnits.filter(
         (u) => u.owner === this.userService.getCurrentUser()
       );
     this.units = filteredUnits;
+    this.paginatedUnits = filteredUnits;
   }
 
-  paginateUnits(pageEvent: PageEvent) {
-    this.filterUnits();
+  async paginateUnits(pageEvent: PageEvent) {
+    await this.filterUnits();
     const startElement = pageEvent.pageIndex * pageEvent.pageSize;
     this.paginatedUnits = this.units?.slice(
       startElement,
@@ -55,4 +54,8 @@ export class UnitListComponent implements OnInit {
   goToUnitManagement(unit: Unit) {}
 
   goToReservationsManagement(unit: Unit) {}
+
+  isOwnerOf(unit: Unit) {
+    return unit.owner === this.userService.getCurrentUser();
+  }
 }

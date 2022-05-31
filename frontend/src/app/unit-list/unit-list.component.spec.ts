@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatAccordion, MatExpansionPanel } from '@angular/material/expansion';
+import { MatAccordion } from '@angular/material/expansion';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { UnitListComponent } from './unit-list.component';

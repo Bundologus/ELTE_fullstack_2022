@@ -1,5 +1,5 @@
 <div class="editor-area">
-  <ng-container *ngIf="userService.isOwnerOf(plan.unit!)">
+  <ng-container *ngIf="ownerMode">
     <div class="editor-toolbar">
       <button
         mat-raised-button

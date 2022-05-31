@@ -26,6 +26,7 @@ export class GridCenterComponent implements OnInit {
   @Output() onClick: EventEmitter<number> = new EventEmitter();
 
   backgroundColor!: string;
+  caption: string = '';
 
   constructor() {}
 
@@ -111,27 +112,39 @@ export class GridCenterComponent implements OnInit {
   }
 
   getCaption() {
-    if (
-      this.grid.type[0] === Entity_Type.Misc &&
-      this.elementType === ElementType.Center
-    ) {
-      return this.grid.caption !== '' && this.grid.caption !== undefined
-        ? this.grid.caption
-        : '(felirat)';
-    } else if (
-      this.grid.type[0] === Entity_Type.Table &&
-      this.elementDir === 1
-    ) {
-      return this.grid.caption !== '' && this.grid.caption !== undefined
-        ? this.grid.caption
-        : '[' + this.grid.reservableData!.name + ']';
-    } else if (
-      this.grid.type[0] === Entity_Type.Table &&
-      this.elementDir === 5
-    ) {
-      return '(' + this.grid.reservableData!.maxSpaces + ' szék)';
+    if (this.grid.isDirty[0]) {
+      if (this.elementType === ElementType.Center) {
+        if (this.grid.type[0] === Entity_Type.Misc) {
+          this.caption =
+            this.grid.data !== '' && this.grid.data !== undefined
+              ? this.grid.data
+              : '(felirat)';
+        } else this.caption = '';
+        this.grid.isDirty[0] = false;
+      }
     }
-    return '';
+    if (this.grid.isDirty[1]) {
+      if (this.grid.type[0] === Entity_Type.Table && this.elementDir === 1) {
+        this.caption =
+          this.grid.data !== '' && this.grid.data !== undefined
+            ? this.grid.data
+            : '[' + this.grid.reservableData !== undefined
+            ? this.grid.reservableData!.name
+            : 'ERROR' + ']';
+        this.grid.isDirty[1] = false;
+      }
+    }
+    if (this.grid.isDirty[2]) {
+      if (
+        this.grid.type[0] === Entity_Type.Table &&
+        this.elementDir === 5 &&
+        this.grid.reservableData !== undefined
+      ) {
+        this.caption = '(' + this.grid.reservableData!.max_spaces + ' szék)';
+        this.grid.isDirty[2] = false;
+      }
+    }
+    return this.caption;
   }
 
   getContent() {

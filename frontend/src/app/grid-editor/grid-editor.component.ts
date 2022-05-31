@@ -20,7 +20,7 @@ import { GridElementComponent } from '../grid-element/grid-element.component';
 export class EditorOptions {
   nextId: number = 0;
   paintTool!: string;
-  customData?: string;
+  customData: string = '';
   selectedGrid?: Grid;
   isDirty: boolean = false;
 }
@@ -32,6 +32,7 @@ export class EditorOptions {
 })
 export class GridEditorComponent implements OnInit {
   @Input() plan!: FloorPlan;
+  @Input() ownerMode!: boolean;
 
   @Output() onSelectReservable: EventEmitter<Reservable> = new EventEmitter();
   @Output() onDeselectReservable: EventEmitter<void> = new EventEmitter();
@@ -70,14 +71,15 @@ export class GridEditorComponent implements OnInit {
 
   onChangePaintTool(change: MatButtonToggleChange) {
     this.editorOptions.paintTool = change.value;
-    this.editorOptions.customData = undefined;
+    this.editorOptions.customData = '';
     this.editorOptions.selectedGrid = undefined;
   }
 
   onChangeDatafield(value: string) {
     if (this.editorOptions.selectedGrid !== undefined) {
-      this.editorOptions.selectedGrid.caption = value;
+      this.editorOptions.selectedGrid.data = value;
     }
+    this.setGridsDirty();
   }
 
   onGridChange() {
@@ -139,10 +141,15 @@ export class GridEditorComponent implements OnInit {
           continue;
         }
         this.grids[vertex.y][vertex.x].type[vertex.d] = entity.type;
-        this.grids[vertex.y][vertex.x].caption = entity.data;
+        this.grids[vertex.y][vertex.x].data = entity.data;
+        this.grids[vertex.y][vertex.x].isDirty[0] = true;
+        this.grids[vertex.y][vertex.x].isDirty[1] = true;
+        this.grids[vertex.y][vertex.x].isDirty[2] = true;
         if (entity.type === Entity_Type.Table) {
           this.grids[vertex.y][vertex.x].runtimeId = this.editorOptions.nextId;
-          this.grids[vertex.y][vertex.x].reservableData = entity.reservable;
+          this.grids[vertex.y][vertex.x].reservableData = reservables.find(
+            (r) => r.id === entity.reservable_id
+          );
         }
       }
       if (!outOfBounds && entity.type === Entity_Type.Table) {
@@ -172,7 +179,7 @@ export class GridEditorComponent implements OnInit {
           ) {
             const entity: Entity = new Entity(this.plan.id);
             entity.type = this.grids[y][x].type[d];
-            entity.data = this.grids[y][x].caption;
+            entity.data = this.grids[y][x].data;
             const vertices = [{ x: x, y: y, d: d }];
             entity.vertices = JSON.stringify(vertices);
             entities.push(entity);
@@ -181,7 +188,7 @@ export class GridEditorComponent implements OnInit {
               x: x,
               y: y,
               id: this.grids[y][x].runtimeId,
-              data: this.grids[y][x].caption,
+              data: this.grids[y][x].data,
               reservableData: this.grids[y][x].reservableData,
             };
             tables.push(table);
@@ -206,7 +213,7 @@ export class GridEditorComponent implements OnInit {
         // Reservable DB módosítása
         this.unitService.updateReservable(tableGroups[key][0].reservableData);
       }
-      // TODO fix me: tableGroup.reservable = tableGroups[key][0].reservableData;
+      tableGroup.reservable_id = tableGroups[key][0].reservableData.id;
       tableGroup.type = Entity_Type.Table;
       tableGroup.data = tableGroups[key][0].data;
       const vertices = [];
@@ -250,4 +257,18 @@ export class GridEditorComponent implements OnInit {
       return result;
     }, {});
   };
+
+  setGridsDirty() {
+    GridEditorComponent.setDirty_all(this.grids);
+  }
+
+  public static setDirty_all(grids: Grid[][]) {
+    for (let y = 0; y < grids.length; y++) {
+      for (let x = 0; x < grids[y].length; x++) {
+        grids[y][x].isDirty[0] = true;
+        grids[y][x].isDirty[1] = true;
+        grids[y][x].isDirty[2] = true;
+      }
+    }
+  }
 }

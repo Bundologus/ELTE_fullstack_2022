@@ -11,10 +11,11 @@ export class Grid {
   isLastY!: boolean;
   isMarked!: boolean[];
   type!: Entity_Type[];
-  caption: string;
+  data: string;
   runtimeId: number = 0; // only used for grouped entities (tables), all others (and also the first group) can have it at 0
   reservableData?: Reservable; // editor-only (identical) representation of reservable information
   special?: boolean; // editor-only special flag for some operations
+  isDirty: boolean[] = [false, false, false];
 
   constructor(x: number, y: number, isLastX: boolean, isLastY: boolean) {
     this.x = x;
@@ -23,6 +24,6 @@ export class Grid {
     this.isLastY = isLastY;
     this.isMarked = new Array(9).fill(false); // runtime highlighting
     this.type = new Array(9).fill(Entity_Type.None);
-    this.caption = "";
+    this.data = '';
   }
 }

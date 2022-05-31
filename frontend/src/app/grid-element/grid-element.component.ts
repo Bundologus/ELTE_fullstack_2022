@@ -3,7 +3,10 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Grid } from '../core/model/grid';
 import { Entity_Type } from '../core/model/entity';
 import { Reservable } from '../core/model/reservable';
-import { EditorOptions } from '../grid-editor/grid-editor.component';
+import {
+  EditorOptions,
+  GridEditorComponent,
+} from '../grid-editor/grid-editor.component';
 
 @Component({
   selector: 'app-grid-element',
@@ -85,7 +88,7 @@ export class GridElementComponent implements OnInit {
         return;
       }
       this.setNeighboringSides(dir, Entity_Type.Misc);
-      this.grid.caption = this.editorOptions.customData;
+      this.grid.data = this.editorOptions.customData;
     } else if (this.editorOptions.paintTool === 'edit') {
       if (
         dir === 0 &&
@@ -93,17 +96,18 @@ export class GridElementComponent implements OnInit {
         (this.grid.type[0] === Entity_Type.Table ||
           this.grid.type[0] === Entity_Type.Misc)
       ) {
-        this.editorOptions.customData = this.grid.caption;
+        this.editorOptions.customData = this.grid.data;
         this.editorOptions.selectedGrid = this.grid;
         if (this.grid.type[0] === Entity_Type.Table)
           this.onSelectReservable.emit(this.grid.reservableData);
         console.log(this.grid);
       } else {
-        this.editorOptions.customData = undefined;
+        this.editorOptions.customData = '';
         this.editorOptions.selectedGrid = undefined;
         this.onSelectReservable.emit(undefined);
       }
     }
+    GridEditorComponent.setDirty_all(this.grids);
     if (this.editorOptions.paintTool !== 'edit') this.onGridChange.emit();
   }
 
@@ -120,11 +124,12 @@ export class GridElementComponent implements OnInit {
       this.grid.reservableData = {
         id: -1, // azt jelzi, hogy ez teljesen új Reservable lesz az adatbázisban
         name: 'Asztal ' + this.grid.runtimeId,
-        minSpaces: 1,
-        maxSpaces: 0,
-        minTime: { hours: 1, minutes: 0 },
-        maxTime: { hours: 3, minutes: 0 },
-        timeStep: { hours: 0, minutes: 30 },
+        min_spaces: 1,
+        max_spaces: 0,
+        min_time: { hours: 1, minutes: 0 },
+        max_time: { hours: 3, minutes: 0 },
+        time_step: { hours: 0, minutes: 30 },
+        opening_hours: [],
       };
     }
     // Egy asztal, vagy ugyanannak a nagy asztalnak több eleme van mellette
@@ -144,7 +149,7 @@ export class GridElementComponent implements OnInit {
   }
 
   removeTable() {
-    this.grid.caption = undefined;
+    this.grid.data = '';
     const neighboringChairs: Grid[] =
       GridElementComponent.getNeighboringEntities(
         this.grid,
@@ -232,6 +237,9 @@ export class GridElementComponent implements OnInit {
   setNeighboringSides(dir: number, type: Entity_Type): Entity_Type {
     if (this.grid.type[dir] === type) this.grid.type[dir] = Entity_Type.None;
     else this.grid.type[dir] = type;
+    this.grid.isDirty[0] = true;
+    this.grid.isDirty[1] = true;
+    this.grid.isDirty[2] = true;
     for (const [x, y, d] of this.getNeighboringSides(dir)) {
       this.grids[y][x].type[d] = this.grid.type[dir];
     }

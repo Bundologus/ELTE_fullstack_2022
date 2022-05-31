@@ -77,7 +77,7 @@ export class PlanEditorComponent implements OnInit {
     const unitId = this.route.snapshot.paramMap.get('unitId');
     if (unitId) {
       this.unit = await this.unitService.getUnit(Number(unitId));
-      this.plan = await this.unitService.getUnitPlan(this.unit!) as FloorPlan;
+      this.plan = (await this.unitService.getUnitPlan(this.unit!)) as FloorPlan;
     }
     await this.planSizeForm.setValue({
       width: this.plan?.width,
@@ -115,6 +115,7 @@ export class PlanEditorComponent implements OnInit {
     // A minTime, maxTime, timeStep egyelőre nem frissíthető, majd ha a fontosabb részek mind működnek,
     // még lehet ezzel foglalkozni.
     this.unitService.updateReservable(this.reservable!);
+    this.gridEditor.setGridsDirty();
   }
 
   onReservableSelected(reservable: Reservable) {
@@ -139,6 +140,10 @@ export class PlanEditorComponent implements OnInit {
     return (
       ('00' + time.hours).slice(-2) + ':' + ('00' + time.minutes).slice(-2)
     );
+  }
+
+  isOwner() {
+    return this.unit!.owner === this.userService.getCurrentUser();
   }
 }
 

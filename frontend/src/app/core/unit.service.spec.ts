@@ -14,6 +14,7 @@ describe('UnitService', () => {
     expect(service).toBeTruthy();
   });
 
+  /*
   it('should properly delete a unit', () => {
     let l: number = service.getUnits().length;
     if (l > 0) {
@@ -23,4 +24,5 @@ describe('UnitService', () => {
       expect(service.getUnits().length).toEqual(0);
     }
   });
+  */
 });
