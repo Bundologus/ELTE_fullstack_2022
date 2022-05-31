@@ -37,12 +37,15 @@
                 name="selectedDay"
                 matInput
               >
-                <mat-option *ngFor="let day of days" [value]="day.value">
+                <mat-option
+                  *ngFor="let day of days"
+                  [value]="day.value"
+                  (onSelectionChange)="changeDate()"
+                >
                   {{ day.viewValue }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            <!--
             <mat-form-field
               appearance="fill"
               color="accent"
@@ -50,16 +53,28 @@
             >
               <mat-label>Idősáv</mat-label>
               <mat-select
-                formControlName="selectedTime"
-                name="selectedTime"
+                #time_selector
+                formControlName="selectedTimeRange"
+                name="selectedTimeRange"
                 matInput
+                (selectionChange)="changeTime($event)"
               >
-                <mat-option *ngFor="let day of days" [value]="day.value">
-                  {{ day.viewValue }}
+                <mat-option
+                  *ngFor="let timeRange of timeRanges"
+                  [value]="timeRange.value"
+                >
+                  {{ timeRange.viewValue }}
                 </mat-option>
               </mat-select>
             </mat-form-field>
-            -->
+            <button
+              mat-raised-button
+              color="accent"
+              style="margin-top: 10px"
+              [disabled]="selectedTime === '-1'"
+            >
+              Foglalás
+            </button>
           </form>
           <div style="height: 60px"></div>
         </div>

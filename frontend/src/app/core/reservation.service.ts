@@ -14,6 +14,10 @@ export class ReservationService {
     return this.reservations;
   }
 
+  getReservationsByReservable(reservable_id: number) {
+    return this.reservations.filter((r) => r.reservable_id === reservable_id);
+  }
+
   createReservation(reservation: Reservation) {
     reservation.id = this.reservations.length + 1;
     this.reservations.push(reservation);
