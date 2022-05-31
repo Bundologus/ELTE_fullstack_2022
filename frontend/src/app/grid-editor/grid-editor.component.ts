@@ -16,6 +16,7 @@ import { Reservable } from '../core/model/reservable';
 import { UnitService } from '../core/unit.service';
 import { UserService } from '../core/user.service';
 import { GridElementComponent } from '../grid-element/grid-element.component';
+import { Unit } from '../core/model/unit';
 
 export class EditorOptions {
   nextId: number = 0;
@@ -31,6 +32,7 @@ export class EditorOptions {
   styleUrls: ['./grid-editor.component.scss'],
 })
 export class GridEditorComponent implements OnInit {
+  @Input() unit!: Unit;
   @Input() plan!: FloorPlan;
   @Input() ownerMode!: boolean;
 

@@ -38,7 +38,7 @@ export class UserService {
   async isOwnerOf(unit_id: number) {
     console.log('isOwnerOf');
     const unit: Unit = await this.unitSvc.getUnit(unit_id);
-    return unit.owner.id === this._currentUser.id;
+    return unit.owner_id === this._currentUser.id;
   }
 
   async getUsers() {

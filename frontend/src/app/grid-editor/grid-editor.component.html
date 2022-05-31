@@ -46,6 +46,7 @@
         <ng-container *ngFor="let grid of row">
           <td>
             <app-grid-element
+              [unit]="unit"
               [grid]="grid"
               [grids]="grids"
               [editorOptions]="editorOptions"

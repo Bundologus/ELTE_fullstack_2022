@@ -34,7 +34,7 @@ export class UnitListComponent implements OnInit {
     this.managerMode = this.router.url.endsWith('units');
     if (this.managerMode)
       filteredUnits = filteredUnits.filter(
-        (u) => u.owner === this.userService.getCurrentUser()
+        (u) => u.owner_id === this.userService.getCurrentUser().id
       );
     this.units = filteredUnits;
     this.paginatedUnits = filteredUnits;
@@ -56,6 +56,6 @@ export class UnitListComponent implements OnInit {
   goToReservationsManagement(unit: Unit) {}
 
   isOwnerOf(unit: Unit) {
-    return unit.owner === this.userService.getCurrentUser();
+    return unit.owner_id === this.userService.getCurrentUser().id;
   }
 }

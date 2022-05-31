@@ -6,8 +6,9 @@ import { User } from './user';
 
 export interface Unit {
   id: number;
-  owner: User;
+  owner_id: number;
   name: string;
+  address: string;
   //country: Country;
   //city: City;
   //district: District;
@@ -17,7 +18,7 @@ export interface Unit {
   default_min_time: Time;
   default_max_time: Time;
   default_time_step: Time;
-  //opening_hours: OpeningHours[];
+  opening_hours: OpeningHours[];
   floor_plan: FloorPlan;
 }
 
@@ -27,18 +28,19 @@ export interface CondensedUnit {
   name: string;
   address: string;
   description: string;
-  profile_picture: string;
+  //profile_picture: string;
 }
 
 export interface PostUnitData {
   owner_id: number;
   name: string;
-  country_id: number;
-  city_id: number;
-  district_id?: number;
+  address: string;
+  //country_id: number;
+  //city_id: number;
+  //district_id?: number;
   description: string;
-  profile_picture?: File;
-  reservation_terms: string;
+  //profile_picture?: File;
+  //reservation_terms: string;
   default_min_time: Time;
   default_max_time: Time;
   default_time_step: Time;
