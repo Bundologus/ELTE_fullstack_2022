@@ -19,9 +19,11 @@ class UnitController extends Controller {
     public function list(Request $request) {
         $query = $request->query();
 
-        if ($query == null) {
-            return UnitResource::collection(Unit::all()->keyBy->id);
+        if (count($query) == 0) {
+            echo "Query empty";
+            return UnitResource::collection(Unit::all());
         }
+        echo "Query NOT empty";
         $whereClause = [];
         $isCondensed = false;
         foreach ($query as $key => $value) {
@@ -33,7 +35,7 @@ class UnitController extends Controller {
                 array_push($whereClause, [$key, "=", $value]);
             }
         }
-        $units = Unit::where($whereClause)->get()->keyBy->id;
+        $units = Unit::where($whereClause)->get();
         if ($isCondensed) {
             return ShortUnitResource::collection($units);
         }

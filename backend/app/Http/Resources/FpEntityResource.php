@@ -25,7 +25,7 @@ class FpEntityResource extends JsonResource {
             "type" => $this->type,
             "data" => $this->data,
             "vertices" => $this->vertices,
-            "reservable_id" => $this->when($this->reservable != null, $this->reservable->id),
+            "reservable_id" => $this->when($this->reservable->id > -1, $this->reservable->id),
         ];
     }
 }

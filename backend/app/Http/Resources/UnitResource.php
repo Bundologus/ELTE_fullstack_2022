@@ -11,7 +11,7 @@ class UnitResource extends JsonResource {
      *
      * @var bool
      */
-    public $preserveKeys = true;
+    public $preserveKeys = false;
 
     /**
      * Transform the resource into an array.
@@ -24,9 +24,9 @@ class UnitResource extends JsonResource {
             "id" => $this->id,
             "owner" => new UserResource($this->owner),
             "name" => $this->name,
-            "county" => new CountryResource($this->country),
-            "city" => new CityResource($this->city),
-            "district" => new DistrictResource($this->district),
+            //"county" => new CountryResource($this->country),
+            //"city" => new CityResource($this->city),
+            //"district" => new DistrictResource($this->district),
             "description" => $this->description,
             "profile_picture" => $this->profile_picture,
             "reservation_terms" => $this->reservation_terms,

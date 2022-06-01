@@ -18,7 +18,9 @@ class FpEntity extends Model {
     ];
 
     public function reservable() {
-        return $this->hasOne(Reservable::class);
+        return $this->hasOne(Reservable::class)->withDefault([
+            "id" => -1,
+        ]);
     }
 
     public function floorPlan() {

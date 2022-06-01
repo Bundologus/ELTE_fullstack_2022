@@ -26,7 +26,7 @@ class UserResource extends JsonResource {
             'last_name' => $this->last_name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'admin' => $this->when(Auth::user()->admin, $this->admin),
+            'admin' => $this->when(Auth::hasUser() && Auth::user()->admin, $this->admin),
         ];
     }
 }

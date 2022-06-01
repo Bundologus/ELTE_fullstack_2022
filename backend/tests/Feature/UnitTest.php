@@ -15,6 +15,23 @@ use Tests\TestCase;
 class UnitTest extends TestCase {
     use RefreshDatabase;
 
+    public function test_guest_can_get_all_units() {
+        User::factory()->create();
+        $units = Unit::factory(3)->has(FloorPlan::factory())->create();
+        foreach ($units as $unit) {
+            $floorPlan = $unit->floorPlan;
+            FpEntity::factory(7)->for($floorPlan)->create();
+        }
+
+        $response = $this->get('api/unit');
+
+        $response->assertStatus(200)
+            ->assertJson(
+                fn (AssertableJson $json) =>
+                $json->has('data', 3)
+            );
+    }
+
     public function test_owner_can_put_entities_in_batch() {
         $user = User::factory()->create();
         $unit = Unit::factory()->has(FloorPlan::factory())->create();
