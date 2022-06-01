@@ -130,9 +130,11 @@ export class GridEditorComponent implements OnInit {
     this.onSelectReservable.emit(reservable);
   }
 
-  loadPlan() {
+  async loadPlan() {
     this.editorOptions.nextId = 0;
-    let entities: Entity[] = this.unitService.getEntities(this.plan);
+    let entities: Entity[] = (await this.unitService.getEntities(
+      this.plan
+    )) as Entity[];
     let reservables: Reservable[] = this.unitService.getReservables();
     for (var entity of entities) {
       const vertices = JSON.parse(entity.vertices);

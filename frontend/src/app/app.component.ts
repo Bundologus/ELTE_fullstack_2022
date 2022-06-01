@@ -31,4 +31,12 @@ export class AppComponent {
     this.authSvc.logout();
     this.router.navigate(['/', 'login']);
   }
+
+  changeDebugUser() {
+    if (this.userSvc.getCurrentUser().id === 1)
+      this.userSvc.setCurrentUser(this.unitSvc.users[1]);
+    else if (this.userSvc.getCurrentUser().id === 2)
+      this.userSvc.setCurrentUser(UserService._noUser);
+    else this.userSvc.setCurrentUser(this.unitSvc.users[0]);
+  }
 }

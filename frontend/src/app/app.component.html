@@ -23,6 +23,11 @@
           </button>
           <button mat-raised-button (click)="logout()">Kijelentkezés</button>
         </ng-container>
+        <ng-container *ngIf="authSvc.isDebugMode()">
+          <button mat-raised-button (click)="changeDebugUser()">
+            Teszt felhasználó váltás
+          </button>
+        </ng-container>
       </div>
     </mat-toolbar-row>
     <mat-toolbar-row>
@@ -54,7 +59,7 @@
           routerLinkActive="active"
         >
           <mat-icon>menu_book</mat-icon>
-          Foglalásaim
+          Foglalások
         </a>
         <a
           *ngIf="authSvc.isLoggedIn()"

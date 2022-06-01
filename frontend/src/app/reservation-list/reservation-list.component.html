@@ -1,0 +1,49 @@
+<div class="main-container">
+  <div style="height: 20px"></div>
+  <ng-container
+    *ngIf="unit === undefined; then general; else specificUnit"
+  ></ng-container>
+  <ng-template #general><h1>Összes foglalás</h1></ng-template>
+  <ng-template #specificUnit>
+    <h1>Foglalások: {{ unit!.name }}</h1>
+  </ng-template>
+  <div style="height: 20px"></div>
+  <mat-accordion class="headers-align" *ngIf="reservations">
+    <mat-expansion-panel *ngFor="let reservation of reservations" hideToggle>
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon>restaurant</mat-icon>
+          <span class="restaurant-title">{{ reservation.unit }}</span>
+        </mat-panel-title>
+        <mat-panel-description>{{
+          reservation.date + " " + reservation.time
+        }}</mat-panel-description>
+      </mat-expansion-panel-header>
+      <p>Foglalva: {{ reservation.reservedOn }}</p>
+      <p>Foglalás állapota: {{ reservation.status }}</p>
+      <p>
+        <!--
+        <ng-container
+          *ngIf="!isOwnerOf(unit); then notMyUnit; else myUnit"
+        ></ng-container>
+        <ng-template #notMyUnit></ng-template>
+        <ng-template #myUnit>
+          <span style="color: lime"> Saját</span>
+        </ng-template>
+      </p>
+      <mat-action-row>
+        <button *ngIf="!isOwnerOf(unit)" mat-raised-button color="accent">
+          Foglalás lemondása
+        </button>
+        <ng-container *ngIf="isOwnerOf(unit)">
+          <button mat-raised-button color="accent">
+            Foglalás véglegesítése
+          </button>
+          <button mat-raised-button color="accent">Foglalás elutasítása</button>
+        </ng-container>
+      </mat-action-row>
+    -->
+      </p></mat-expansion-panel
+    >
+  </mat-accordion>
+</div>

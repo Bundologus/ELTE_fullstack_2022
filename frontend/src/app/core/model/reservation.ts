@@ -3,6 +3,7 @@ import { Time } from '@angular/common';
 export interface Reservation {
   id: number;
   user_id: number;
+  unit_id: number;
   reservable_id: number;
   reserved_on: string;
   date: Date;
@@ -13,6 +14,7 @@ export interface Reservation {
 
 export interface ReservationPostData {
   user_id: number;
+  unit_id: number;
   reservable_id: number;
   reserved_on: string;
   date: Date;

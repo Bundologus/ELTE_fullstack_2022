@@ -12,7 +12,6 @@ export interface UserAuthRequest {
 @Injectable({
   providedIn: 'root',
 })
-
 export class AuthService {
   private _loggedIn = false;
 
@@ -42,6 +41,9 @@ export class AuthService {
   }
 
   isLoggedIn() {
-    return this._loggedIn || this.isDebugMode();
+    return (
+      this._loggedIn ||
+      (this.isDebugMode() && this.userSvc.getCurrentUser().id > 0)
+    );
   }
 }

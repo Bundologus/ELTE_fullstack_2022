@@ -38,6 +38,10 @@ const routes: Routes = [
     component: ReservationListComponent,
   },
   {
+    path: 'reservations/:unitId',
+    component: ReservationListComponent,
+  },
+  {
     path: 'reserve/:unitId',
     component: PlanEditorComponent,
   },

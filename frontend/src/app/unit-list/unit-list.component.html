@@ -46,7 +46,7 @@
           <button
             mat-raised-button
             color="accent"
-            (click)="goToReservationsManagement(unit)"
+            [routerLink]="['/', 'reservations', unit.id]"
           >
             Foglalások kezelése
           </button>

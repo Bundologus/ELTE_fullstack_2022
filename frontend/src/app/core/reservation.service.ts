@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Reservation } from './model/reservation';
+import { Reservation, ReservationPostData } from './model/reservation';
 
 @Injectable({
   providedIn: 'root',
@@ -18,8 +18,18 @@ export class ReservationService {
     return this.reservations.filter((r) => r.reservable_id === reservable_id);
   }
 
-  createReservation(reservation: Reservation) {
-    reservation.id = this.reservations.length + 1;
+  createReservation(postData: ReservationPostData) {
+    const reservation: Reservation = {
+      id: this.reservations.length + 1,
+      user_id: postData.user_id,
+      unit_id: postData.unit_id,
+      reservable_id: postData.reservable_id,
+      reserved_on: postData.reserved_on,
+      date: postData.date,
+      start_time: postData.start_time,
+      end_time: postData.end_time,
+      status: 'pending',
+    };
     this.reservations.push(reservation);
     console.log(this.reservations);
     return reservation;

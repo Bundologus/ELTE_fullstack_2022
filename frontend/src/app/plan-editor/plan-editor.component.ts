@@ -119,7 +119,7 @@ export class PlanEditorComponent implements OnInit {
     const unitId = this.route.snapshot.paramMap.get('unitId');
     const today: Date = new Date();
     for (let i = 1; i <= 30; i++) {
-      const nextDay = new Date(today.setDate(today.getDate() + 1));
+      const nextDay = new Date(today.setDate(today.getDate() + i));
       this.days.push({
         value: i.toString(),
         viewValue: this.datePipe.transform(nextDay, 'yyyy-MM-dd')!,
@@ -255,16 +255,25 @@ export class PlanEditorComponent implements OnInit {
 
   createReservation() {
     // Invariáns: csak valid időpont és dátum volt kiválasztható egy asztalhoz
+    console.log('createReservation');
+    const start_time: Time = this.timeRanges.find(
+      (t) => t.value === this.selectedTime
+    )!.time;
+    const end_time: Time = {
+      hours: start_time.hours + 1,
+      minutes: start_time.minutes,
+    };
     const reservation: ReservationPostData = {
       user_id: this.userService.getCurrentUser().id,
+      unit_id: this.unit!.id,
       reservable_id: this.reservable!.id,
       reserved_on: this.datePipe.transform(new Date(), 'yyyy-MM-dd')!,
       date: this.days.find((d) => d.value === this.selectedDay)!.date,
-      start_time: this.timeRanges.find((t) => t.value === this.selectedTime)!
-        .time,
-      end_time: this.timeRanges.find((t) => t.value === this.selectedTime)!
-        .time,
+      start_time: start_time,
+      end_time: end_time,
     };
+    this.reservationService.createReservation(reservation);
+    this.updateReservationTimes();
   }
 
   timeToString(time: Time): string {

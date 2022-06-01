@@ -1,8 +1,8 @@
-<h1>Login</h1>
+<h1>Bejelentkezés</h1>
 
 <form [formGroup]="loginForm" (ngSubmit)="submit()">
   <mat-form-field appearance="outline">
-    <mat-label>Email</mat-label>
+    <mat-label>E-mail</mat-label>
     <input
       formControlName="email"
       name="email"
@@ -12,7 +12,7 @@
     <mat-error *ngIf="email.invalid"></mat-error>
   </mat-form-field>
   <mat-form-field appearance="outline">
-    <mat-label>Password</mat-label>
+    <mat-label>Jelszó</mat-label>
     <input
       formControlName="password"
       name="password"
@@ -22,6 +22,6 @@
     <mat-error *ngIf="password.invalid"></mat-error>
   </mat-form-field>
   <div>
-    <button mat-raised-button color="primary">Login</button>
+    <button mat-raised-button color="primary">Bejelentkezés</button>
   </div>
 </form>

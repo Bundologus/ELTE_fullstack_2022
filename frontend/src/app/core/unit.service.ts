@@ -7,7 +7,6 @@ import { FloorPlan } from './model/floorPlan';
 import { Reservable } from './model/reservable';
 import { CondensedUnit, PostUnitData, Unit } from './model/unit';
 import { User } from './model/user';
-import { UserService } from './user.service';
 
 export enum FilterType {
   CONDENSED = 'condensed',
@@ -28,7 +27,7 @@ export class UnitService {
    * TEMPORARY MOCK DATA
    */
 
-  _MOCK_ENABLED: boolean = false;
+  _MOCK_ENABLED: boolean = true;
 
   users: User[] = [
     {
@@ -81,7 +80,7 @@ export class UnitService {
       owner_id: this.users[1].id,
       name: 'Gyors Gyros',
       address: '1020 Budapest, Görög út 2.',
-      description: 'A pitába!',
+      description: 'Eredeti görög ízek',
       floor_plan: this.plans[1],
       default_min_time: { hours: 2, minutes: 0 },
       default_max_time: { hours: 4, minutes: 0 },
@@ -132,6 +131,7 @@ export class UnitService {
 
   async getUnits(filters: Array<[FilterType, any]> = []) {
     console.log('getUnits');
+
     if (this._MOCK_ENABLED) {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -139,6 +139,7 @@ export class UnitService {
         }, 10);
       });
     }
+
     let path = '/api/unit';
     if (filters.length > 0) {
       path = path + '?';
@@ -146,10 +147,12 @@ export class UnitService {
         path = path + `${type}=${value}`;
       });
     }
+
     console.log(path);
     const response = (await lastValueFrom(
       this.http.get(path)
     )) as BackendResponse<Unit | CondensedUnit>;
+
     return response.data;
   }
 
@@ -212,6 +215,7 @@ export class UnitService {
     const response = (await lastValueFrom(
       this.http.get(`/api/unit/${unit.id}/floor_plan`)
     )) as BackendResponse<FloorPlan>;
+
     return response.data;
   }
 
@@ -219,34 +223,57 @@ export class UnitService {
    * FLOOR PLAN ENTITY HANDLERS
    */
 
-  /*
   async getEntities(plan: FloorPlan) {
+    if (this._MOCK_ENABLED) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve(this.entities.filter((e) => e.floor_plan_id === plan.id));
+        }, 10);
+      });
+    }
+
     const response = (await lastValueFrom(
       this.http.get(`/api/unit/${plan.unit_id}/floor_plan/entity`)
     )) as BackendResponse<Entity>;
+
     return response.data;
   }
-  */
 
-  getEntities(plan: FloorPlan) {
-    return this.entities.filter((e) => e.floor_plan_id === plan.id);
-  }
-
-  async setEntities(plan: FloorPlan, entities: Entity[]) : Promise<BackendResponse<Entity>> {
-    /* const entitiesToRemove: Entity[] = this.getEntities(plan);
-    for (var entity of entitiesToRemove) {
-      this.deleteEntity(entity);
+  async setEntities(plan: FloorPlan, entities: Entity[]) {
+    if (this._MOCK_ENABLED) {
+      const entitiesToRemove: Entity[] = (await this.getEntities(
+        plan
+      )) as Entity[];
+      for (var entity of entitiesToRemove) {
+        this.mock_deleteEntity(entity);
+      }
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve((this.entities = this.entities.concat(entities)));
+        }, 10);
+      });
     }
-    this.entities = this.entities.concat(entities); */
+
     const response = await lastValueFrom(
-        this.http.put(`/api/unit/${plan.unit_id}/plan/entity`, entities) as Observable<BackendResponse<Entity>>
-      );
+      this.http.put(
+        `/api/unit/${plan.unit_id}/plan/entity`,
+        entities
+      ) as Observable<BackendResponse<Entity>>
+    );
 
     this.entities = response.data;
-    return response;
+    return response.data;
   }
 
-  deleteEntity(entity: Entity) {
+  mock_getAllEntities() {
+    return this.entities;
+  }
+
+  mock_getEntitiesForReservable(reservableId: number) {
+    return this.entities.filter((e) => e.reservable_id === reservableId);
+  }
+
+  mock_deleteEntity(entity: Entity) {
     this.entities.splice(
       this.entities.findIndex((e) => e === entity),
       1
