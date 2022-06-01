@@ -17,10 +17,19 @@ import { UnitService } from '../core/unit.service';
 import { GridEditorComponent } from '../grid-editor/grid-editor.component';
 import { UserService } from '../core/user.service';
 import { ReservationService } from '../core/reservation.service';
+import { Reservation } from '../core/model/reservation';
+import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 interface Day {
   value: string;
   viewValue: string;
+  date: Date;
+}
+
+interface TimeRange {
+  value: string;
+  viewValue: string;
+  time: Time;
 }
 
 @Component({
@@ -31,6 +40,7 @@ interface Day {
 })
 export class PlanEditorComponent implements OnInit {
   @ViewChild('grid_editor') gridEditor!: GridEditorComponent;
+  @ViewChild('time_selector') timeSelector!: MatSelect;
 
   unit?: Unit;
   plan?: FloorPlan;
@@ -38,6 +48,10 @@ export class PlanEditorComponent implements OnInit {
 
   selectedDay: string = '1';
   days: Day[] = [];
+
+  selectedTimeRange: string = '1';
+  selectedTime: string = '-1';
+  timeRanges: TimeRange[] = [];
 
   planSizeForm: FormGroup = this.formBuilder.group({
     width: [
@@ -88,6 +102,7 @@ export class PlanEditorComponent implements OnInit {
 
   createReservationForm: FormGroup = this.formBuilder.group({
     selectedDay: [this.selectedDay, [Validators.required]],
+    selectedTimeRange: [this.selectedTimeRange, [Validators.required]],
   });
 
   constructor(
@@ -108,6 +123,7 @@ export class PlanEditorComponent implements OnInit {
       this.days.push({
         value: i.toString(),
         viewValue: this.datePipe.transform(nextDay, 'yyyy-MM-dd')!,
+        date: nextDay,
       });
     }
     if (unitId) {
@@ -172,6 +188,8 @@ export class PlanEditorComponent implements OnInit {
   onReservableSelected(reservable: Reservable) {
     console.log(reservable);
     this.reservable = reservable;
+    if (!this.isOwner() || this.authService.isDebugMode)
+      this.updateReservationTimes();
     if (this.reservable === undefined) return;
     this.reservableEditorForm.setValue({
       name: this.reservable.name,
@@ -185,6 +203,54 @@ export class PlanEditorComponent implements OnInit {
 
   onReservableDeselected() {
     this.reservable = undefined;
+    if (!this.isOwner() || this.authService.isDebugMode)
+      this.updateReservationTimes();
+  }
+
+  changeDate() {
+    if (!this.isOwner() || this.authService.isDebugMode)
+      this.updateReservationTimes();
+  }
+
+  changeTime(change: MatSelectChange) {
+    this.selectedTime = change.value;
+    console.log(this.selectedTime);
+  }
+
+  updateReservationTimes() {
+    console.log('updateReservationTimes');
+    this.timeRanges = [];
+    if (this.reservable === undefined) return;
+    const reservations: Reservation[] =
+      this.reservationService.getReservationsByReservable(this.reservable!.id);
+    /*
+    const start_time: Time = this.unit!.opening_hours[0]!.time_from;
+    const end_time: Time = this.unit!.opening_hours[0]!.time_to;
+    const time_step: Time = this.unit!.default_time_step;
+    let i = 1;
+    for (
+      let t = start_time;
+      t < end_time;
+      t = {
+        hours: t.hours + time_step.hours,
+        minutes: t.minutes + time_step.minutes,
+      }
+    ) {
+      this.timeRanges.push({
+        value: (i++).toString(),
+        viewValue: t.hours.toString() + ':' + t.minutes.toString(),
+        time: t,
+      });
+    }*/
+    for (let i = 0; i < 24; i++) {
+      this.timeRanges.push({
+        value: i.toString(),
+        viewValue: i.toString() + ':00 - ' + (i + 1).toString() + ':00',
+        time: { hours: i, minutes: 0 },
+      });
+    }
+    this.timeSelector.value = '-1';
+    this.selectedTime = '-1';
   }
 
   createReservation() {}
