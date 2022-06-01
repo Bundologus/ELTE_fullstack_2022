@@ -32,6 +32,39 @@ class UnitTest extends TestCase {
             );
     }
 
+    public function test_quest_can_get_unit_by_id() {
+        User::factory()->create();
+        $unit = Unit::factory()->has(FloorPlan::factory())->create();
+        $floorPlan = $unit->floorPlan;
+        FpEntity::factory(7)->for($floorPlan)->create();
+
+        $response = $this->get("api/unit/" . $unit->id);
+
+        $response->assertStatus(200)
+            ->assertJson(
+                fn (AssertableJson $json) =>
+                $json->has('data')
+                    ->where('data.id', $unit->id)
+                    ->where('data.name', $unit->name)
+            );
+    }
+
+    public function test_user_cannot_modify_unit() {
+        $owner = User::factory()->create();
+        $user = User::factory()->create();
+        $unit = Unit::factory()->state(["owner_id" => $owner->id])->has(FloorPlan::factory())->create();
+        $floorPlan = $unit->floorPlan;
+        FpEntity::factory(7)->for($floorPlan)->create();
+
+        $new_name = $unit->name . " modified";
+
+        $response = $this->actingAs($user)
+            ->withSession(['banned' => false])
+            ->put("api/unit/" . $unit->id, ["name" => $new_name]);
+
+        $response->assertStatus(403);
+    }
+
     public function test_owner_can_put_entities_in_batch() {
         $user = User::factory()->create();
         $unit = Unit::factory()->has(FloorPlan::factory())->create();

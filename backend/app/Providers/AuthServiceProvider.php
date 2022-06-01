@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Policies\CountryPolicy;
+use App\Policies\UnitPolicy;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -34,5 +35,7 @@ class AuthServiceProvider extends ServiceProvider {
         Gate::define('write-country', [CountryPolicy::class, 'write']);
         Gate::define('write-city', [CityPolicy::class, 'write']);
         Gate::define('write-district', [DistrictPolicy::class, 'write']);
+        Gate::define('modify-unit', [UnitPolicy::class, 'modify']);
+        Gate::define('delete-unit', [UnitPolicy::class, 'delete']);
     }
 }

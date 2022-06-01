@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\ShortUnitResource;
 use App\Http\Resources\UnitResource;
 use App\Models\Unit;
+use App\Policies\UnitPolicy;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Storage;
 
 class UnitController extends Controller {
@@ -122,8 +124,13 @@ class UnitController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id) {
-        $data = $request->all();
         $unit = Unit::find($id);
+
+        if (Gate::denies('modify-unit', [$unit])) {
+            return abort(403);
+        }
+
+        $data = $request->all();
         $deleted_image_path = '';
 
         if ($unit == null) {
@@ -163,6 +170,10 @@ class UnitController extends Controller {
      */
     public function destroy($id) {
         $unit = Unit::find($id);
+
+        if (Gate::denies('delete-unit', [$unit])) {
+            return abort(403);
+        }
 
         if ($unit == null) {
             return abort(404, 'Resource not found');
