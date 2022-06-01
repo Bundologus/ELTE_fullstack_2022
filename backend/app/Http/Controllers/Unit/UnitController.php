@@ -20,10 +20,9 @@ class UnitController extends Controller {
         $query = $request->query();
 
         if (count($query) == 0) {
-            echo "Query empty";
             return UnitResource::collection(Unit::all());
         }
-        echo "Query NOT empty";
+
         $whereClause = [];
         $isCondensed = false;
         foreach ($query as $key => $value) {
