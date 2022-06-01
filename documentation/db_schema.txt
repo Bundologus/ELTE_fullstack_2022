@@ -39,6 +39,15 @@ table units {
   default_time_step time
 }
 
+table unit_user {
+  user_id int [ref: > users.id]
+  unit_id int [ref: > units.id]
+  
+  indexes {
+    (user_id, unit_id) [pk]
+  }
+}
+
 table countries {
   id int [pk, increment]
   name string [unique]
@@ -84,7 +93,7 @@ table reservations {
   id int [pk, increment]
   user_id int [ref: > users.id]
   reservable_id int [ref: > reservables.id]
-  reserved_on time
+  created_at time
   start_time time
   end_time time
   status resev_state
@@ -95,7 +104,6 @@ enum reserv_state {
   accepted
   rejected
   cancelled
-  expired
 }
 
 
@@ -128,4 +136,3 @@ enum fp_entity_type {
   chair
   misc
 }
-

@@ -1,0 +1,78 @@
+<div class="main-container">
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <span>{{ title }}</span>
+      <div class="pull-right">
+        <ng-container *ngIf="!authSvc.isLoggedIn()">
+          <button
+            mat-raised-button
+            color="accent"
+            (click)="login()"
+            [routerLink]="['/', 'login']"
+          >
+            Belépés
+          </button>
+          <button mat-raised-button [routerLink]="['/', 'register']">
+            Regisztráció
+          </button>
+        </ng-container>
+        <ng-container *ngIf="authSvc.isLoggedIn()">
+          <button mat-stroked-button [routerLink]="['/', 'profile']">
+            <mat-icon>account_circle</mat-icon>
+            {{ userSvc.getCurrentUser().first_name }}
+          </button>
+          <button mat-raised-button (click)="logout()">Kijelentkezés</button>
+        </ng-container>
+        <ng-container *ngIf="authSvc.isDebugMode()">
+          <button mat-raised-button (click)="changeDebugUser()">
+            Teszt felhasználó váltás
+          </button>
+        </ng-container>
+      </div>
+    </mat-toolbar-row>
+    <mat-toolbar-row>
+      <div class="pull-center">
+        <a
+          color="link"
+          mat-stroked-button
+          [routerLink]="['/', 'restaurants']"
+          routerLinkActive="active"
+        >
+          <mat-icon>restaurant</mat-icon>
+          Éttermek listája
+        </a>
+        <a
+          *ngIf="userSvc.isOwner()"
+          color="link"
+          mat-stroked-button
+          [routerLink]="['/', 'units']"
+          routerLinkActive="active"
+        >
+          <mat-icon>storefront</mat-icon>
+          Egységek kezelése
+        </a>
+        <a
+          *ngIf="authSvc.isLoggedIn()"
+          color="link"
+          mat-stroked-button
+          [routerLink]="['/', 'reservations']"
+          routerLinkActive="active"
+        >
+          <mat-icon>menu_book</mat-icon>
+          Foglalások
+        </a>
+        <a
+          *ngIf="authSvc.isLoggedIn()"
+          color="link"
+          mat-stroked-button
+          [routerLink]="['/', 'profile']"
+          routerLinkActive="active"
+        >
+          <mat-icon>account_circle</mat-icon>
+          Profilom
+        </a>
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  <router-outlet></router-outlet>
+</div>

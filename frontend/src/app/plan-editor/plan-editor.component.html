@@ -1,0 +1,277 @@
+<ng-container *ngIf="unit; then unitFound; else unitMissing"></ng-container>
+<ng-template #unitFound>
+  <div class="editor-main">
+    <div class="editor-tools">
+      <h1>{{ unit!.name }}</h1>
+      <ng-container *ngIf="authService.isDebugMode()">
+        <p>
+          Belső azonosító: <b>{{ unit!.id }}</b>
+        </p>
+      </ng-container>
+      <ng-container *ngIf="!isOwner() || authService.isDebugMode()">
+        <div
+          style="
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            margin-top: 30px;
+          "
+        >
+          <h2>Asztalfoglalás</h2>
+          <p style="width: 260px">
+            Válassz egy dátumot és egy asztalt a szabad időpontok
+            megtekintéséhez!
+          </p>
+          <form
+            [formGroup]="createReservationForm"
+            (ngSubmit)="createReservation()"
+          >
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Dátum</mat-label>
+              <mat-select
+                formControlName="selectedDay"
+                name="selectedDay"
+                matInput
+              >
+                <mat-option
+                  *ngFor="let day of days"
+                  [value]="day.value"
+                  (onSelectionChange)="changeDate()"
+                >
+                  {{ day.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Idősáv</mat-label>
+              <mat-select
+                #time_selector
+                formControlName="selectedTimeRange"
+                name="selectedTimeRange"
+                matInput
+                (selectionChange)="changeTime($event)"
+              >
+                <mat-option
+                  *ngFor="let timeRange of timeRanges"
+                  [value]="timeRange.value"
+                >
+                  {{ timeRange.viewValue }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+            <button
+              mat-raised-button
+              color="accent"
+              style="margin-top: 10px"
+              [disabled]="selectedTime === '-1'"
+            >
+              Foglalás
+            </button>
+          </form>
+          <div style="height: 60px"></div>
+        </div>
+      </ng-container>
+      <ng-container *ngIf="isOwner()">
+        <form [formGroup]="planSizeForm" (ngSubmit)="changePlanSize()">
+          <div style="display: flex; width: 100%">
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 125px"
+            >
+              <mat-label>Szélesség</mat-label>
+              <input
+                formControlName="width"
+                name="width"
+                matInput
+                placeholder="8"
+              />
+              <mat-error *ngIf="width.invalid">
+                <span *ngIf="width.invalid">Szám 6 és 20 között!</span>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 125px; padding-left: 10px"
+            >
+              <mat-label>Magasság</mat-label>
+              <input
+                formControlName="height"
+                name="height"
+                matInput
+                placeholder="8"
+              />
+              <mat-error *ngIf="height.invalid">Szám 6 és 20 között!</mat-error>
+            </mat-form-field>
+          </div>
+          <button mat-raised-button color="accent" style="margin-top: 10px">
+            Átméretezés
+          </button>
+        </form>
+        <form [formGroup]="unitDataForm" (ngSubmit)="changeUnit()">
+          <div
+            style="
+              display: flex;
+              flex-direction: column;
+              width: 100%;
+              margin-top: 30px;
+            "
+          >
+            <h2>Étterem adatai</h2>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Név</mat-label>
+              <input formControlName="name" name="name" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Cím</mat-label>
+              <input formControlName="address" name="address" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Leírás</mat-label>
+              <input
+                formControlName="description"
+                name="description"
+                matInput
+              />
+            </mat-form-field>
+            <!--
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Alapértelmezett min. foglalási idő</mat-label>
+              <input formControlName="minTime" name="minTime" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label>Alapértelmezett max. foglalási idő</mat-label>
+              <input formControlName="maxTime" name="maxTime" matInput />
+            </mat-form-field>
+            <mat-form-field
+              appearance="fill"
+              color="accent"
+              style="width: 260px"
+            >
+              <mat-label
+                >Alapértelmezett foglalási időtartam léptetés</mat-label
+              >
+              <input formControlName="timeStep" name="timeStep" matInput />
+            </mat-form-field>
+            -->
+          </div>
+          <button mat-raised-button color="accent" style="margin-top: 10px">
+            Változtatások mentése
+          </button>
+        </form>
+        <ng-container *ngIf="this.reservable !== undefined">
+          <form
+            [formGroup]="reservableEditorForm"
+            (ngSubmit)="changeReservable()"
+          >
+            <div
+              style="
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+                margin-top: 30px;
+              "
+            >
+              <h2>Asztal adatai</h2>
+              <mat-form-field
+                appearance="fill"
+                color="accent"
+                style="width: 260px"
+              >
+                <mat-label>Név</mat-label>
+                <input formControlName="name" name="name" matInput />
+              </mat-form-field>
+              <mat-form-field
+                appearance="fill"
+                color="accent"
+                style="width: 260px"
+              >
+                <mat-label>Min. foglalható helyek</mat-label>
+                <input formControlName="minSpaces" name="minSpaces" matInput />
+              </mat-form-field>
+              <mat-form-field
+                appearance="fill"
+                color="accent"
+                style="width: 260px"
+              >
+                <mat-label>Max. foglalható helyek</mat-label>
+                <input formControlName="maxSpaces" name="maxSpaces" matInput />
+              </mat-form-field>
+              <mat-form-field
+                appearance="fill"
+                color="accent"
+                style="width: 260px"
+              >
+                <mat-label>Min. időtartam</mat-label>
+                <input formControlName="minTime" name="minTime" matInput />
+              </mat-form-field>
+              <mat-form-field
+                appearance="fill"
+                color="accent"
+                style="width: 260px"
+              >
+                <mat-label>Max. időtartam</mat-label>
+                <input formControlName="maxTime" name="maxTime" matInput />
+              </mat-form-field>
+              <mat-form-field
+                appearance="fill"
+                color="accent"
+                style="width: 260px"
+              >
+                <mat-label>Időtartam léptetés</mat-label>
+                <input formControlName="timeStep" name="timeStep" matInput />
+              </mat-form-field>
+            </div>
+            <button mat-raised-button color="accent" style="margin-top: 10px">
+              Változtatások mentése
+            </button>
+          </form>
+        </ng-container>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="plan">
+      <div class="editor-area">
+        <app-grid-editor
+          #grid_editor
+          [unit]="unit!"
+          [plan]="plan!"
+          [ownerMode]="isOwner()"
+          (onSelectReservable)="onReservableSelected($event)"
+          (onDeselectReservable)="onReservableDeselected()"
+        ></app-grid-editor>
+      </div>
+    </ng-container>
+  </div>
+</ng-template>
+<ng-template #unitMissing>
+  <p>Nem létezik az egység!</p>
+</ng-template>

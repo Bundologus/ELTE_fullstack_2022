@@ -1,0 +1,27 @@
+<h1>Bejelentkezés</h1>
+
+<form [formGroup]="loginForm" (ngSubmit)="submit()">
+  <mat-form-field appearance="outline">
+    <mat-label>E-mail</mat-label>
+    <input
+      formControlName="email"
+      name="email"
+      matInput
+      placeholder="example@mail.com"
+    />
+    <mat-error *ngIf="email.invalid"></mat-error>
+  </mat-form-field>
+  <mat-form-field appearance="outline">
+    <mat-label>Jelszó</mat-label>
+    <input
+      formControlName="password"
+      name="password"
+      matInput
+      type="password"
+    />
+    <mat-error *ngIf="password.invalid"></mat-error>
+  </mat-form-field>
+  <div>
+    <button mat-raised-button color="primary">Bejelentkezés</button>
+  </div>
+</form>
