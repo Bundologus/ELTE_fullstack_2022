@@ -28,7 +28,7 @@ export class UnitService {
    * TEMPORARY MOCK DATA
    */
 
-  _MOCK_ENABLED: boolean = true;
+  _MOCK_ENABLED: boolean = false;
 
   users: User[] = [
     {
@@ -132,7 +132,6 @@ export class UnitService {
 
   async getUnits(filters: Array<[FilterType, any]> = []) {
     console.log('getUnits');
-
     if (this._MOCK_ENABLED) {
       return new Promise((resolve) => {
         setTimeout(() => {
@@ -140,20 +139,17 @@ export class UnitService {
         }, 10);
       });
     }
-
     let path = '/api/unit';
-    if (filters !== []) {
+    if (filters.length > 0) {
       path = path + '?';
       filters.forEach((type, value) => {
         path = path + `${type}=${value}`;
       });
     }
     console.log(path);
-
     const response = (await lastValueFrom(
       this.http.get(path)
     )) as BackendResponse<Unit | CondensedUnit>;
-
     return response.data;
   }
 
