@@ -255,12 +255,16 @@ export class PlanEditorComponent implements OnInit {
 
   createReservation() {
     // Invariáns: csak valid időpont és dátum volt kiválasztható egy asztalhoz
-    /*
     const reservation: ReservationPostData = {
       user_id: this.userService.getCurrentUser().id,
-
-    }
-    */
+      reservable_id: this.reservable!.id,
+      reserved_on: this.datePipe.transform(new Date(), 'yyyy-MM-dd')!,
+      date: this.days.find((d) => d.value === this.selectedDay)!.date,
+      start_time: this.timeRanges.find((t) => t.value === this.selectedTime)!
+        .time,
+      end_time: this.timeRanges.find((t) => t.value === this.selectedTime)!
+        .time,
+    };
   }
 
   timeToString(time: Time): string {
