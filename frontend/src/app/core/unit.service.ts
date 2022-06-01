@@ -142,7 +142,7 @@ export class UnitService {
     }
 
     let path = '/api/unit';
-    if (filters !== []) {
+    if (filters.length > 0) {
       path = path + '?';
       filters.forEach((type, value) => {
         path = path + `${type}=${value}`;
