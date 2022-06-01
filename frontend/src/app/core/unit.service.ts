@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Observable } from 'rxjs';
 import { BackendResponse } from './model/backendResponse';
 import { Entity } from './model/entity';
 import { FloorPlan } from './model/floorPlan';
@@ -232,12 +232,18 @@ export class UnitService {
     return this.entities.filter((e) => e.floor_plan_id === plan.id);
   }
 
-  setEntities(plan: FloorPlan, entities: Entity[]) {
-    const entitiesToRemove: Entity[] = this.getEntities(plan);
+  async setEntities(plan: FloorPlan, entities: Entity[]) : Promise<BackendResponse<Entity>> {
+    /* const entitiesToRemove: Entity[] = this.getEntities(plan);
     for (var entity of entitiesToRemove) {
       this.deleteEntity(entity);
     }
-    this.entities = this.entities.concat(entities);
+    this.entities = this.entities.concat(entities); */
+    const response = await lastValueFrom(
+        this.http.put(`/api/unit/${plan.unit_id}/plan/entity`, entities) as Observable<BackendResponse<Entity>>
+      );
+
+    this.entities = response.data;
+    return response;
   }
 
   deleteEntity(entity: Entity) {

@@ -12,6 +12,7 @@ export interface UserAuthRequest {
 @Injectable({
   providedIn: 'root',
 })
+
 export class AuthService {
   private _loggedIn = false;
 

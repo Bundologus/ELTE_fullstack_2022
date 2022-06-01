@@ -215,7 +215,11 @@ export class GridEditorComponent implements OnInit {
         // Reservable DB módosítása
         this.unitService.updateReservable(tableGroups[key][0].reservableData);
       }
+<<<<<<< HEAD
+      // TODO fix me: tableGroup.reservable = tableGroups[key][0].reservableData;
+=======
       tableGroup.reservable_id = tableGroups[key][0].reservableData.id;
+>>>>>>> origin/frontend-integration
       tableGroup.type = Entity_Type.Table;
       tableGroup.data = tableGroups[key][0].data;
       const vertices = [];
