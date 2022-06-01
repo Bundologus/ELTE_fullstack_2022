@@ -17,7 +17,7 @@ import { UnitService } from '../core/unit.service';
 import { GridEditorComponent } from '../grid-editor/grid-editor.component';
 import { UserService } from '../core/user.service';
 import { ReservationService } from '../core/reservation.service';
-import { Reservation } from '../core/model/reservation';
+import { Reservation, ReservationPostData } from '../core/model/reservation';
 import { MatSelect, MatSelectChange } from '@angular/material/select';
 
 interface Day {
@@ -253,7 +253,15 @@ export class PlanEditorComponent implements OnInit {
     this.selectedTime = '-1';
   }
 
-  createReservation() {}
+  createReservation() {
+    // Invariáns: csak valid időpont és dátum volt kiválasztható egy asztalhoz
+    /*
+    const reservation: ReservationPostData = {
+      user_id: this.userService.getCurrentUser().id,
+
+    }
+    */
+  }
 
   timeToString(time: Time): string {
     return (
